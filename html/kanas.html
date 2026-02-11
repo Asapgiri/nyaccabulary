@@ -1,0 +1,185 @@
+<style>
+body {
+    background-color: #f8f9fa;
+}
+
+.kana-cell {
+    position: relative;
+    font-size: 2rem;
+    padding: 14px 0;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border-radius: 8px;
+}
+
+.kana-cell:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: white;
+}
+
+/* Romaji overlay */
+.kana-romaji {
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+    font-size: 0.75rem;
+    color: #6c757d;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Show romaji on hover */
+.kana-cell:hover .kana-romaji {
+    opacity: 1;
+}
+
+/* Show romaji on mobile tap */
+.kana-cell.active .kana-romaji {
+    opacity: 1;
+}
+
+/* Slightly more compact rows */
+.kana-row {
+    margin-bottom: 6px;
+}
+</style>
+
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <button class="btn btn-outline-dark active me-2" onclick="showHiragana()">Hiragana</button>
+        <button class="btn btn-outline-dark" onclick="showKatakana()">Katakana</button>
+    </div>
+
+    <div id="kanaContainer"></div>
+</div>
+
+<script>
+const gojuon = [
+    ["a","i","u","e","o"],
+    ["ka","ki","ku","ke","ko"],
+    ["sa","shi","su","se","so"],
+    ["ta","chi","tsu","te","to"],
+    ["na","ni","nu","ne","no"],
+    ["ha","hi","fu","he","ho"],
+    ["ma","mi","mu","me","mo"],
+    ["ya","","yu","","yo"],
+    ["ra","ri","ru","re","ro"],
+    ["wa","","","","wo"],
+    ["n","","","",""]
+];
+
+const hiraganaMap = {
+    a:"あ", i:"い", u:"う", e:"え", o:"お",
+    ka:"か", ki:"き", ku:"く", ke:"け", ko:"こ",
+    sa:"さ", shi:"し", su:"す", se:"せ", so:"そ",
+    ta:"た", chi:"ち", tsu:"つ", te:"て", to:"と",
+    na:"な", ni:"に", nu:"ぬ", ne:"ね", no:"の",
+    ha:"は", hi:"ひ", fu:"ふ", he:"へ", ho:"ほ",
+    ma:"ま", mi:"み", mu:"む", me:"め", mo:"も",
+    ya:"や", yu:"ゆ", yo:"よ",
+    ra:"ら", ri:"り", ru:"る", re:"れ", ro:"ろ",
+    wa:"わ", wo:"を",
+    n:"ん"
+};
+
+const katakanaMap = {
+    a:"ア", i:"イ", u:"ウ", e:"エ", o:"オ",
+    ka:"カ", ki:"キ", ku:"ク", ke:"ケ", ko:"コ",
+    sa:"サ", shi:"シ", su:"ス", se:"セ", so:"ソ",
+    ta:"タ", chi:"チ", tsu:"ツ", te:"テ", to:"ト",
+    na:"ナ", ni:"ニ", nu:"ヌ", ne:"ネ", no:"ノ",
+    ha:"ハ", hi:"ヒ", fu:"フ", he:"ヘ", ho:"ホ",
+    ma:"マ", mi:"ミ", mu:"ム", me:"メ", mo:"モ",
+    ya:"ヤ", yu:"ユ", yo:"ヨ",
+    ra:"ラ", ri:"リ", ru:"ル", re:"レ", ro:"ロ",
+    wa:"ワ", wo:"ヲ",
+    n:"ン"
+};
+
+let currentMap = hiraganaMap;
+
+function renderKana() {
+    const container = document.getElementById("kanaContainer");
+    container.innerHTML = "";
+
+    const isDesktop = window.innerWidth >= 768;
+
+    if (isDesktop) {
+        // TRANSPOSED (a, ka, sa horizontally)
+        for (let colIndex = 0; colIndex < 5; colIndex++) {
+            const rowDiv = document.createElement("div");
+            rowDiv.className = "row justify-content-center kana-row";
+
+            gojuon.forEach(row => {
+                const col = document.createElement("div");
+                col.className = "col-1";
+
+                const syllable = row[colIndex];
+
+                if (syllable) {
+                    const cell = createCell(syllable);
+                    col.appendChild(cell);
+                }
+
+                rowDiv.appendChild(col);
+            });
+
+            container.appendChild(rowDiv);
+        }
+
+    } else {
+        // ORIGINAL MOBILE LAYOUT
+        gojuon.forEach(row => {
+            const rowDiv = document.createElement("div");
+            rowDiv.className = "row justify-content-center kana-row";
+
+            row.forEach(syllable => {
+                const col = document.createElement("div");
+                col.className = "col-2";
+
+                if (syllable) {
+                    const cell = createCell(syllable);
+                    col.appendChild(cell);
+                }
+
+                rowDiv.appendChild(col);
+            });
+
+            container.appendChild(rowDiv);
+        });
+    }
+}
+
+function createCell(syllable) {
+    const cell = document.createElement("div");
+    cell.className = "kana-cell";
+
+    cell.innerHTML = `
+        ${currentMap[syllable]}
+        <div class="kana-romaji">${syllable}</div>
+    `;
+
+    cell.addEventListener("click", () => {
+        cell.classList.toggle("active");
+    });
+
+    return cell;
+}
+
+function showHiragana() {
+    currentMap = hiraganaMap;
+    renderKana();
+}
+
+function showKatakana() {
+    currentMap = katakanaMap;
+    renderKana();
+}
+
+window.addEventListener("resize", renderKana);
+
+renderKana();
+</script>

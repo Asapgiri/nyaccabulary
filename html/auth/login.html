@@ -1,0 +1,33 @@
+<div class="container py-5 d-flex justify-content-center">
+    <div class="p-4 bg-white rounded shadow-sm border w-100" style="max-width: 400px;">
+        {{if .Auth.Error}}
+        <div class="alert alert-danger text-center fw-bold mb-4" role="alert">
+            {{.Auth.Error}}
+        </div>
+        {{end}}
+
+        <h4 class="mb-4 text-center">Login</h4>
+
+        <div class="text-muted pt-3">
+            <form name="form" method="post">
+                <div id="form">
+                    <div class="form-group mb-2">
+                        <input type="text" id="form_userName" name="form[userNameOrEmail]" required="required" placeholder="Username or Email" class="form-control">
+                    </div>
+                    <div class="form-group mb-2">
+                        <input type="password" id="form_userPass" name="form[userPass]" required="required" placeholder="Password" autocomplete="current-password" class="form-control">
+                    </div>
+                    <div class="form-group mb-2">
+                        <button type="submit" id="form_Bejelentkezés" name="form[Login]" class="form-control btn-primary btn">Login</button>
+                    </div>
+                    <input type="hidden" id="form__token" name="form[_token]" value="rS_4uOzkks7CsvOKCwoipqYLSrROEHruF1aGkQXuW9g">
+                </div>
+            </form>
+            <br>
+            <div class="d-flex justify-content-between mt-3 small">
+                <a href="/pwr_r" class="text-decoration-none">Forgotten password</a>
+                <a href="/register" class="text-decoration-none">Register</a>
+            </div>
+        </div>
+    </div>
+</div>

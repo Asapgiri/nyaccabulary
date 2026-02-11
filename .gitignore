@@ -1,0 +1,6 @@
+artifacts/trassets
+artifacts/photos
+*/env.go
+.config*
+nyaccabulary
+.DS_store

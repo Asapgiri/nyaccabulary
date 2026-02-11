@@ -1,0 +1,38 @@
+<div class="container py-5 d-flex justify-content-center">
+    <div class="p-4 bg-white rounded shadow-sm border w-100" style="max-width: 500px;">
+
+        {{if .Auth.Error}}
+        <div class="alert alert-danger text-center fw-bold mb-4" role="alert">
+            {{.Auth.Error}}
+        </div>
+        {{end}}
+
+        <h4 class="mb-4 text-center">Register</h4>
+
+        <div class="text-muted pt-3">
+            <form name="form" method="post">
+                <div id="form">
+                    <div class="form-group">
+                        <input type="text" id="form_userUsername" name="form[userUsername]" required="required" placeholder="Username" class="form-control mb-2">
+                        <input type="text" id="form_userName" name="form[userName]" placeholder="Name" class="form-control mb-2">
+                        <input type="text" id="form_userEmail" name="form[userEmail]" placeholder="Email" class="form-control mb-2">
+                        <input type="text" id="form_userPhone" name="form[userPhone]" placeholder="Phone" class="form-control mb-2">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="form_userPassA" name="form[userPassA]" required="required" placeholder="Password" autocomplete="current-password" class="form-control mb-2">
+                        <input type="password" id="form_userPassB" name="form[userPassB]" required="required" placeholder="Password Again" autocomplete="current-password" class="form-control mb-2">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" id="form_Bejelentkezés" name="form[Register]" class="form-control mb-2 btn-primary btn">Register</button>
+                    </div>
+                    <input type="hidden" id="form__token" name="form[_token]" value="rS_4uOzkks7CsvOKCwoipqYLSrROEHruF1aGkQXuW9g">
+                </div>
+            </form>
+            <br>
+            <div class="text-center mt-3 small text-muted">
+                You Already have an account?
+                <a href="/login" class="ms-1 text-decoration-none">Login</a>
+            </div>
+        </div>
+    </div>
+</div>

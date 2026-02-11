@@ -1,0 +1,55 @@
+<h6 class="border-top border-gray py-2 mb-3 fw-semibold">
+    Users
+</h6>
+
+<div class="mb-4">
+    <input
+    type="search"
+    id="searchbar"
+    onkeyup="searchFunction()"
+    placeholder="Felhasználó keresése.."
+    class="form-control"
+    aria-label="Search users"
+    >
+</div>
+
+<ul class="list-group list-group-flush" id="table">
+    <li class="list-group-item list-group-item-secondary fw-bold">
+        <div class="row w-100">
+            <div class="col-md-2">Username</div>
+            <div class="col-md-2">Name</div>
+            <div class="col-md-2">Email</div>
+            <div class="col-md-1">Phone</div>
+            <div class="col-md-5 text-end">Roles</div>
+        </div>
+    </li>
+
+    {{range $i, $d := .Dto.Users}}
+    <li class="list-group-item list-group-item-action p-2 small searchable">
+        <!-- data-bs-toggle="collapse" -->
+        <!-- data-bs-target="#collapse-{{$i}}" -->
+        <!-- aria-expanded="false" -->
+        <!-- aria-controls="collapse-{{$i}}" -->
+        <!-- > -->
+        <div class="row align-items-center">
+            <div class="col-md-2"><a href="/user/{{.Username}}" class="text-decoration-none">@{{.Username}}</a></div>
+            <div class="col-md-2">{{.Name}}</div>
+            <div class="col-md-2 text-truncate">{{.Email}}</div>
+            <div class="col-md-1">{{.Phone}}</div>
+            <div class="col-md-5 text-end text-truncate">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    {{$userRoles := .Roles}}
+                    {{range $i, $r := $.Dto.Roles}}
+                    <a href="/admin/user/setrole/{{$d.Id}}/{{$r.Name}}"
+                        class="btn btn-{{if not (scon $userRoles $r.Name)}}outline-{{end}}primary py-0 {{if not (subset $.Auth.Roles $r.EditPerm)}}disabled{{end}}"
+                        value="{{$r.Name}}"
+                        style="opacity: 0.85;">
+                        {{$r.Name}}
+                    </a>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </li>
+    {{end}}
+</ul>
