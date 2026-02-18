@@ -49,8 +49,8 @@ body {
 
 <div class="container py-4">
     <div class="text-center mb-4">
-        <button class="btn btn-outline-dark active me-2" onclick="showHiragana()">Hiragana</button>
-        <button class="btn btn-outline-dark" onclick="showKatakana()">Katakana</button>
+        <button id="btn-hiragana" class="btn btn-outline-dark py-0 active me-2" onclick="showHiragana()">Hiragana</button>
+        <button id="btn-katakana" class="btn btn-outline-dark py-0" onclick="showKatakana()">Katakana</button>
     </div>
 
     <div id="kanaContainer"></div>
@@ -170,11 +170,15 @@ function createCell(syllable) {
 }
 
 function showHiragana() {
+    document.getElementById('btn-hiragana').classList.toggle("active");
+    document.getElementById('btn-katakana').classList.toggle("active");
     currentMap = hiraganaMap;
     renderKana();
 }
 
 function showKatakana() {
+    document.getElementById('btn-hiragana').classList.toggle("active");
+    document.getElementById('btn-katakana').classList.toggle("active");
     currentMap = katakanaMap;
     renderKana();
 }
