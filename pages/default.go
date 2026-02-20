@@ -71,9 +71,12 @@ func Root(w http.ResponseWriter, r *http.Request) {
             },
         }
 
-        log.Println(dto)
-
-        fil, _ := renderer.ReadArtifact("index.html", w.Header())
+        fil := ""
+        if "" == session.Auth.Username {
+            fil, _ = renderer.ReadArtifact("auth/login.html", w.Header())
+        } else {
+            fil, _ = renderer.ReadArtifact("index.html", w.Header())
+        }
         renderer.Render(session, w, fil, dto)
     } else {
         Unexpected(session, w, r)
