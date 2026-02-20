@@ -5,6 +5,7 @@ import (
 	"github.com/asapgiri/golib/renderer"
 	"github.com/asapgiri/golib/session"
 	"nyaccabulary/config"
+	"nyaccabulary/logic"
 	"io"
 	"net/http"
 	"strconv"
@@ -41,22 +42,26 @@ func Root(w http.ResponseWriter, r *http.Request) {
     if "/" == r.URL.Path {
         page, err := strconv.ParseInt(r.URL.Query().Get("page"), 10, 32)
         if nil != err {
-            log.Println(err)
             page = 0
         }
         post_per_page, err := strconv.ParseInt(r.URL.Query().Get("ppp"), 10, 32)
         if nil != err {
-            log.Println(err)
             post_per_page = 25
         }
         log.Println(page, post_per_page)
 
-        // post := logic.Post{}
-        // plist, pages := post.List(checkEditorAccess(session), nil, int(page), int(post_per_page), false)
-        // log.Println(pages)
+        words := []logic.Word{}
+
+        if "" != session.Auth.Username {
+            user := logic.User{}
+            user.FindByUsername(session.Auth.Username)
+
+            word := logic.Word{}
+            words = word.List(user)
+        }
 
         dto := DtoRoot{
-            Main: DtoMain{},
+            Words: words,
             //Posts: plist,
             Page: Pages{
                 Current: int(page),
@@ -65,6 +70,8 @@ func Root(w http.ResponseWriter, r *http.Request) {
                 PppOpts: []int{10, 25, 50, 100},
             },
         }
+
+        log.Println(dto)
 
         fil, _ := renderer.ReadArtifact("index.html", w.Header())
         renderer.Render(session, w, fil, dto)

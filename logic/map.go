@@ -2,6 +2,8 @@ package logic
 
 import (
 	"nyaccabulary/dbase"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (user *User) Map(duser dbase.User) {
@@ -32,4 +34,36 @@ func (user *User) UnMap() dbase.User {
     duser.Roles         = user.Roles
 
     return duser
+}
+
+func (word *Word) Map(dword dbase.Word) {
+    user := User{}
+    user.Find(dword.User.Hex())
+
+    word._db            = dword
+    word.Id             = dword.Id.Hex()
+    word.Date           = dword.Date
+    word.User           = user
+    word.Kanji          = dword.Kanji
+    word.Kana           = dword.Kana
+    word.Meaning        = dword.Meaning
+    word.Knows          = dword.Knows
+    word.DontKnows      = dword.DontKnows
+    word.LastShown      = dword.LastShown
+}
+
+func (word *Word) UnMap() dbase.Word {
+    dword := word._db
+
+    dword.Id, _         = primitive.ObjectIDFromHex(word.Id)
+    dword.Date          = word.Date
+    dword.User, _       = primitive.ObjectIDFromHex(word.User.Id)
+    dword.Kanji         = word.Kanji
+    dword.Kana          = word.Kana
+    dword.Meaning       = word.Meaning
+    dword.Knows         = word.Knows
+    dword.DontKnows     = word.DontKnows
+    dword.LastShown     = word.LastShown
+
+    return dword
 }

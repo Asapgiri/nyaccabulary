@@ -17,6 +17,8 @@ func setup_routes() {
     http.HandleFunc("GET /logout",              pages.Logout)
     http.HandleFunc("GET /pwr_r",               pages.NotFound)
 
+    http.HandleFunc("POST /word/save",          pages.WordSave)
+    http.HandleFunc("GET /word/list",           pages.WordList)
     http.HandleFunc("GET /kana",                pages.ShowKana)
 
     http.HandleFunc("GET /access-violation",    pages.AccessViolation)

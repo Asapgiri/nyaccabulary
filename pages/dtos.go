@@ -2,11 +2,6 @@ package pages
 
 import "nyaccabulary/logic"
 
-type DtoMain struct {
-    Title   string
-    // etc...
-}
-
 type Pages struct {
     Current int
     Count   int
@@ -15,7 +10,7 @@ type Pages struct {
 }
 
 type DtoRoot struct {
-    Main    DtoMain
+    Words   []logic.Word
     Page    Pages
 }
 

@@ -1,1 +1,62 @@
-hello
+<div class="container-xl flex-fill postshow py-4">
+    <h2 class="border-bottom border-gray py-2 mb-3 fw-semibold">
+        Words
+    </h2>
+
+    <ul class="list-group list-group-flush" id="table">
+        <li class="list-group-item list-group-item-secondary fw-bold">
+            <div class="row">
+                <div class="col-md-3">Kanji</div>
+                <div class="col-md-3">Kana</div>
+                <div class="col-md-3">Meaning</div>
+                <div class="col-md-2"></div>
+                <div class="col-md-1 text-end">Meta</div>
+            </div>
+        </li>
+
+        <li class="list-group-item list-group-item-action small searchable">
+            <form method="POST" action="/word/save">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <div class="input-group shadow-sm">
+                            <input id="form[kanji]" name="form[kanji]" type="text" class="form-control form-control-sm border-end-0" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-group shadow-sm">
+                            <input id="form[kana]" name="form[kana]" type="text" class="form-control form-control-sm border-end-0" value="">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-group shadow-sm">
+                            <input id="form[meaning]" name="form[meaning]" type="text" class="form-control form-control-sm border-end-0" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2"></div>
+
+                    <div class="col-md-1">
+                        <div class="input-group shadow-sm">
+                            <button class="btn btn-success py-0 w-100" type="submit">
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </li>
+
+        {{range $i, $d := .Dto.Words}}
+        <li class="list-group-item list-group-item-action p-2 small searchable">
+            <div class="row align-items-center">
+                <div class="col-md-3">{{.Kanji}}</div>
+                <div class="col-md-3">{{.Kana}}</div>
+                <div class="col-md-3">{{.Meaning}}</div>
+                <div class="col-md-1 text-end"></div>
+            </div>
+        </li>
+        {{end}}
+    </ul>
+</div>

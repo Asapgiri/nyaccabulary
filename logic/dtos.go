@@ -18,3 +18,16 @@ type User struct {
     PhoneVisible    bool
     Roles           []string
 }
+
+type Word struct {
+    _db             dbase.Word
+    Id              string
+    Date            time.Time
+    User            User
+    Kanji           string
+    Kana            string
+    Meaning         string
+    Knows           int
+    DontKnows       int
+    LastShown       time.Time
+}

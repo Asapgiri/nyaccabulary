@@ -15,6 +15,7 @@ var mongo_client *mongo.Client
 var db *mongo.Database
 
 var dbUSERS             *mongo.Collection
+var dbWORDS             *mongo.Collection
 
 var log = logger.Logger {
     Color: logger.Colors.Purple,
@@ -74,6 +75,7 @@ func Connect() error {
 	log.Println("Pinged your deployment. You successfully connected to MongoDB!")
 
     dbUSERS             = db.Collection("users")
+    dbWORDS             = db.Collection("words")
 
     return nil
 }
@@ -120,5 +122,42 @@ func (user *User) Update() error {
 func (user *User) Delete() error {
     filter := bson.D{{"_id", user.Id}}
     _, err := dbUSERS.DeleteOne(context.Background(), filter)
+    return err
+}
+
+// =====================================================================================================================
+// Internal User Listing CRUD
+
+func (word *Word) List(user *User) ([]Word, error) {
+    var anyime []Word
+
+    cursor, err := dbWORDS.Find(context.Background(), bson.D{{"user", user.Id}})
+    if nil != err {
+        return anyime, err
+    }
+    defer cursor.Close(context.Background())
+
+    err = cursor.All(context.Background(), &anyime)
+
+    return anyime, err
+}
+
+func (word *Word) Select(id primitive.ObjectID) error {
+    return dbWORDS.FindOne(context.Background(), bson.D{{"_id", id}}).Decode(word)
+}
+
+func (word *Word) Add() error {
+    _, err := dbWORDS.InsertOne(context.Background(), word)
+    return err
+}
+
+func (word *Word) Update() error {
+    _, err := dbWORDS.ReplaceOne(context.Background(), bson.D{{"_id", word.Id}}, word)
+    return err
+}
+
+func (word *Word) Delete() error {
+    filter := bson.D{{"_id", word.Id}}
+    _, err := dbWORDS.DeleteOne(context.Background(), filter)
     return err
 }

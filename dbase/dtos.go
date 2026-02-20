@@ -20,3 +20,15 @@ type User struct {
     PhoneVisible    bool
     Roles           []string
 }
+
+type Word struct {
+    Id              primitive.ObjectID `bson:"_id"`
+    Date            time.Time
+    User            primitive.ObjectID
+    Kanji           string
+    Kana            string
+    Meaning         string
+    Knows           int
+    DontKnows       int
+    LastShown       time.Time
+}
