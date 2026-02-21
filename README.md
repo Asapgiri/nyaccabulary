@@ -23,3 +23,28 @@ The `.config.json` file will be created after the first run with the following d
 ```
 
 By default I use pound for reverse proxy, but I don't feel like sharing my config with you...
+
+## TODOs, features to implements
+
+- [x] users
+- [ ] words
+    - [x] saving
+    - [x] showing
+    - [ ] deleting
+    - [ ] ediging
+    - [ ] learning page
+    - [ ] show percentages
+    - [ ] translate suggestions with jisho
+- [ ] create decks
+- [ ] notes page
+- [ ] homeworks page
+- [ ] sessions page
+    - [ ] notes
+    - [ ] words
+    - [ ] kanjis
+        - [ ] with words
+        - [ ] sentences
+    - [ ] homeworks
+- [ ] kanji page
+    - [ ] vocab save
+- [ ] admin pages
