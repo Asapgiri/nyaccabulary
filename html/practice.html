@@ -64,7 +64,7 @@
         Practice
     </h2>
 
-    {{if .Dto}}
+    {{if .Dto.Id}}
 
     <!-- Practice Card -->
     <div id="card" class="practice-card" onclick="reveal()">
@@ -142,9 +142,6 @@ function grade(level) {
       credentials: "include",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ grade: level })
-    });
-
-    // For now just reload next word
-    location.reload();
+    }).then(() => location.reload());
 }
 </script>

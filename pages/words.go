@@ -114,11 +114,10 @@ func orderWordsLearn(words []logic.Word) []logic.Word {
 
         days_sinse := time.Now().Sub(w.LastShown).Hours() / 24.0
 
-        if fail_rate >= 0.25 || /* FIXME: Should come from learning config [...] */
-           total < 3 ||
-           fail_rate >= 0.10 && days_sinse >= 2 ||
-           fail_rate >= 0.05 && days_sinse >= 5 ||
-           fail_rate >= 0.01 && days_sinse >= 7 {
+        if fail_rate >= 0.50 && total < 3 && days_sinse >= 0.02 || /* FIXME: Should come from learning config [...] */
+           fail_rate >= 0.30 && days_sinse >= 2 ||
+           fail_rate >= 0.25 && days_sinse >= 5 ||
+           fail_rate >= 0.10 && days_sinse >= 7 {
             words_ret = append(words_ret, w)
         }
     }
@@ -143,18 +142,25 @@ func WordLearn(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    words, ok := session.Store.Get("words-learn")
+    wd, ok := session.Store.Get("words-learn")
+    var words []logic.Word
 
-    if !ok {
+    if nil != wd {
+        words = wd.([]logic.Word)
+    } else {
+        words = []logic.Word{}
+    }
+
+    if !ok || len(words) <= 0 {
         user := logic.User{}
         user.Find(session.Auth.Id)
 
         word := logic.Word{}
-        words = word.List(user)
-        session.Store.Set("words-learn", orderWordsLearn(words.([]logic.Word)))
+        words = orderWordsLearn(word.List(user))
+        session.Store.Set("words-learn", words)
     }
 
-    word := selectRandom(words.([]logic.Word))
+    word := selectRandom(words)
 
     fil, _ := renderer.ReadArtifact("practice.html", w.Header())
     renderer.Render(session, w, fil, word)
