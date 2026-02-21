@@ -34,6 +34,5 @@ func (user *User) FindByUsername(username string) {
 
 func (user *User) Update() error {
     duser := user.UnMap()
-    log.Println("user updated: ", duser)
     return duser.Update()
 }

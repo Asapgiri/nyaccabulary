@@ -5,6 +5,11 @@ import (
     "nyaccabulary/dbase"
 )
 
+type Display struct {
+    PercentageP     float64
+    PercentageN     float64
+}
+
 type User struct {
     _db             dbase.User
     Id              string
@@ -30,4 +35,5 @@ type Word struct {
     Knows           int
     DontKnows       int
     LastShown       time.Time
+    Display         Display
 }

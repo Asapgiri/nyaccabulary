@@ -1,14 +1,16 @@
 package pages
 
 import (
+	"io"
+	"net/http"
+	"nyaccabulary/config"
+	"nyaccabulary/logic"
+	"slices"
+	"strconv"
+
 	"github.com/asapgiri/golib/logger"
 	"github.com/asapgiri/golib/renderer"
 	"github.com/asapgiri/golib/session"
-	"nyaccabulary/config"
-	"nyaccabulary/logic"
-	"io"
-	"net/http"
-	"strconv"
 )
 
 var log = logger.Logger {
@@ -58,6 +60,7 @@ func Root(w http.ResponseWriter, r *http.Request) {
 
             word := logic.Word{}
             words = word.List(user)
+            slices.Reverse(words)
         }
 
         dto := DtoRoot{

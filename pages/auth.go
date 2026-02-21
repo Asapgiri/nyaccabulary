@@ -23,7 +23,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
             session.SetError(err.Error())
         } else {
             session.Delete(w, r)
+            log.Println("logging in " + user.Username)
             session.New(w, r, user.Username)
+            log.Println("logging in " + session.Auth.Username)
         }
     } else {
         session.SetError("")

@@ -30,9 +30,13 @@ By default I use pound for reverse proxy, but I don't feel like sharing my confi
 - [ ] words
     - [x] saving
     - [x] showing
-    - [ ] deleting
-    - [ ] ediging
+    - [ ] statistics
+        - [x] pre-statistics
+        - [x] deleting
+        - [ ] ediging
     - [ ] learning page
+        - [ ] catched up page
+        - [x] practice page
     - [ ] show percentages
     - [ ] translate suggestions with jisho
 - [ ] create decks

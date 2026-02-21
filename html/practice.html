@@ -1,0 +1,150 @@
+<style>
+/* Remove Bootstrap rounding */
+.form-control,
+.btn {
+    border-radius: 0 !important;
+}
+
+/* Card container */
+.practice-card {
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 40px 20px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Word display */
+.practice-word {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.practice-sub {
+    font-size: 18px;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* Answer buttons */
+.answer-btn {
+    font-size: 16px;
+    padding: 6px 0;
+    width: 100%;
+}
+
+/* Anki colors */
+.btn-again { background-color: #dc3545; color: white; }
+.btn-hard  { background-color: #fd7e14; color: white; }
+.btn-good  { background-color: #198754; color: white; }
+.btn-easy  { background-color: #0d6efd; color: white; }
+
+.btn-again:hover,
+.btn-hard:hover,
+.btn-good:hover,
+.btn-easy:hover {
+    opacity: 0.9;
+}
+
+/* Hide answer initially */
+.hidden {
+    display: none;
+}
+</style>
+
+<div class="container-fluid py-4 px-3" style="max-width:600px;">
+
+    <h2 class="fw-semibold mb-4">
+        Practice
+    </h2>
+
+    {{if .Dto}}
+
+    <!-- Practice Card -->
+    <div id="card" class="practice-card" onclick="reveal()">
+
+        <div>
+            <div id="kanji" class="practice-word">
+                {{.Dto.Kanji}}
+            </div>
+
+            <div id="kana" class="practice-sub text-muted hidden">
+                {{.Dto.Kana}}
+            </div>
+
+            <div id="meaning" class="practice-sub hidden">
+                {{.Dto.Meaning}}
+            </div>
+
+            <div id="tapHint" class="practice-sub mt-4 text-muted">
+                Tap to reveal
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Answer Buttons -->
+    <div id="buttons" class="row g-2 mt-3 hidden">
+
+        <div class="col-3">
+            <button class="btn answer-btn btn-again" onclick="grade('again')">
+                Again
+            </button>
+        </div>
+
+        <div class="col-3">
+            <button class="btn answer-btn btn-hard" onclick="grade('hard')">
+                Hard
+            </button>
+        </div>
+
+        <div class="col-3">
+            <button class="btn answer-btn btn-good" onclick="grade('good')">
+                Good
+            </button>
+        </div>
+
+        <div class="col-3">
+            <button class="btn answer-btn btn-easy" onclick="grade('easy')">
+                Easy
+            </button>
+        </div>
+
+    </div>
+
+    {{else}}
+
+        <p class="text-muted">No words available.</p>
+
+    {{end}}
+
+</div>
+
+<script>
+function reveal() {
+    document.getElementById("kana").classList.remove("hidden");
+    document.getElementById("meaning").classList.remove("hidden");
+    document.getElementById("buttons").classList.remove("hidden");
+    document.getElementById("tapHint").classList.add("hidden");
+}
+
+function grade(level) {
+    console.log("User selected:", level);
+
+    fetch("/learn/{{.Dto.Id}}/"+level, {
+      method: "POST",
+      credentials: "include",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ grade: level })
+    });
+
+    // For now just reload next word
+    location.reload();
+}
+</script>

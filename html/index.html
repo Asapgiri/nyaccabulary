@@ -23,10 +23,18 @@
 }
 
 /* Make button match style */
-.clean-button {
+.clean {
     border-radius: 0;
     padding: 6px 14px;
     font-size: 15px;
+}
+
+.progress {
+    border-radius: 0px; /* smaller radius = more squared */
+    overflow: hidden;   /* important so child bars respect corners */
+}
+.progress-bar {
+    border-radius: 0;   /* remove rounding on bars */
 }
 </style>
 <div class="container-fluid py-4 px-3 px-md-4" style="max-width:1000px;">
@@ -42,7 +50,7 @@
                 style="font-size:15px; font-weight:600; letter-spacing:0.4px; color:#111;">
 
                 <div class="col-4 col-md-3">
-                    KANJI
+                    WORD
                 </div>
 
                 <div class="col-4 col-md-3">
@@ -61,25 +69,25 @@
         </li>
 
         <!-- Add Word Row -->
-        <li class="list-group-item py-3">
+        <li class="list-group-item p-1 py-3">
 
             <form method="POST" action="/word/save">
                 <div class="row g-2 align-items-center">
 
-                    <div class="col-4 col-md-3">
-                        <input id="form[kanji]" name="form[kanji]" type="text" class="form-control clean-input" placeholder="Kanji" lang="ja" required>
+                    <div class="col-12 col-md-3">
+                        <input id="form[kanji]" name="form[kanji]" type="text" class="form-control clean-input" placeholder="Word" lang="ja" required>
                     </div>
 
-                    <div class="col-4 col-md-3">
+                    <div class="col-12 col-md-3">
                         <input id="form[kana]" name="form[kana]" type="text" class="form-control clean-input" placeholder="Kana" lang="ja">
                     </div>
 
-                    <div class="col-4 col-md-3">
+                    <div class="col-12 col-md-3">
                         <input id="form[meaning]" name="form[meaning]" type="text" class="form-control clean-input" placeholder="Meaning" required>
                     </div>
 
-                    <div class="col-12 col-md-3 text-md-end mt-2 mt-md-0">
-                        <button class="btn btn-success clean-button w-100">Add</button>
+                    <div class="col-12 col-md-3 text-md-end mt-2">
+                        <button class="btn btn-success clean w-100">Add</button>
                     </div>
 
                 </div>
@@ -88,7 +96,7 @@
 
         <!-- Existing Words -->
         {{range $i, $d := .Dto.Words}}
-        <li class="list-group-item py-3">
+        <li class="list-group-item p-1">
             <div class="row align-items-center" style="font-size:16px;">
 
                 <div class="col-4 col-md-3">
@@ -101,6 +109,20 @@
 
                 <div class="col-4 col-md-3">
                     {{.Meaning}}
+                </div>
+
+                <div class="col-4 col-md-3 d-flex align-items-center">
+                    <div class="flex-grow-1 me-2">
+                        <div class="progress" style="height: 24px;">
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                style="width: {{.Display.PercentageN}}%;" aria-valuenow="{{.Display.PercentageN}}"
+                                aria-valuemin="0" aria-valuemax="100">{{.DontKnows}}</div>
+                            <div class="progress-bar bg-success" role="progressbar"
+                                style="width: {{.Display.PercentageP}}%;" aria-valuenow="{{.Display.PercentageP}}"
+                                aria-valuemin="0" aria-valuemax="100">{{.Knows}}</div>
+                        </div>
+                    </div>
+                    <a href="/word/delete/{{.Id}}" class="btn btn-danger flex-shrink-0 p-0 px-1">X</a>
                 </div>
 
             </div>

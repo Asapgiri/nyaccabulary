@@ -3,7 +3,7 @@ module nyaccabulary
 go 1.24.5
 
 require (
-	github.com/asapgiri/golib v0.2.7
+	github.com/asapgiri/golib v0.2.8
 	go.mongodb.org/mongo-driver v1.17.4
 	golang.org/x/crypto v0.42.0
 )

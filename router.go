@@ -19,6 +19,9 @@ func setup_routes() {
 
     http.HandleFunc("POST /word/save",          pages.WordSave)
     http.HandleFunc("GET /word/list",           pages.WordList)
+    http.HandleFunc("GET /word/delete/{id}",    pages.WordDelete)
+    http.HandleFunc("GET /learn",               pages.WordLearn)
+    http.HandleFunc("POST /learn/{id}/{answer}", pages.WordAnswer)
     http.HandleFunc("GET /kana",                pages.ShowKana)
 
     http.HandleFunc("GET /access-violation",    pages.AccessViolation)
