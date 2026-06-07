@@ -16,6 +16,7 @@ var db *mongo.Database
 
 var dbUSERS             *mongo.Collection
 var dbWORDS             *mongo.Collection
+var dbKANJI             *mongo.Collection
 
 var log = logger.Logger {
     Color: logger.Colors.Purple,
@@ -76,6 +77,7 @@ func Connect() error {
 
     dbUSERS             = db.Collection("users")
     dbWORDS             = db.Collection("words")
+    dbKANJI             = db.Collection("kanji")
 
     return nil
 }
@@ -159,5 +161,42 @@ func (word *Word) Update() error {
 func (word *Word) Delete() error {
     filter := bson.D{{"_id", word.Id}}
     _, err := dbWORDS.DeleteOne(context.Background(), filter)
+    return err
+}
+
+// =====================================================================================================================
+// Internal User Listing CRUD
+
+func (kanji *Kanji) List(user *User) ([]Kanji, error) {
+    var anyime []Kanji
+
+    cursor, err := dbKANJI.Find(context.Background(), bson.D{{"user", user.Id}})
+    if nil != err {
+        return anyime, err
+    }
+    defer cursor.Close(context.Background())
+
+    err = cursor.All(context.Background(), &anyime)
+
+    return anyime, err
+}
+
+func (kanji *Kanji) Select(id primitive.ObjectID) error {
+    return dbKANJI.FindOne(context.Background(), bson.D{{"_id", id}}).Decode(kanji)
+}
+
+func (kanji *Kanji) Add() error {
+    _, err := dbKANJI.InsertOne(context.Background(), kanji)
+    return err
+}
+
+func (kanji *Kanji) Update() error {
+    _, err := dbKANJI.ReplaceOne(context.Background(), bson.D{{"_id", kanji.Id}}, kanji)
+    return err
+}
+
+func (kanji *Kanji) Delete() error {
+    filter := bson.D{{"_id", kanji.Id}}
+    _, err := dbKANJI.DeleteOne(context.Background(), filter)
     return err
 }

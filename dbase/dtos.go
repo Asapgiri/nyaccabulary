@@ -32,3 +32,14 @@ type Word struct {
     DontKnows       int
     LastShown       time.Time
 }
+
+type Kanji struct {
+    Id              primitive.ObjectID `bson:"_id"`
+    Date            time.Time
+    User            primitive.ObjectID
+    Meaning         string
+    Furigana        string
+    Knows           int
+    DontKnows       int
+    LastShown       time.Time
+}
