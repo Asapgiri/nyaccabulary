@@ -17,12 +17,14 @@ func setup_routes() {
     http.HandleFunc("GET /logout",              pages.Logout)
     http.HandleFunc("GET /pwr_r",               pages.NotFound)
 
-    http.HandleFunc("POST /word/save",          pages.WordSave)
-    http.HandleFunc("GET /word/list",           pages.WordList)
-    http.HandleFunc("GET /word/delete/{id}",    pages.WordDelete)
-    http.HandleFunc("GET /learn",               pages.WordLearn)
-    http.HandleFunc("POST /learn/{id}/{answer}", pages.WordAnswer)
-    http.HandleFunc("GET /kana",                pages.ShowKana)
+    http.HandleFunc("GET /word",                        pages.Words)
+    http.HandleFunc("POST /word/save",                  pages.WordSave)
+    http.HandleFunc("GET /word/list",                   pages.WordList)
+    http.HandleFunc("GET /word/delete/{id}",            pages.WordDelete)
+    http.HandleFunc("GET /word/mastered/{func}/{id}",   pages.WordMaster)
+    http.HandleFunc("GET /learn",                       pages.WordLearn)
+    http.HandleFunc("POST /learn/{id}/{answer}",        pages.WordAnswer)
+    http.HandleFunc("GET /kana",                        pages.ShowKana)
 
     http.HandleFunc("GET /access-violation",    pages.AccessViolation)
 }

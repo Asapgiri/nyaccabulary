@@ -5,12 +5,40 @@ import (
 	"math/rand"
 	"net/http"
 	"nyaccabulary/logic"
+	"slices"
 	"strings"
 	"time"
 
 	"github.com/asapgiri/golib/renderer"
 	"github.com/asapgiri/golib/session"
 )
+
+func Words(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    m := r.URL.Query().Get("mastered")
+    mastered := ("on" == m || "true" == m)
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    word := logic.Word{}
+    words := word.List(user, mastered)
+    slices.Reverse(words)
+
+    dto := DtoRoot{
+        Words: words,
+        ShowMastered: mastered,
+    }
+
+    fil, _ := renderer.ReadArtifact("words.html", w.Header())
+    renderer.Render(session, w, fil, dto)
+}
 
 func WordSave(w http.ResponseWriter, r *http.Request) {
     sess := GetCurrentSession(w, r)
@@ -156,7 +184,7 @@ func WordLearn(w http.ResponseWriter, r *http.Request) {
         user.Find(session.Auth.Id)
 
         word := logic.Word{}
-        words = orderWordsLearn(word.List(user))
+        words = orderWordsLearn(word.List(user, false))
         session.Store.Set("words-learn", words)
     }
 
@@ -200,4 +228,35 @@ func WordAnswer(w http.ResponseWriter, r *http.Request) {
     word.Update()
 
     io.WriteString(w, "OK")
+}
+
+func WordMaster(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        http.Redirect(w, r, "/", http.StatusSeeOther)
+        return
+    }
+
+    id          := r.PathValue("id")
+    function    := r.PathValue("func")
+
+    word := logic.Word{}
+    word.Find(id)
+
+    if "" == word.Id || word.User.Id != session.Auth.Id {
+        AccessViolation(w, r)
+        return
+    }
+
+    word.Mastered = "set" == function
+    word.Update()
+
+    // Remove word from current word store for user..
+    words, ok := session.Store.Get("words-learn")
+    if ok {
+        findWordInStore(session, words.([]logic.Word), word.Id)
+    }
+
+    http.Redirect(w, r, "/", http.StatusSeeOther)
 }

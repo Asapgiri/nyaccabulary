@@ -34,6 +34,7 @@ type Word struct {
     Meaning         string
     Knows           int
     DontKnows       int
+    Mastered        bool
     LastShown       time.Time
     Display         Display
 }

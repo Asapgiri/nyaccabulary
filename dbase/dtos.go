@@ -30,6 +30,7 @@ type Word struct {
     Meaning         string
     Knows           int
     DontKnows       int
+    Mastered        bool
     LastShown       time.Time
 }
 
@@ -41,5 +42,6 @@ type Kanji struct {
     Furigana        string
     Knows           int
     DontKnows       int
+    Mastered        bool
     LastShown       time.Time
 }

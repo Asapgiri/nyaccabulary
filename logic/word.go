@@ -16,14 +16,14 @@ func formatDisplay(word Word) Display {
     return display
 }
 
-func (word *Word) List(user User) []Word {
+func (word *Word) List(user User, showMastered bool) []Word {
     dw := dbase.Word{}
 
     if "" == user.Id {
         return []Word{}
     }
 
-    ws, _ := dw.List(&user._db)
+    ws, _ := dw.List(&user._db, showMastered)
 
     words := make([]Word, len(ws))
     for i, w := range(ws) {

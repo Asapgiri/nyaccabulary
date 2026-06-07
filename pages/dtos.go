@@ -10,8 +10,9 @@ type Pages struct {
 }
 
 type DtoRoot struct {
-    Words   []logic.Word
-    Page    Pages
+    Words           []logic.Word
+    Page            Pages
+    ShowMastered    bool
 }
 
 type DtoAdminUsers struct {

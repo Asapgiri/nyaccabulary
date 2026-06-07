@@ -130,10 +130,15 @@ func (user *User) Delete() error {
 // =====================================================================================================================
 // Internal User Listing CRUD
 
-func (word *Word) List(user *User) ([]Word, error) {
+func (word *Word) List(user *User, mastered bool) ([]Word, error) {
     var anyime []Word
 
-    cursor, err := dbWORDS.Find(context.Background(), bson.D{{"user", user.Id}})
+    filter := bson.D{{"user", user.Id}}
+    if !mastered {
+        filter = append(filter, bson.E{"mastered", false})
+    }
+
+    cursor, err := dbWORDS.Find(context.Background(), filter)
     if nil != err {
         return anyime, err
     }

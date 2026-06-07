@@ -50,7 +50,9 @@ func Root(w http.ResponseWriter, r *http.Request) {
         if nil != err {
             post_per_page = 25
         }
-        log.Println(page, post_per_page)
+        m := r.URL.Query().Get("mastered")
+        mastered := ("on" == m || "true" == m)
+        log.Println(page, post_per_page, mastered)
 
         words := []logic.Word{}
 
@@ -59,7 +61,7 @@ func Root(w http.ResponseWriter, r *http.Request) {
             user.FindByUsername(session.Auth.Username)
 
             word := logic.Word{}
-            words = word.List(user)
+            words = word.List(user, mastered)
             slices.Reverse(words)
         }
 
@@ -72,6 +74,7 @@ func Root(w http.ResponseWriter, r *http.Request) {
                 Ppp: int(post_per_page),
                 PppOpts: []int{10, 25, 50, 100},
             },
+            ShowMastered: mastered,
         }
 
         fil := ""
