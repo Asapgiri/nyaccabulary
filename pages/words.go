@@ -15,9 +15,9 @@ import (
 	"github.com/phpdave11/gofpdf"
 )
 
-func sync(user logic.User, words MkWords) {
-    // TODO: ...
-}
+// func sync(user logic.User, words MkWords) {
+//     // TODO: ...
+// }
 
 func lookUpWords(word string) (config.Entry, bool) {
     for _, w := range(config.Config.JMdict.Entries) {
