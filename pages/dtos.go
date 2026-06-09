@@ -13,6 +13,8 @@ type DtoRoot struct {
     Words           []logic.Word
     Page            Pages
     ShowMastered    bool
+    Mastered        int
+    WordCount       int
 }
 
 type DtoAdminUsers struct {

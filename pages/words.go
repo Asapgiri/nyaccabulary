@@ -112,11 +112,23 @@ func Words(w http.ResponseWriter, r *http.Request) {
 
     word := logic.Word{}
     words := word.List(user, mastered)
-    slices.Reverse(words)
+    slices.SortFunc(words, func(a, b logic.Word) int {
+        return strings.Compare(a.Kanji, b.Kanji)
+    })
 
     dto := DtoRoot{
         Words: words,
         ShowMastered: mastered,
+        Mastered: 0,
+        WordCount: len(words),
+    }
+
+    if mastered {
+        for _, w := range(words) {
+            if w.Mastered {
+                dto.Mastered++
+            }
+        }
     }
 
     fil, _ := renderer.ReadArtifact("words.html", w.Header())
@@ -443,5 +455,5 @@ func WordMaster(w http.ResponseWriter, r *http.Request) {
         findWordInStore(session, words.([]logic.Word), word.Id)
     }
 
-    http.Redirect(w, r, "/", http.StatusSeeOther)
+    http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }

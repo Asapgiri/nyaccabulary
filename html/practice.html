@@ -1,80 +1,117 @@
 <style>
-/* Remove Bootstrap rounding */
+body {
+    background: #fafafa;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+/* reset */
 .form-control,
 .btn {
     border-radius: 0 !important;
 }
 
-/* Card container */
+/* page */
+.container {
+    max-width: 640px;
+}
+
+/* header */
+h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+/* CARD = quiet study sheet */
 .practice-card {
-    min-height: 180px;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    padding: 40px 24px;
+    min-height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    padding: 40px 20px;
     cursor: pointer;
     user-select: none;
 }
 
-/* Word display */
+/* main word */
 .practice-word {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 600;
     letter-spacing: 1px;
 }
 
+/* secondary info */
 .practice-sub {
-    font-size: 18px;
-    color: #666;
+    font-size: 16px;
+    color: #555;
     margin-top: 10px;
 }
 
-/* Answer buttons */
-.answer-btn {
-    font-size: 16px;
-    padding: 6px 0;
-    width: 100%;
+/* subtle hint */
+#tapHint {
+    margin-top: 22px;
+    font-size: 13px;
+    color: #999;
 }
 
-/* Anki colors */
-.btn-again { background-color: #dc3545; color: white; }
-.btn-hard  { background-color: #fd7e14; color: white; }
-.btn-good  { background-color: #198754; color: white; }
-.btn-easy  { background-color: #0d6efd; color: white; }
-
-.btn-again:hover,
-.btn-hard:hover,
-.btn-good:hover,
-.btn-easy:hover {
-    opacity: 0.9;
-}
-
-/* Hide answer initially */
+/* hidden state = invisible but stable layout feel */
 .hidden {
     display: none;
 }
+
+/* ANSWERS = planner-style row, not game buttons */
+.answer-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+}
+
+/* minimal buttons */
+.answer-btn {
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 14px;
+    padding: 10px 0;
+    cursor: pointer;
+    transition: border 0.15s ease, background 0.15s ease;
+}
+
+/* hover = only slight emphasis */
+.answer-btn:hover {
+    border-color: #000;
+}
+
+/* semantic colors only on text, not loud backgrounds */
+.btn-again { color: #b00020; }
+.btn-hard  { color: #b26a00; }
+.btn-good  { color: #1b5e20; }
+.btn-easy  { color: #0b57d0; }
+
+/* reveal area spacing */
+.reveal-area {
+    margin-top: 12px;
+}
 </style>
 
-<div class="container-fluid py-4 px-3" style="max-width:600px;">
+<div class="container py-4">
 
-    <h2 class="fw-semibold mb-4">
-        Practice
-    </h2>
+    <h2>Practice</h2>
 
     {{if .Dto.Id}}
 
-    <!-- Practice Card -->
+    <!-- STUDY SHEET -->
     <div id="card" class="practice-card" onclick="reveal()">
 
         <div>
-            <div id="kanji" class="practice-word">
+            <div class="practice-word">
                 {{.Dto.Kanji}}
             </div>
 
-            <div id="kana" class="practice-sub text-muted hidden">
+            <div id="kana" class="practice-sub hidden">
                 {{.Dto.Kana}}
             </div>
 
@@ -82,45 +119,26 @@
                 {{.Dto.Meaning}}
             </div>
 
-            <div id="tapHint" class="practice-sub mt-4 text-muted">
-                Tap to reveal
+            <div id="tapHint" class="practice-sub">
+                tap to reveal
             </div>
         </div>
 
     </div>
 
-    <!-- Answer Buttons -->
-    <div id="buttons" class="row g-2 mt-3 hidden">
+    <!-- ANSWERS (planner bar) -->
+    <div id="buttons" class="answer-bar hidden">
 
-        <div class="col-3">
-            <button class="btn answer-btn btn-again" onclick="grade('again')">
-                Again
-            </button>
-        </div>
-
-        <div class="col-3">
-            <button class="btn answer-btn btn-hard" onclick="grade('hard')">
-                Hard
-            </button>
-        </div>
-
-        <div class="col-3">
-            <button class="btn answer-btn btn-good" onclick="grade('good')">
-                Good
-            </button>
-        </div>
-
-        <div class="col-3">
-            <button class="btn answer-btn btn-easy" onclick="grade('easy')">
-                Easy
-            </button>
-        </div>
+        <button class="answer-btn btn-again" onclick="grade('again')">Again</button>
+        <button class="answer-btn btn-hard" onclick="grade('hard')">Hard</button>
+        <button class="answer-btn btn-good" onclick="grade('good')">Good</button>
+        <button class="answer-btn btn-easy" onclick="grade('easy')">Easy</button>
 
     </div>
 
     {{else}}
 
-        <p class="text-muted">No words available.</p>
+    <p style="color:#888;">No words available.</p>
 
     {{end}}
 
@@ -135,13 +153,11 @@ function reveal() {
 }
 
 function grade(level) {
-    console.log("User selected:", level);
-
-    fetch("/learn/{{.Dto.Id}}/"+level, {
-      method: "POST",
-      credentials: "include",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ grade: level })
+    fetch("/learn/{{.Dto.Id}}/" + level, {
+        method: "POST",
+        credentials: "include",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ grade: level })
     }).then(() => location.reload());
 }
 </script>
