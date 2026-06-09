@@ -51,6 +51,7 @@ func (word *Word) Map(dword dbase.Word) {
     word.DontKnows      = dword.DontKnows
     word.Mastered       = dword.Mastered
     word.LastShown      = dword.LastShown
+    word.DictForm       = dword.DictForm
 }
 
 func (word *Word) UnMap() dbase.Word {
@@ -66,6 +67,7 @@ func (word *Word) UnMap() dbase.Word {
     dword.DontKnows     = word.DontKnows
     dword.Mastered      = word.Mastered
     dword.LastShown     = word.LastShown
+    dword.DictForm      = word.DictForm
 
     return dword
 }

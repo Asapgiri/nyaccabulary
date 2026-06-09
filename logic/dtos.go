@@ -1,8 +1,9 @@
 package logic
 
 import (
+	"nyaccabulary/config"
+	"nyaccabulary/dbase"
 	"time"
-    "nyaccabulary/dbase"
 )
 
 type Display struct {
@@ -37,4 +38,5 @@ type Word struct {
     Mastered        bool
     LastShown       time.Time
     Display         Display
+    DictForm        config.Entry
 }

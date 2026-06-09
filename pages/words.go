@@ -4,6 +4,7 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
+	"nyaccabulary/config"
 	"nyaccabulary/logic"
 	"slices"
 	"strings"
@@ -11,7 +12,89 @@ import (
 
 	"github.com/asapgiri/golib/renderer"
 	"github.com/asapgiri/golib/session"
+	"github.com/phpdave11/gofpdf"
 )
+
+func sync(user logic.User, words MkWords) {
+    // TODO: ...
+}
+
+func lookUpWords(word string) (config.Entry, bool) {
+    for _, w := range(config.Config.JMdict.Entries) {
+        for _, kele := range(w.KEle) {
+            if kele.KEB == word {
+                return w, true
+            }
+        }
+    }
+    return config.Entry{}, false
+}
+
+func WordsPdf(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    m := r.URL.Query().Get("mastered")
+    mastered := ("on" == m || "true" == m)
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    word := logic.Word{}
+    words := word.List(user, mastered)
+    slices.Reverse(words)
+
+    pdf := gofpdf.New("P", "mm", "A4", "")
+    pdf.AddUTF8Font("NotoSansJP", "", "fonts/NotoSansJP-Regular.ttf")
+
+    pdf.SetFont("NotoSansJP", "", 12)
+    pdf.AddPage()
+
+    // pdf.Ln(5)
+
+    for _, word := range words {
+        // Check if the word is mastered
+        masteredIndicator := ""
+        fillColor := false
+        if word.Mastered {
+            masteredIndicator = "✓"
+            pdf.SetFillColor(144, 238, 144) // light green RGB
+            fillColor = true
+        } else {
+            pdf.SetFillColor(255, 255, 255) // white background
+            fillColor = false
+        }
+
+        // Indicator column
+        pdf.CellFormat(10, 10, masteredIndicator, "", 0, "C", fillColor, 0, "")
+        // Kana
+        pdf.CellFormat(40, 10, word.Kana, "", 0, "L", fillColor, 0, "")
+        // Kanji
+        pdf.CellFormat(40, 10, word.Kanji, "", 0, "L", fillColor, 0, "")
+        // Meaning
+        pdf.MultiCell(110, 10, word.Meaning, "", "L", fillColor)
+    }
+
+    w.Header().Set("Content-Type", "application/pdf")
+    w.Header().Set("Content-Disposition", `inline; filename="words.pdf"`)
+
+    pdf.Output(w)
+}
+
+func WordSync(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    http.Redirect(w, r, "/word", http.StatusSeeOther)
+}
 
 func Words(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)
@@ -40,6 +123,83 @@ func Words(w http.ResponseWriter, r *http.Request) {
     renderer.Render(session, w, fil, dto)
 }
 
+func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
+    sess := GetCurrentSession(w, r)
+
+    if "" == sess.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    words := r.FormValue("form[words]")
+
+    user := logic.User{}
+    user.Find(sess.Auth.Id)
+
+    ww := logic.Word{}
+    known_words := ww.List(user, true)
+
+    if "" != words {
+        for _, w := range(strings.Split(words, "\n")) {
+            word := strings.TrimSpace(w)
+            if "" != word {
+                // Check if word is already in users dictionary...
+                exists := false
+                for _, kw := range(known_words) {
+                    if kw.Kanji == word {
+                        exists = true
+                    }
+                }
+                if exists {
+                    sess.Notice.Set(session.NOTICE.INFO, "Word '" + word + "' is already in known list.")
+                    continue
+                }
+
+                dictf, ok := lookUpWords(word)
+                if ok {
+                    kana := ""
+                    meaning := ""
+
+                    if len(dictf.REle) > 0 {
+                        kana = dictf.REle[0].REB
+                    }
+
+                    // Fill in data [english only...]
+                    for _, s := range(dictf.Sense) {
+                        for _, gloss := range(s.Gloss) {
+                            if "en" == gloss.Lang || "" == gloss.Lang || "eng" == gloss.Lang {
+                                // FIXME: Pay attention te examples and stuff...
+                                meaning = gloss.Value
+                            }
+                        }
+                    }
+
+                    new_word := logic.Word{
+                        Date: time.Now(),
+                        User: user,
+                        Kanji: word,
+                        Kana: kana,
+                        Meaning: meaning,
+                        DictForm: dictf,
+                    }
+                    new_word.Add()
+                    sess.Notice.Set(session.NOTICE.SUCCESS, "Added '" + word + "' successfully.")
+                } else {
+                    sess.Notice.Set(session.NOTICE.WARNING, "Failed to add word: '" + word + "'.")
+                }
+            }
+        }
+
+        // ...
+
+        http.Redirect(w, r, "/word", http.StatusSeeOther)
+        return
+    }
+
+    fil, _ := renderer.ReadArtifact("wordsbulk.html", w.Header())
+    renderer.Render(sess, w, fil, nil)
+}
+
 func WordSave(w http.ResponseWriter, r *http.Request) {
     sess := GetCurrentSession(w, r)
 
@@ -54,6 +214,30 @@ func WordSave(w http.ResponseWriter, r *http.Request) {
     kanji   := r.FormValue("form[kanji]")
     kana    := r.FormValue("form[kana]")
     meaning := r.FormValue("form[meaning]")
+    dictf   := config.Entry{}
+
+    if "" == meaning {
+        dictf, ok := lookUpWords(kanji)
+        if ok {
+            // b, _ := json.MarshalIndent(dictf, "", "  ")
+            // log.Println(string(b))
+            // for _, k := range(dictf) {}
+
+            if len(dictf.REle) > 0 {
+                kana = dictf.REle[0].REB
+            }
+
+            // Fill in data [english only...]
+            for _, s := range(dictf.Sense) {
+                for _, gloss := range(s.Gloss) {
+                    if "en" == gloss.Lang || "" == gloss.Lang || "eng" == gloss.Lang {
+                        // FIXME: Pay attention te examples and stuff...
+                        meaning = gloss.Value
+                    }
+                }
+            }
+        }
+    }
 
     if "" != strings.TrimSpace(kanji) || "" != strings.TrimSpace(meaning) {
         word := logic.Word{
@@ -62,6 +246,7 @@ func WordSave(w http.ResponseWriter, r *http.Request) {
             Kanji: kanji,
             Kana: kana,
             Meaning: meaning,
+            DictForm: dictf,
         }
         word.Add()
     } else {

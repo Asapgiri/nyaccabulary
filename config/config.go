@@ -1,11 +1,15 @@
 package config
 
 import (
-	"github.com/asapgiri/golib/logger"
-	"github.com/asapgiri/golib/session"
+	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"os"
 	"path/filepath"
+	"regexp"
+
+	"github.com/asapgiri/golib/logger"
+	"github.com/asapgiri/golib/session"
 )
 
 var log = logger.Logger {
@@ -45,6 +49,7 @@ type ConfigT struct {
     User        UserConfig
     Site        session.Config
     Email       EmailConfig
+    JMdict      JMdict
 }
 
 var Config = ConfigT{
@@ -76,6 +81,20 @@ var Config = ConfigT{
         Email: "ex@ample.com",
         Password: "[password]",
     },
+    JMdict: JMdict{},
+}
+
+var entityRE = regexp.MustCompile(`<!ENTITY\s+([^\s]+)\s+"([^"]*)">`)
+
+func ParseEntities(dtd string) map[string]string {
+    entities := make(map[string]string)
+
+    matches := entityRE.FindAllStringSubmatch(dtd, -1)
+    for _, m := range matches {
+        entities[m[1]] = m[2]
+    }
+
+    return entities
 }
 
 func InitConfig() {
@@ -85,10 +104,13 @@ func InitConfig() {
     }
     expath := filepath.Dir(ex)
     configfile := expath + "/.config.json"
+    dictfile := expath + "/dict/JMdict"
 
+    log.Printf("Loading config.. ")
     dat, err := os.ReadFile(configfile)
     if nil != err {
         log.Println(err.Error())
+        log.Printf("\nGenerating new config.. ")
         configdat, _ := json.MarshalIndent(Config, "", "  ")
         os.WriteFile(configfile, configdat, 0644)
     } else {
@@ -99,4 +121,28 @@ func InitConfig() {
             panic(err)
         }
     }
+    log.Println("SUCCESSFUL")
+
+    // Read dict file if no error...
+    log.Printf("Loading dict.. ")
+    dat, err = os.ReadFile(dictfile)
+    if nil != err {
+        log.Println("try: mkdir -p dict && wget -O - ftp://ftp.edrdg.org/pub/Nihongo//JMdict_e.gz | gunzip > dict/JMdict")
+        panic("Dictionary file not found! ... '" + dictfile + "'")
+    }
+    decoder := xml.NewDecoder(bytes.NewReader(dat))
+    decoder.Entity = ParseEntities(string(dat))
+
+    err = decoder.Decode(&Config.JMdict)
+    if nil != err {
+        log.Println("Failed to read dictionary file!")
+        panic(err)
+    }
+    log.Println("SUCCESSFUL")
+
+    // FIXME: REMOVE
+    // Testing
+    log.Println(Config.JMdict.Entries[0])
+    b, _ := json.MarshalIndent(Config.JMdict.Entries[0], "", "  ")
+    log.Println(string(b))
 }

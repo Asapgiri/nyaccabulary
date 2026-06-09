@@ -30,6 +30,11 @@ By default I use pound for reverse proxy, but I don't feel like sharing my confi
 - [ ] words
     - [x] saving
     - [x] showing
+    - [ ] add word edit page, to edit JMdict meaning for words
+    - [ ] read kanjis from the newly added words
+    - [ ] make it look nices...
+    - [ ] add imports
+    - [ ] update to use 4 knowledge ticks
     - [ ] statistics
         - [x] pre-statistics
         - [x] deleting

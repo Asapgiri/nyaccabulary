@@ -1,6 +1,7 @@
 package dbase
 
 import (
+	"nyaccabulary/config"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -32,6 +33,7 @@ type Word struct {
     DontKnows       int
     Mastered        bool
     LastShown       time.Time
+    DictForm        config.Entry
 }
 
 type Kanji struct {
