@@ -345,6 +345,11 @@ body {
     <!-- Topbar -->
     <div class="topbar">
         <div class="page-title">Words</div>
+
+        <button id="copyWords" class="btn btn-outline-secondary btn-sm mb-3">
+            Copy All Kanji
+        </button>
+
         <form method="GET">
             <div class="form-check form-switch">
                 <input class="form-check-input"
@@ -387,7 +392,7 @@ body {
 
     <!-- Rows -->
     {{range $i, $d := .Dto.Words}}
-    <div class="planner-row {{if .Mastered}}mastered{{end}}">
+    <div class="planner-row {{if .Mastered}}mastered{{end}}" data-kanji="{{.Kanji}}">
 
         <!-- Word -->
         <a class="word-chip {{if .Mastered}}mastered{{end}}"
@@ -523,3 +528,21 @@ body {
     {{end}}
 
 </div>
+
+<script>
+document.getElementById("copyWords").addEventListener("click", async () => {
+    const rows = document.querySelectorAll(".planner-row");
+
+    const kanji = Array.from(rows)
+        .map(row => row.dataset.kanji)
+        .filter(Boolean)
+        .join("\n");
+
+    try {
+        await navigator.clipboard.writeText(kanji);
+        console.log("Copied kanji");
+    } catch (e) {
+        console.error("Clipboard failed", e);
+    }
+});
+</script>

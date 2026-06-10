@@ -23,6 +23,7 @@ type User struct {
     EmailVisible    bool
     PhoneVisible    bool
     Roles           []string
+    MangaKotoba     string
 }
 
 type Word struct {

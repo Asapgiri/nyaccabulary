@@ -29,5 +29,7 @@ func setup_routes() {
     http.HandleFunc("POST /learn/{id}/{answer}",        pages.WordAnswer)
     http.HandleFunc("GET /kana",                        pages.ShowKana)
 
+    http.HandleFunc("GET /word/sync",                   pages.WordSync)
+
     http.HandleFunc("GET /access-violation",    pages.AccessViolation)
 }

@@ -20,6 +20,8 @@ type User struct {
     EmailVisible    bool
     PhoneVisible    bool
     Roles           []string
+    // FIXME: Should every token be encrypted?
+    MangaKotoba     string
 }
 
 type Word struct {

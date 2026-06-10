@@ -15,9 +15,9 @@ import (
 	"github.com/phpdave11/gofpdf"
 )
 
-// func sync(user logic.User, words MkWords) {
-//     // TODO: ...
-// }
+func sync(user logic.User, words MkWords) {
+    // TODO: ...
+}
 
 func lookUpWords(word string) (config.Entry, bool) {
     for _, w := range(config.Config.JMdict.Entries) {
@@ -93,6 +93,20 @@ func WordSync(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    baseUrl := "/api/v2/user/words/known?perPage=500"
+
+    words := MkWords{}
+    request("GET", baseUrl, &words, user.MangaKotoba)
+    sync(user, words)
+
+    for words.Meta.HasNextPage {
+        request("GET", baseUrl + "&page=" + string(words.Meta.Page + 1), &words, user.MangaKotoba)
+        sync(user, words)
+    }
+
     http.Redirect(w, r, "/word", http.StatusSeeOther)
 }
 
@@ -109,6 +123,9 @@ func Words(w http.ResponseWriter, r *http.Request) {
 
     user := logic.User{}
     user.Find(session.Auth.Id)
+
+    // FIXME: Remove...
+    log.Println(user.MangaKotoba)
 
     word := logic.Word{}
     words := word.List(user, mastered)

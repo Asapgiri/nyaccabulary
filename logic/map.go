@@ -18,6 +18,7 @@ func (user *User) Map(duser dbase.User) {
     user.EmailVisible   = duser.EmailVisible
     user.PhoneVisible   = duser.PhoneVisible
     user.Roles          = duser.Roles
+    user.MangaKotoba    = duser.MangaKotoba
 }
 
 func (user *User) UnMap() dbase.User {
@@ -32,6 +33,7 @@ func (user *User) UnMap() dbase.User {
     duser.EmailVisible  = user.EmailVisible
     duser.PhoneVisible  = user.PhoneVisible
     duser.Roles         = user.Roles
+    duser.MangaKotoba   = user.MangaKotoba
 
     return duser
 }
