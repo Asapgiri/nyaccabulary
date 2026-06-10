@@ -6,6 +6,21 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type Mastery struct {
+    MASTERED    string
+    LEARNING    string
+    UNKNOWN     string
+    NEW         string
+}
+
+var MASTERY = Mastery{
+    MASTERED: "MASTERED",
+    LEARNING: "LEARNING",
+    UNKNOWN:  "UNKNOWN",
+    NEW:      "NEW",
+}
+
+
 func formatDisplay(word Word) Display {
     var display Display
 
@@ -23,7 +38,16 @@ func (word *Word) List(user User, showMastered bool) []Word {
         return []Word{}
     }
 
-    ws, _ := dw.List(&user._db, showMastered)
+    slist := []string{
+        MASTERY.LEARNING,
+        MASTERY.UNKNOWN,
+        MASTERY.NEW,
+        "",
+    }
+    if showMastered {
+        slist = append(slist, MASTERY.MASTERED)
+    }
+    ws, _ := dw.List(&user._db, slist)
 
     words := make([]Word, len(ws))
     for i, w := range(ws) {

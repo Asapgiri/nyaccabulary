@@ -60,7 +60,7 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
         // Check if the word is mastered
         masteredIndicator := ""
         fillColor := false
-        if word.Mastered {
+        if logic.MASTERY.MASTERED == word.Status {
             masteredIndicator = "✓"
             pdf.SetFillColor(144, 238, 144) // light green RGB
             fillColor = true
@@ -101,6 +101,8 @@ func read_mastered(w http.ResponseWriter, r *http.Request) bool {
     m := r.URL.Query().Get("mastered")
     var mastered bool
 
+    log.Println(m)
+
     if m != "" {
         // GET parameter exists → update value and cookie
         mastered = (m == "on" || m == "true")
@@ -119,6 +121,8 @@ func read_mastered(w http.ResponseWriter, r *http.Request) bool {
             mastered = false // default
         }
     }
+
+    log.Println(mastered)
 
     return mastered
 }
@@ -151,7 +155,7 @@ func Words(w http.ResponseWriter, r *http.Request) {
 
     if mastered {
         for _, w := range(words) {
-            if w.Mastered {
+            if logic.MASTERY.MASTERED == w.Status {
                 dto.Mastered++
             }
         }
@@ -218,6 +222,7 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
                         Kanji: word,
                         Kana: kana,
                         Meaning: meaning,
+                        Status: logic.MASTERY.NEW,
                         DictForm: dictf,
                     }
                     new_word.Add()
@@ -284,6 +289,7 @@ func WordSave(w http.ResponseWriter, r *http.Request) {
             Kanji: kanji,
             Kana: kana,
             Meaning: meaning,
+            Status: logic.MASTERY.NEW,
             DictForm: dictf,
         }
         word.Add()
@@ -472,7 +478,17 @@ func WordMaster(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    word.Mastered = "set" == function
+    if "force" == function {
+        word.Status = logic.MASTERY.MASTERED
+    } else if "set" == function {
+        if logic.MASTERY.LEARNING == word.Status {
+            word.Status = logic.MASTERY.MASTERED
+        } else {
+            word.Status = logic.MASTERY.LEARNING
+        }
+    } else {
+        word.Status = logic.MASTERY.UNKNOWN
+    }
     word.Update()
 
     // Remove word from current word store for user..

@@ -31,8 +31,8 @@ type Word struct {
     Meaning         string
     Knows           int
     DontKnows       int
-    Mastered        bool
     LastShown       time.Time
+    Status          string
     DictForm        config.Entry
 }
 
@@ -44,6 +44,6 @@ type Kanji struct {
     Furigana        string
     Knows           int
     DontKnows       int
-    Mastered        bool
+    Status          string
     LastShown       time.Time
 }

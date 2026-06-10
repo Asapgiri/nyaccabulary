@@ -200,9 +200,21 @@ body {
 }
 
 .word-chip.mastered {
-    background: #e6f4ea;
-    border-color: #198754;
-    color: #198754;
+    background: #e8f5e9;
+    border-color: #66bb6a;
+    color: #2e7d32;
+}
+
+.word-chip.learning {
+    background: #fff3e0;
+    border-color: #ffb74d;
+    color: #e65100;
+}
+
+.word-chip.new {
+    background: #e3f2fd;
+    border-color: #64b5f6;
+    color: #1565c0;
 }
 
 /* Kana & meaning */
@@ -339,6 +351,8 @@ body {
         <div class="page-title">Words</div>
         <form method="GET">
             <div class="form-check form-switch">
+                <!-- always send false by default -->
+                <input type="hidden" name="mastered" value="{{not .Dto.ShowMastered}}">
                 <input class="form-check-input"
                        type="checkbox"
                        name="mastered"
@@ -379,10 +393,10 @@ body {
 
     <!-- Rows -->
     {{range $i, $d := .Dto.Words}}
-    <div class="planner-row {{if .Mastered}}mastered{{end}}">
+    <div class='planner-row {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'>
 
         <!-- Word -->
-        <a class="word-chip {{if .Mastered}}mastered{{end}}"
+        <a class='word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
             data-bs-toggle="modal"
             data-bs-target="#word-{{.Id}}">
             {{.Kanji}}
@@ -394,7 +408,7 @@ body {
 
         <!-- Mini bar -->
         <div>
-            {{if not .Mastered}}
+            {{if not (eq .Status "MASTERED")}}
             <div class="mini-bar">
                 <div class="bad" style="width: {{.Display.PercentageN}}%"></div>
                 <div class="good" style="width: {{.Display.PercentageP}}%"></div>
@@ -404,7 +418,7 @@ body {
 
         <!-- Actions -->
         <div class="actions">
-            {{if .Mastered}}
+            {{if eq .Status "MASTERED"}}
             <a class="icon-btn icon-btn-unmaster" href="/word/mastered/unset/{{.Id}}" title="Unmaster">⟲</a>
             {{else}}
             <a class="icon-btn icon-btn-master" href="/word/mastered/set/{{.Id}}" title="Mark mastered">✓</a>
@@ -427,9 +441,10 @@ body {
 
                         <!-- Actions -->
                         <div class="study-actions">
-                            {{if .Mastered}}
+                            {{if eq .Status "MASTERED"}}
                             <a class="icon-btn icon-btn-unmaster" href="/word/mastered/unset/{{.Id}}">⟲ Unmark</a>
                             {{else}}
+                            <a class="icon-btn icon-btn-master" href="/word/mastered/force/{{.Id}}">✓ Master</a>
                             <a class="icon-btn icon-btn-master" href="/word/mastered/set/{{.Id}}">✓ Mark</a>
                             {{end}}
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

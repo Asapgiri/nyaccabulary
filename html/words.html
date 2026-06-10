@@ -82,6 +82,18 @@
     color: #2e7d32;
 }
 
+.word-chip.learning {
+    background: #fff3e0;
+    border-color: #ffb74d;
+    color: #e65100;
+}
+
+.word-chip.new {
+    background: #e3f2fd;
+    border-color: #64b5f6;
+    color: #1565c0;
+}
+
 /* Modal improvements */
 .modal-body h6 {
     margin-top: 1rem;
@@ -194,6 +206,8 @@
 
             <!-- Toggle -->
             <form method="GET">
+                <!-- always send false by default -->
+                <input type="hidden" name="mastered" value="{{not .Dto.ShowMastered}}">
                 <label class="study-toggle">
                     <input class="form-check-input"
                     type="checkbox"
@@ -221,7 +235,7 @@
 
             <div class="word-grid">
                 {{range .Dto.Words}}
-                <a class="word-chip {{if .Mastered}}mastered{{end}}"
+                <a class='word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
                     data-bs-toggle="modal"
                     data-bs-target="#word-{{.Id}}">
                     <div>{{.Kanji}}</div>
@@ -243,9 +257,10 @@
                                 <!-- Actions -->
                                 <div class="study-actions">
 
-                                    {{if .Mastered}}
+                                    {{if eq .Status "MASTERED"}}
                                     <a class="icon-btn" href="/word/mastered/unset/{{.Id}}">Mastered</a>
                                     {{else}}
+                                    <a class="icon-btn" href="/word/mastered/force/{{.Id}}">Master</a>
                                     <a class="icon-btn" href="/word/mastered/set/{{.Id}}">Mark</a>
                                     {{end}}
 

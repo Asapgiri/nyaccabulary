@@ -35,7 +35,7 @@ type Word struct {
     Meaning         string
     Knows           int
     DontKnows       int
-    Mastered        bool
+    Status          string
     LastShown       time.Time
     Display         Display
     DictForm        config.Entry

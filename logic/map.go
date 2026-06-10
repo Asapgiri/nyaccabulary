@@ -49,7 +49,7 @@ func (word *Word) Map(dword dbase.Word) {
     word.Meaning        = dword.Meaning
     word.Knows          = dword.Knows
     word.DontKnows      = dword.DontKnows
-    word.Mastered       = dword.Mastered
+    word.Status         = dword.Status
     word.LastShown      = dword.LastShown
     word.DictForm       = dword.DictForm
 }
@@ -65,7 +65,7 @@ func (word *Word) UnMap() dbase.Word {
     dword.Meaning       = word.Meaning
     dword.Knows         = word.Knows
     dword.DontKnows     = word.DontKnows
-    dword.Mastered      = word.Mastered
+    dword.Status        = word.Status
     dword.LastShown     = word.LastShown
     dword.DictForm      = word.DictForm
 
