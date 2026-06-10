@@ -188,6 +188,26 @@
 .btn-close:hover {
     opacity: 1;
 }
+
+.kanji-hero {
+    font-size: 96px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1;
+    margin: 10px 0 20px 0;
+
+    letter-spacing: 2px;
+
+    /* subtle ink-like feel */
+    color: #111;
+}
+
+.kanji-readings {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+}
 </style>
 
 <div class="container py-4">
@@ -271,74 +291,46 @@
                             </div>
 
                             <div class="modal-body">
+                                <div class="kanji-hero">
+                                    {{.Kanji}}
+                                </div>
+                                <div class="kanji-readings">
+                                    {{if .OnStr}}On: {{.OnStr}}{{end}}
+                                    {{if .KunStr}} | Kun: {{.KunStr}}{{end}}
+                                </div>
+
+                                <hr>
+
                                 <p><strong>Meaning:</strong> {{.MeaningStr}}</p>
 
                                 <hr>
 
-                                <h6>Kanji Details (Kanjidic)</h6>
-                                <ul>
-                                    {{range .DictForm.KEle}}
-                                    <li>{{.KEB}}</li>
+                                <h6>Readings & Meanings</h6>
+
+                                {{range .DictForm.ReadingMeaning.RMGroups}}
+
+                                {{if .Readings}}
+                                <div class="mb-2">
+                                    <strong>Readings:</strong><br>
+                                    {{range .Readings}}
+                                    <span class="badge bg-secondary">
+                                        {{.Value}} ({{.Type}})
+                                    </span>
                                     {{end}}
-                                </ul>
-
-                                <h6>Readings</h6>
-                                <ul>
-                                    {{range .DictForm.REle}}
-                                    <li>{{.REB}}</li>
-                                    {{end}}
-                                </ul>
-
-                                <h6>Senses</h6>
-                                {{range .DictForm.Sense}}
-                                <div class="card mb-2">
-                                    <div class="card-body p-2">
-
-                                        {{if .Pos}}
-                                        <div class="mb-1">
-                                            <strong>Part of Speech:</strong>
-                                            {{range .Pos}}
-                                            <span class="badge bg-secondary">{{.}}</span>
-                                            {{end}}
-                                        </div>
-                                        {{end}}
-
-                                        {{if .Field}}
-                                        <div class="mb-1">
-                                            <strong>Fields:</strong>
-                                            {{range .Field}}
-                                            <span class="badge bg-info text-dark">{{.}}</span>
-                                            {{end}}
-                                        </div>
-                                        {{end}}
-
-                                        {{if .Gloss}}
-                                        <div class="mb-1">
-                                            <strong>Glosses:</strong>
-                                            <ul class="mb-0">
-                                                {{range .Gloss}}
-                                                <li>{{.Value}}</li>
-                                                {{end}}
-                                            </ul>
-                                        </div>
-                                        {{end}}
-
-                                        {{if .Example}}
-                                        <div>
-                                            <strong>Examples:</strong>
-                                            {{range .Example}}
-                                            <div class="example-block">
-                                                <div><strong>{{.ExText}}</strong></div>
-                                                {{range .ExSent}}
-                                                <div>{{.Value}}</div>
-                                                {{end}}
-                                            </div>
-                                            {{end}}
-                                        </div>
-                                        {{end}}
-
-                                    </div>
                                 </div>
+                                {{end}}
+
+                                {{if .Meanings}}
+                                <div class="mb-2">
+                                    <strong>Meanings:</strong>
+                                    <ul class="mb-1">
+                                        {{range .Meanings}}
+                                        <li>{{.Value}}</li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                                {{end}}
+
                                 {{end}}
 
                             </div>

@@ -146,7 +146,7 @@ func InitConfig() {
     log.Printf("Loading kanji dict.. ")
     dat, err = os.ReadFile(kanjidictfile)
     if nil != err {
-        log.Println("try: mkdir -p dict && http://www.edrdg.org/kanjidic/kanjidic2.xml.gz | gunzip > dict/kanjidic2.xml")
+        log.Println("try: mkdir -p dict && wget -O - http://www.edrdg.org/kanjidic/kanjidic2.xml.gz | gunzip > dict/kanjidic2.xml")
         panic("Dictionary file not found! ... '" + kanjidictfile + "'")
     }
     decoder = xml.NewDecoder(bytes.NewReader(dat))

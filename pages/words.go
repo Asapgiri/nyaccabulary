@@ -101,8 +101,6 @@ func read_mastered(w http.ResponseWriter, r *http.Request) bool {
     m := r.URL.Query().Get("mastered")
     var mastered bool
 
-    log.Println(m)
-
     if m != "" {
         // GET parameter exists → update value and cookie
         mastered = (m == "on" || m == "true")
@@ -121,8 +119,6 @@ func read_mastered(w http.ResponseWriter, r *http.Request) bool {
             mastered = false // default
         }
     }
-
-    log.Println(mastered)
 
     return mastered
 }
