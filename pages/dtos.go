@@ -17,6 +17,14 @@ type DtoRoot struct {
     WordCount       int
 }
 
+type DtoKanji struct {
+    Kanjis          []logic.Kanji
+    Page            Pages
+    ShowMastered    bool
+    Mastered        int
+    KanjiCount      int
+}
+
 type DtoAdminUsers struct {
     Roles   []logic.RolePerm
     Users   []logic.User

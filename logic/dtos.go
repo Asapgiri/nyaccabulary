@@ -39,4 +39,25 @@ type Word struct {
     LastShown       time.Time
     Display         Display
     DictForm        config.Entry
+    Kanjis          []Kanji
+}
+
+type Kanji struct {
+    _db             dbase.Kanji
+    Id              string
+    Date            time.Time
+    User            User
+    Kanji           string
+    On              []string
+    Kun             []string
+    Meaning         []string
+    Knows           int
+    DontKnows       int
+    LastShown       time.Time
+    Status          string
+    DictForm        config.Character
+
+    OnStr     string
+    KunStr    string
+    MeaningStr string
 }

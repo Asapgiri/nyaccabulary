@@ -34,16 +34,20 @@ type Word struct {
     LastShown       time.Time
     Status          string
     DictForm        config.Entry
+    Kanjis          []primitive.ObjectID
 }
 
 type Kanji struct {
     Id              primitive.ObjectID `bson:"_id"`
     Date            time.Time
     User            primitive.ObjectID
-    Meaning         string
-    Furigana        string
+    Kanji           string
+    On              []string
+    Kun             []string
+    Meaning         []string
     Knows           int
     DontKnows       int
-    Status          string
     LastShown       time.Time
+    Status          string
+    DictForm        config.Character
 }

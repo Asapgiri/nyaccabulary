@@ -52,6 +52,13 @@ func (word *Word) Map(dword dbase.Word) {
     word.Status         = dword.Status
     word.LastShown      = dword.LastShown
     word.DictForm       = dword.DictForm
+
+    word.Kanjis = make([]Kanji, len(dword.Kanjis))
+    for i, k := range(dword.Kanjis) {
+        dk := dbase.Kanji{}
+        dk.Select(k)
+        word.Kanjis[i].Map(dk)
+    }
 }
 
 func (word *Word) UnMap() dbase.Word {
@@ -69,5 +76,47 @@ func (word *Word) UnMap() dbase.Word {
     dword.LastShown     = word.LastShown
     dword.DictForm      = word.DictForm
 
+    dword.Kanjis = make([]primitive.ObjectID, len(word.Kanjis))
+    for i, k := range(word.Kanjis) {
+        dword.Kanjis[i] = k._db.Id
+    }
+
     return dword
+}
+
+func (kanji *Kanji) Map(dkanji dbase.Kanji) {
+    user := User{}
+    user.Find(dkanji.User.Hex())
+
+    kanji.Id            = dkanji.Id.Hex()
+    kanji.Date          = dkanji.Date
+    kanji.User          = user
+    kanji.Kanji         = dkanji.Kanji
+    kanji.On            = dkanji.On
+    kanji.Kun           = dkanji.Kun
+    kanji.Meaning       = dkanji.Meaning
+    kanji.Knows         = dkanji.Knows
+    kanji.DontKnows     = dkanji.DontKnows
+    kanji.LastShown     = dkanji.LastShown
+    kanji.Status        = dkanji.Status
+    kanji.DictForm      = dkanji.DictForm
+}
+
+func (kanji *Kanji) UnMap() dbase.Kanji {
+    dkanji := kanji._db
+
+    dkanji.Id, _        = primitive.ObjectIDFromHex(kanji.Id)
+    dkanji.Date         = dkanji.Date
+    dkanji.User, _      = primitive.ObjectIDFromHex(kanji.User.Id)
+    dkanji.Kanji        = kanji.Kanji
+    dkanji.On           = kanji.On
+    dkanji.Kun          = kanji.Kun
+    dkanji.Meaning      = kanji.Meaning
+    dkanji.Knows        = kanji.Knows
+    dkanji.DontKnows    = kanji.DontKnows
+    dkanji.LastShown    = kanji.LastShown
+    dkanji.Status       = kanji.Status
+    dkanji.DictForm     = kanji.DictForm
+
+    return dkanji
 }

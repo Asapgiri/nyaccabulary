@@ -175,10 +175,18 @@ func (word *Word) Delete() error {
 // =====================================================================================================================
 // Internal User Listing CRUD
 
-func (kanji *Kanji) List(user *User) ([]Kanji, error) {
+func (kanji *Kanji) List(user *User, statuses []string) ([]Kanji, error) {
     var anyime []Kanji
 
-    cursor, err := dbKANJI.Find(context.Background(), bson.D{{"user", user.Id}})
+    filter := bson.D{
+        {"user", user.Id},
+        {"$or", bson.A{
+            bson.D{{"status", bson.D{{"$in", statuses}}}},
+            bson.D{{"status", bson.D{{"$exists", false}}}}, // include docs without status
+        }},
+    }
+
+    cursor, err := dbKANJI.Find(context.Background(), filter)
     if nil != err {
         return anyime, err
     }

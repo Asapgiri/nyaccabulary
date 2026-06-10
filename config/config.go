@@ -49,7 +49,8 @@ type ConfigT struct {
     User        UserConfig
     Site        session.Config
     Email       EmailConfig
-    JMdict      JMdict
+    JMdict      JMdict          `json:"-"`
+    KanjiDict   Kanjidic2       `json:"-"`
 }
 
 var Config = ConfigT{
@@ -105,6 +106,7 @@ func InitConfig() {
     expath := filepath.Dir(ex)
     configfile := expath + "/.config.json"
     dictfile := expath + "/dict/JMdict"
+    kanjidictfile := expath + "/dict/kanjidic2.xml"
 
     log.Printf("Loading config.. ")
     dat, err := os.ReadFile(configfile)
@@ -134,6 +136,23 @@ func InitConfig() {
     decoder.Entity = ParseEntities(string(dat))
 
     err = decoder.Decode(&Config.JMdict)
+    if nil != err {
+        log.Println("Failed to read dictionary file!")
+        panic(err)
+    }
+    log.Println("SUCCESSFUL")
+
+    // Read dict file if no error...
+    log.Printf("Loading kanji dict.. ")
+    dat, err = os.ReadFile(kanjidictfile)
+    if nil != err {
+        log.Println("try: mkdir -p dict && http://www.edrdg.org/kanjidic/kanjidic2.xml.gz | gunzip > dict/kanjidic2.xml")
+        panic("Dictionary file not found! ... '" + kanjidictfile + "'")
+    }
+    decoder = xml.NewDecoder(bytes.NewReader(dat))
+    decoder.Entity = ParseEntities(string(dat))
+
+    err = decoder.Decode(&Config.KanjiDict)
     if nil != err {
         log.Println("Failed to read dictionary file!")
         panic(err)

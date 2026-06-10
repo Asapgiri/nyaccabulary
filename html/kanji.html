@@ -195,10 +195,10 @@
     <div class="study-header">
 
         <!-- LEFT -->
-        <div class="study-title">Words</div>
+        <div class="study-title">Kanjis</div>
 
         <!-- CENTER -->
-        <div class="study-progress">{{.Dto.Mastered}} / {{.Dto.WordCount}}</div>
+        <div class="study-progress">{{.Dto.Mastered}} / {{.Dto.KanjiCount}}</div>
 
         <!-- RIGHT -->
         <div class="study-controls">
@@ -220,9 +220,8 @@
 
             <!-- Actions -->
             <div class="study-actions">
-                <a href="/word/sync" class="btn btn-outline-primary btn-mini">Sync</a>
-                <a href="/word/bulkadd" class="btn btn-outline-secondary btn-mini">Bulk</a>
-                <a href="/word/pdf?mastered={{.Dto.ShowMastered}}" class="btn btn-outline-success btn-mini">PDF</a>
+                <a href="/kanji/sync" class="btn btn-outline-primary btn-mini">Sync</a>
+                <a href="/kanji/pdf?mastered={{.Dto.ShowMastered}}" class="btn btn-outline-success btn-mini">PDF</a>
             </div>
 
         </div>
@@ -233,15 +232,15 @@
         <div class="card-body">
 
             <div class="word-grid">
-                {{range .Dto.Words}}
+                {{range .Dto.Kanjis}}
                 <a class='word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
                     data-bs-toggle="modal"
-                    data-bs-target="#word-{{.Id}}">
+                    data-bs-target="#kanji-{{.Id}}">
                     <div>{{.Kanji}}</div>
                 </a>
 
                 <!-- Modal -->
-                <div class="modal fade" id="word-{{.Id}}" tabindex="-1">
+                <div class="modal fade" id="kanji-{{.Id}}" tabindex="-1">
                     <div class="modal-dialog modal-lg modal-dialog-scrollable">
                         <div class="modal-content">
 
@@ -250,17 +249,20 @@
                                 <!-- Title block -->
                                 <div class="study-title">
                                     <div class="study-kanji">{{.Kanji}}</div>
-                                    <div class="study-kana">{{.Kana}}</div>
+                                    <div class="study-kana">
+                                        {{if .OnStr}}On: {{.OnStr}}{{end}}
+                                        {{if .KunStr}} | Kun: {{.KunStr}}{{end}}
+                                    </div>
                                 </div>
 
                                 <!-- Actions -->
                                 <div class="study-actions">
 
                                     {{if eq .Status "MASTERED"}}
-                                    <a class="icon-btn" href="/word/mastered/unset/{{.Id}}">Mastered</a>
+                                    <a class="icon-btn" href="/kanji/mastered/unset/{{.Id}}">Mastered</a>
                                     {{else}}
-                                    <a class="icon-btn" href="/word/mastered/force/{{.Id}}">Master</a>
-                                    <a class="icon-btn" href="/word/mastered/set/{{.Id}}">Mark</a>
+                                    <a class="icon-btn" href="/kanji/mastered/force/{{.Id}}">Master</a>
+                                    <a class="icon-btn" href="/kanji/mastered/set/{{.Id}}">Mark</a>
                                     {{end}}
 
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -269,11 +271,11 @@
                             </div>
 
                             <div class="modal-body">
-                                <p><strong>Meaning:</strong> {{.Meaning}}</p>
+                                <p><strong>Meaning:</strong> {{.MeaningStr}}</p>
 
                                 <hr>
 
-                                <h6>Kanji</h6>
+                                <h6>Kanji Details (Kanjidic)</h6>
                                 <ul>
                                     {{range .DictForm.KEle}}
                                     <li>{{.KEB}}</li>
