@@ -50,9 +50,9 @@ func Root(w http.ResponseWriter, r *http.Request) {
         if nil != err {
             post_per_page = 25
         }
-        m := r.URL.Query().Get("mastered")
-        mastered := ("on" == m || "true" == m)
-        log.Println(page, post_per_page, mastered)
+        mastered := read_mastered(w, r)
+        // FIXME: remove if done
+        // log.Println(page, post_per_page, mastered)
 
         words := []logic.Word{}
 

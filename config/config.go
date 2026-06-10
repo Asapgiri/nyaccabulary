@@ -139,10 +139,4 @@ func InitConfig() {
         panic(err)
     }
     log.Println("SUCCESSFUL")
-
-    // FIXME: REMOVE
-    // Testing
-    log.Println(Config.JMdict.Entries[0])
-    b, _ := json.MarshalIndent(Config.JMdict.Entries[0], "", "  ")
-    log.Println(string(b))
 }

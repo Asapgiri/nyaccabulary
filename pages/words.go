@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"fmt"
 	"io"
 	"math/rand"
 	"net/http"
@@ -38,8 +39,7 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    m := r.URL.Query().Get("mastered")
-    mastered := ("on" == m || "true" == m)
+    mastered := read_mastered(w, r)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
@@ -96,6 +96,33 @@ func WordSync(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/word", http.StatusSeeOther)
 }
 
+func read_mastered(w http.ResponseWriter, r *http.Request) bool {
+    // Check for GET parameter
+    m := r.URL.Query().Get("mastered")
+    var mastered bool
+
+    if m != "" {
+        // GET parameter exists → update value and cookie
+        mastered = (m == "on" || m == "true")
+        http.SetCookie(w, &http.Cookie{
+            Name:     "show_mastered",
+            Value:    fmt.Sprintf("%t", mastered),
+            Path:     "/",
+            MaxAge:   365 * 24 * 60 * 60, // 1 year
+            HttpOnly: true,
+        })
+    } else {
+        // No GET parameter → try reading cookie
+        if c, err := r.Cookie("show_mastered"); err == nil {
+            mastered = (c.Value == "true")
+        } else {
+            mastered = false // default
+        }
+    }
+
+    return mastered
+}
+
 func Words(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)
 
@@ -104,8 +131,7 @@ func Words(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    m := r.URL.Query().Get("mastered")
-    mastered := ("on" == m || "true" == m)
+    mastered := read_mastered(w, r)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
@@ -226,10 +252,10 @@ func WordSave(w http.ResponseWriter, r *http.Request) {
     kanji   := r.FormValue("form[kanji]")
     kana    := r.FormValue("form[kana]")
     meaning := r.FormValue("form[meaning]")
-    dictf   := config.Entry{}
+
+    dictf, ok := lookUpWords(kanji)
 
     if "" == meaning {
-        dictf, ok := lookUpWords(kanji)
         if ok {
             // b, _ := json.MarshalIndent(dictf, "", "  ")
             // log.Println(string(b))
