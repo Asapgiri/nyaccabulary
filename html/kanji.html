@@ -307,6 +307,7 @@
 
                                 <h6>Readings & Meanings</h6>
 
+                                {{if .DictForm.ReadingMeaning}}
                                 {{range .DictForm.ReadingMeaning.RMGroups}}
 
                                 {{if .Readings}}
@@ -331,6 +332,7 @@
                                 </div>
                                 {{end}}
 
+                                {{end}}
                                 {{end}}
 
                             </div>

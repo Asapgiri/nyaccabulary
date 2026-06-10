@@ -1,6 +1,8 @@
 package pages
 
 import (
+	"encoding/json"
+	"io"
 	"net/http"
 	"nyaccabulary/logic"
 	"slices"
@@ -53,3 +55,65 @@ func Kanjis(w http.ResponseWriter, r *http.Request) {
     fil, _ := renderer.ReadArtifact("kanji.html", w.Header())
     renderer.Render(session, w, fil, dto)
 }
+
+func KanjiMaster(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        http.Redirect(w, r, "/", http.StatusSeeOther)
+        return
+    }
+
+    id          := r.PathValue("id")
+    function    := r.PathValue("func")
+
+    kanji := logic.Kanji{}
+    kanji.Find(id)
+
+    if "" == kanji.Id || kanji.User.Id != session.Auth.Id {
+        AccessViolation(w, r)
+        return
+    }
+
+    if "force" == function {
+        kanji.Status = logic.MASTERY.MASTERED
+    } else if "set" == function {
+        if logic.MASTERY.LEARNING == kanji.Status {
+            kanji.Status = logic.MASTERY.MASTERED
+        } else {
+            kanji.Status = logic.MASTERY.LEARNING
+        }
+    } else {
+        kanji.Status = logic.MASTERY.UNKNOWN
+    }
+    kanji.Update()
+
+    http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+}
+
+func AdminKanjisSyncAllWords(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if !checkAdminPageAccess(session) {
+        NotFound(w, r)
+        return
+    }
+
+    user := logic.User{}
+    word := logic.Word{}
+
+    users := user.List()
+    new_kanjis := [][]logic.Kanji{}
+
+    for _, u := range(users) {
+        words := word.List(u, true)
+
+        for _, w := range(words) {
+            new_kanjis = append(new_kanjis, logic.FetchAndAddKanjisFromWord(w))
+        }
+    }
+
+    b, _ := json.MarshalIndent(new_kanjis, "", "  ")
+    io.WriteString(w, string(b))
+}
+

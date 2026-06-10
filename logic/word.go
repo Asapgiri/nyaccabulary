@@ -73,7 +73,7 @@ func (word *Word) Find(id string) {
 
 func (word *Word) Add() error {
     // map the kanjis before anything else.. for unmap to work properly
-    word.Kanjis = kanji_pick_from_word(*word)
+    word.Kanjis = FetchAndAddKanjisFromWord(*word)
     dword := word.UnMap()
     dword.Id = primitive.NewObjectID()
     word.Id = dword.Id.Hex()

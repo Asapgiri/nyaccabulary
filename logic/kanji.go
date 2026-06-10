@@ -35,7 +35,6 @@ func kanji_generate_new(s string, user User) Kanji {
 
     if "" != kanji.DictForm.Literal {
         // Collect on, kun, meaning...
-        log.Println(kanji.DictForm)
 
         for _, group := range(kanji.DictForm.ReadingMeaning.RMGroups) {
             // Fill in data [english only...]
@@ -57,7 +56,7 @@ func kanji_generate_new(s string, user User) Kanji {
     return kanji
 }
 
-func kanji_pick_from_word(word Word) []Kanji {
+func FetchAndAddKanjisFromWord(word Word) []Kanji {
 	var kanjis_to_return []Kanji
     var kanjis_already_present []Kanji
 
@@ -66,7 +65,6 @@ func kanji_pick_from_word(word Word) []Kanji {
 
 	for _, r := range(word.Kanji) {
 		if unicode.Is(unicode.Han, r) {
-            log.Println(r)
             // Check if already exists
             kanji, ok := kanji_search(kanjis_already_present, string(r))
             if ok {

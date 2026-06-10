@@ -25,11 +25,18 @@ func setup_routes() {
     http.HandleFunc("GET /word/list",                   pages.WordList)
     http.HandleFunc("GET /word/delete/{id}",            pages.WordDelete)
     http.HandleFunc("GET /word/mastered/{func}/{id}",   pages.WordMaster)
+
     http.HandleFunc("GET /learn",                       pages.WordLearn)
     http.HandleFunc("POST /learn/{id}/{answer}",        pages.WordAnswer)
+
     http.HandleFunc("GET /kana",                        pages.ShowKana)
 
     http.HandleFunc("GET /kanji",                       pages.Kanjis)
+    http.HandleFunc("GET /kanji/mastered/{func}/{id}",   pages.KanjiMaster)
+    // http.HandleFunc("GET /kanji/pdf",                   pages.KanjisPdf)
+
+
+    http.HandleFunc("GET /admin/kanji/sync-all-words",  pages.AdminKanjisSyncAllWords)
 
 
     http.HandleFunc("GET /access-violation",    pages.AccessViolation)
