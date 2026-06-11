@@ -20,6 +20,34 @@ import (
 //     // TODO: ...
 // }
 
+func lookUpAllWordMatches(user logic.User, query string, em bool) []SearchResult {
+    var retlist []SearchResult
+
+    word := logic.Word{}
+    words := word.List(user, true)
+
+    for _, dictf := range(config.Config.JMdict.Entries) {
+        for _, kele := range(dictf.KEle) {
+            if !em && strings.Contains(kele.KEB, query) || em && kele.KEB == query {
+                res := SearchResult{
+                    Result: dictf,
+                }
+
+                for _, w := range words {
+                    if w.DictForm.EntSeq == dictf.EntSeq {
+                        res.Word = w
+                        break
+                    }
+                }
+
+                retlist = append(retlist, res)
+            }
+        }
+    }
+
+    return retlist
+}
+
 func lookUpWords(word string) (config.Entry, bool) {
     for _, w := range(config.Config.JMdict.Entries) {
         for _, kele := range(w.KEle) {
@@ -39,7 +67,7 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    mastered := read_mastered(w, r)
+    mastered := bool_cookie_query("mastered", w, r)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
@@ -96,31 +124,30 @@ func WordSync(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/word", http.StatusSeeOther)
 }
 
-func read_mastered(w http.ResponseWriter, r *http.Request) bool {
-    // Check for GET parameter
-    m := r.URL.Query().Get("mastered")
-    var mastered bool
+func bool_cookie_query(name string, w http.ResponseWriter, r *http.Request) bool {
+    m := r.URL.Query().Get(name)
+    var result bool
 
     if m != "" {
         // GET parameter exists → update value and cookie
-        mastered = (m == "on" || m == "true")
+        result = (m == "on" || m == "true")
         http.SetCookie(w, &http.Cookie{
-            Name:     "show_mastered",
-            Value:    fmt.Sprintf("%t", mastered),
+            Name:     name,
+            Value:    fmt.Sprintf("%t", result),
             Path:     "/",
             MaxAge:   365 * 24 * 60 * 60, // 1 year
             HttpOnly: true,
         })
     } else {
         // No GET parameter → try reading cookie
-        if c, err := r.Cookie("show_mastered"); err == nil {
-            mastered = (c.Value == "true")
+        if c, err := r.Cookie(name); err == nil {
+            result = (c.Value == "true")
         } else {
-            mastered = false // default
+            result = false // default
         }
     }
 
-    return mastered
+    return result
 }
 
 func Words(w http.ResponseWriter, r *http.Request) {
@@ -131,7 +158,7 @@ func Words(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    mastered := read_mastered(w, r)
+    mastered := bool_cookie_query("mastered", w, r)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
@@ -558,6 +585,73 @@ func WordMaster(w http.ResponseWriter, r *http.Request) {
     words, ok := session.Store.Get("words-learn")
     if ok {
         findWordInStore(session, words.([]logic.Word), word.Id)
+    }
+
+    http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+}
+
+func WordSearch(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        http.Redirect(w, r, "/", http.StatusSeeOther)
+        return
+    }
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    m := r.URL.Query().Get("exactmatch")
+
+    dto := DtoSearch{
+        Query: r.URL.Query().Get("query"),
+        ExactMatch: (m == "on" || m == "true"),
+    }
+
+    if "" != dto.Query {
+        dto.Results = lookUpAllWordMatches(user, dto.Query, dto.ExactMatch)
+    }
+
+    fil, _ := renderer.ReadArtifact("search.html", w.Header())
+    renderer.Render(session, w, fil, dto)
+}
+
+func WordAdd(w http.ResponseWriter, r *http.Request) {
+    sess := GetCurrentSession(w, r)
+
+    if "" == sess.Auth.Username {
+        http.Redirect(w, r, "/", http.StatusSeeOther)
+        return
+    }
+
+    user := logic.User{}
+    user.Find(sess.Auth.Id)
+
+    entseq := r.PathValue("entseq")
+
+    var dictf config.Entry
+    for _, e := range config.Config.JMdict.Entries {
+        if e.EntSeq == entseq {
+            dictf = e
+            break
+        }
+    }
+
+    if "" != dictf.EntSeq {
+        word := logic.Word{
+            Date: time.Now(),
+            User: user,
+            Kanji: dictf.KEle[0].KEB,
+            Kana: dictf.REle[0].REB,
+            Meaning: getWordMeaning(dictf),
+            Status: logic.MASTERY.NEW,
+            DictForm: dictf,
+        }
+        word.Add()
+        // FIXME: using kanji for word lookup will fail after some point...
+        http.Redirect(w, r, "/word/" + word.Kanji, http.StatusSeeOther)
+    } else {
+        sess.Notice.Set(session.NOTICE.DANGER, "Failed to add word with entry: " + entseq)
     }
 
     http.Redirect(w, r, r.Referer(), http.StatusSeeOther)

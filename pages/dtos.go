@@ -1,6 +1,9 @@
 package pages
 
-import "nyaccabulary/logic"
+import (
+	"nyaccabulary/config"
+	"nyaccabulary/logic"
+)
 
 type Pages struct {
     Current int
@@ -23,6 +26,17 @@ type DtoKanji struct {
     ShowMastered    bool
     Mastered        int
     KanjiCount      int
+}
+
+type SearchResult struct {
+    Word    logic.Word
+    Result  config.Entry
+}
+
+type DtoSearch struct {
+    Query       string
+    ExactMatch  bool
+    Results     []SearchResult
 }
 
 type DtoAdminUsers struct {

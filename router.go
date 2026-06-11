@@ -17,9 +17,12 @@ func setup_routes() {
     http.HandleFunc("GET /logout",              pages.Logout)
     http.HandleFunc("GET /pwr_r",               pages.NotFound)
 
+    http.HandleFunc("GET /search",                      pages.WordSearch)
+
     http.HandleFunc("GET /word",                        pages.Words)
     http.HandleFunc("GET /word/{word}",                 pages.OneWord)
     http.HandleFunc("GET /word/bulkadd",                pages.WordsBulkAdd)
+    http.HandleFunc("GET /word/add/{entseq}",           pages.WordAdd)
     http.HandleFunc("GET /word/pdf",                    pages.WordsPdf)
     http.HandleFunc("POST /word/bulkadd",               pages.WordsBulkAdd)
     http.HandleFunc("POST /word/save",                  pages.WordSave)

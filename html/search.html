@@ -1,0 +1,117 @@
+<div class="container-fluid py-4 px-3 px-md-4" style="max-width:1200px;">
+
+    <!-- Topbar -->
+    <div class="d-flex align-items-center mb-3">
+
+        <h2 class="page-title me-3 mb-0">Search</h2>
+
+        <!-- Search form -->
+        <form method="GET" class="d-flex align-items-center w-100 gap-2">
+
+            <!-- Text input takes most of the space -->
+            <input name="query" class="form-control flex-grow-1" placeholder="Search in database..." value="{{.Dto.Query}}">
+
+            <!-- Checkbox -->
+            <div class="form-check form-check-inline mb-0">
+                <input class="form-check-input" type="checkbox" name="exactmatch" id="exactmatch" {{if .Dto.ExactMatch}}checked{{end}}>
+                <label class="form-check-label" for="exactmatch">EM</label>
+            </div>
+
+            <!-- Search button -->
+            <button class="btn btn-dark">Search</button>
+
+        </form>
+    </div>
+
+    <!-- Instant client-side filter -->
+    <input id="wordSearch" class="form-control form-control-sm mb-3" placeholder="Search in results...">
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    {{range .Dto.Results}}
+    <div class="col word-card">
+        <div class="card h-100 shadow-sm
+            {{if .Word.Id}}
+                {{if eq .Word.Status "MASTERED"}}border-success
+                {{else if eq .Word.Status "LEARNING"}}border-warning
+                {{else if eq .Word.Status "NEW"}}border-primary
+                {{end}}
+            {{end}}">
+            
+            <div class="card-body d-flex flex-column">
+
+                <!-- Header: Kanji + Reading -->
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <div class="fw-bold fs-5">
+                            {{range .Result.KEle}}{{.KEB}}, {{end}}
+                        </div>
+                        <div class="text-muted small">
+                            {{range .Result.REle}}{{.REB}}, {{end}}
+                        </div>
+                    </div>
+
+                    <!-- Button changes if already added -->
+                    {{if .Word.Id}}
+                        <span class="badge bg-success">Added</span>
+                    {{else}}
+                        <a class="btn btn-sm btn-outline-primary" href="/word/add/{{.Result.EntSeq}}" title="Add to deck">
+                            Add
+                        </a>
+                    {{end}}
+                </div>
+
+                <hr class="my-2">
+
+                <!-- Senses -->
+                <div class="flex-grow-1 overflow-auto">
+                    {{range .Result.Sense}}
+
+                    {{if .Pos}}
+                    <div class="mb-1">
+                        {{range .Pos}}
+                        <span class="badge bg-secondary me-1">{{.}}</span>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    {{if .Gloss}}
+                    <ul class="mb-1 small">
+                        {{range .Gloss}}
+                        <li>{{.Value}}</li>
+                        {{end}}
+                    </ul>
+                    {{end}}
+
+                    {{if .Example}}
+                    <div class="small text-muted mb-2">
+                        {{range .Example}}
+                        <div class="example-block">
+                            <div><strong>{{.ExText}}</strong></div>
+                            {{range .ExSent}}
+                            <div>{{.Value}}</div>
+                            {{end}}
+                        </div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    {{end}}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {{end}}
+</div>
+</div>
+
+<script>
+// Live search filter
+document.getElementById("wordSearch").addEventListener("input", function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll(".word-card").forEach(card => {
+        card.style.display =
+            card.textContent.toLowerCase().includes(q) ? "" : "none";
+    });
+});
+</script>

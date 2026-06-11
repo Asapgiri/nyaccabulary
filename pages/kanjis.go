@@ -18,7 +18,7 @@ func Kanjis(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    mastered := read_mastered(w, r)
+    mastered := bool_cookie_query("mastered", w, r)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
