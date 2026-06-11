@@ -108,6 +108,16 @@ func (kanji *Kanji) List(user User, showMastered bool) []Kanji {
     return kanjis
 }
 
+func (kanji *Kanji) FindByName(user User, q string) error {
+    dkanji := dbase.Kanji{}
+    err := dkanji.FindByName(&user._db, q)
+    if nil != err {
+        return err
+    }
+    kanji.Map(dkanji)
+    return nil
+}
+
 func (kanji *Kanji) Find(id string) {
     dkanji := dbase.Kanji{}
     _id, _ := primitive.ObjectIDFromHex(id)

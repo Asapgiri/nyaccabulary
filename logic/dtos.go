@@ -57,6 +57,8 @@ type Kanji struct {
     Status          string
     DictForm        config.Character
 
+    Words           []string
+
     OnStr     string
     KunStr    string
     MeaningStr string

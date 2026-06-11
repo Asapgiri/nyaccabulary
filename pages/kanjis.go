@@ -56,6 +56,31 @@ func Kanjis(w http.ResponseWriter, r *http.Request) {
     renderer.Render(session, w, fil, dto)
 }
 
+func OneKanji(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        // FIXME: Load new non saved word from dictionary...
+        AccessViolation(w, r)
+        return
+    }
+
+    q := r.PathValue("kanji")
+    if "" == q {
+        AccessViolation(w, r)
+        return
+    }
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    kanji := logic.Kanji{}
+    kanji.FindByName(user, q)
+
+    fil, _ := renderer.ReadArtifact("show_kanji.html", w.Header())
+    renderer.Render(session, w, fil, kanji)
+}
+
 func KanjiMaster(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)
 
@@ -109,7 +134,9 @@ func AdminKanjisSyncAllWords(w http.ResponseWriter, r *http.Request) {
         words := word.List(u, true)
 
         for _, w := range(words) {
-            new_kanjis = append(new_kanjis, logic.FetchAndAddKanjisFromWord(w))
+            w.Kanjis = logic.FetchAndAddKanjisFromWord(w)
+            w.Update()
+            new_kanjis = append(new_kanjis, w.Kanjis)
         }
     }
 

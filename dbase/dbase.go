@@ -128,7 +128,7 @@ func (user *User) Delete() error {
 }
 
 // =====================================================================================================================
-// Internal User Listing CRUD
+// Internal Word Listing CRUD
 
 func (word *Word) List(user *User, statuses []string) ([]Word, error) {
     var anyime []Word
@@ -150,6 +150,14 @@ func (word *Word) List(user *User, statuses []string) ([]Word, error) {
     err = cursor.All(context.Background(), &anyime)
 
     return anyime, err
+}
+
+func (word *Word) FindByKanji(user *User, kanji string) error {
+    filter := bson.D{
+        {"user", user.Id},
+        {"kanji", kanji},
+    }
+    return dbWORDS.FindOne(context.Background(), filter).Decode(word)
 }
 
 func (word *Word) Select(id primitive.ObjectID) error {
@@ -195,6 +203,33 @@ func (kanji *Kanji) List(user *User, statuses []string) ([]Kanji, error) {
     err = cursor.All(context.Background(), &anyime)
 
     return anyime, err
+}
+
+func (kanji *Kanji) ListWords() []Word {
+    var wl []Word
+
+    filter := bson.D{
+        {"user", kanji.User},
+        {"kanjis", kanji.Id},
+    }
+
+    cursor, err := dbWORDS.Find(context.Background(), filter)
+    if nil != err {
+        return []Word{}
+    }
+    defer cursor.Close(context.Background())
+
+    err = cursor.All(context.Background(), &wl)
+
+    return wl
+}
+
+func (kanji *Kanji) FindByName(user *User, q string) error {
+    filter := bson.D{
+        {"user", user.Id},
+        {"kanji", q},
+    }
+    return dbKANJI.FindOne(context.Background(), filter).Decode(kanji)
 }
 
 func (kanji *Kanji) Select(id primitive.ObjectID) error {

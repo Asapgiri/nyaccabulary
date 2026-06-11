@@ -1,0 +1,89 @@
+{{define "kanji_modal"}}
+<!-- Modal -->
+<div class="modal fade" id="kanji-{{.Id}}" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header study-modal-header">
+
+                <!-- Title block -->
+                <div class="study-title">
+                    <div class="study-kanji">{{.Kanji}}</div>
+                    <div class="study-kana">
+                        {{if .OnStr}}On: {{.OnStr}}{{end}}
+                        {{if .KunStr}} | Kun: {{.KunStr}}{{end}}
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="study-actions">
+
+                    {{if eq .Status "MASTERED"}}
+                    <a class="icon-btn" href="/kanji/mastered/unset/{{.Id}}">Mastered</a>
+                    {{else}}
+                    <a class="icon-btn" href="/kanji/mastered/force/{{.Id}}">Master</a>
+                    <a class="icon-btn" href="/kanji/mastered/set/{{.Id}}">Mark</a>
+                    {{end}}
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+            </div>
+
+            <div class="modal-body">
+                <div class="kanji-hero">
+                    {{.Kanji}}
+                </div>
+                <div class="kanji-readings">
+                    {{if .OnStr}}On: {{.OnStr}}{{end}}
+                    {{if .KunStr}} | Kun: {{.KunStr}}{{end}}
+                </div>
+
+                <hr>
+
+                <p><strong>Meaning:</strong> {{.MeaningStr}}</p>
+                <hr>
+
+                <p>
+                <strong>Words:</strong>
+                {{range .Words}}
+                <a href="/word/{{.}}">{{.}}</a>,
+                {{end}}
+                </p>
+                <hr>
+
+                <h6>Readings & Meanings</h6>
+
+                {{if .DictForm.ReadingMeaning}}
+                {{range .DictForm.ReadingMeaning.RMGroups}}
+
+                {{if .Readings}}
+                <div class="mb-2">
+                    <strong>Readings:</strong><br>
+                    {{range .Readings}}
+                    <span class="badge bg-secondary">
+                        {{.Value}} ({{.Type}})
+                    </span>
+                    {{end}}
+                </div>
+                {{end}}
+
+                {{if .Meanings}}
+                <div class="mb-2">
+                    <strong>Meanings:</strong>
+                    <ul class="mb-1">
+                        {{range .Meanings}}
+                        <li>{{.Value}}</li>
+                        {{end}}
+                    </ul>
+                </div>
+                {{end}}
+
+                {{end}}
+                {{end}}
+
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}

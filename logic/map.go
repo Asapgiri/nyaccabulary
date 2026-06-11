@@ -78,7 +78,7 @@ func (word *Word) UnMap() dbase.Word {
 
     dword.Kanjis = make([]primitive.ObjectID, len(word.Kanjis))
     for i, k := range(word.Kanjis) {
-        dword.Kanjis[i] = k._db.Id
+        dword.Kanjis[i], _ = primitive.ObjectIDFromHex(k.Id)
     }
 
     return dword
@@ -100,6 +100,12 @@ func (kanji *Kanji) Map(dkanji dbase.Kanji) {
     kanji.LastShown     = dkanji.LastShown
     kanji.Status        = dkanji.Status
     kanji.DictForm      = dkanji.DictForm
+
+    dwords := dkanji.ListWords()
+    kanji.Words = make([]string, len(dwords))
+    for i, w := range dwords {
+        kanji.Words[i] = w.Kanji
+    }
 }
 
 func (kanji *Kanji) UnMap() dbase.Kanji {

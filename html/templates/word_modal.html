@@ -1,0 +1,113 @@
+{{define "word_modal"}}
+<!-- Modal -->
+<div class="modal fade" id="word-{{.Id}}" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header study-modal-header">
+
+                <!-- Title block -->
+                <div class="study-title">
+                    <div class="study-kanji">{{.Kanji}}</div>
+                    <div class="study-kana">{{.Kana}}</div>
+                </div>
+
+                <!-- Actions -->
+                <div class="study-actions">
+
+                    {{if eq .Status "MASTERED"}}
+                    <a class="icon-btn" href="/word/mastered/unset/{{.Id}}">Mastered</a>
+                    {{else}}
+                    <a class="icon-btn" href="/word/mastered/force/{{.Id}}">Master</a>
+                    <a class="icon-btn" href="/word/mastered/set/{{.Id}}">Mark</a>
+                    {{end}}
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+            </div>
+
+            <div class="modal-body">
+                <p><strong>Meaning:</strong> {{.Meaning}}</p>
+                <hr>
+
+                <p>
+                <strong>Kanjis:</strong>
+                {{range .Kanjis}}
+                <a href="/kanji/{{.Kanji}}">{{.Kanji}}</a>,
+                {{end}}
+                </p>
+                <hr>
+
+
+                <h6>Kanji</h6>
+                <ul>
+                    {{range .DictForm.KEle}}
+                    <li>{{.KEB}}</li>
+                    {{end}}
+                </ul>
+
+                <h6>Readings</h6>
+                <ul>
+                    {{range .DictForm.REle}}
+                    <li>{{.REB}}</li>
+                    {{end}}
+                </ul>
+
+                <h6>Senses</h6>
+                {{range .DictForm.Sense}}
+                <div class="card mb-2">
+                    <div class="card-body p-2">
+
+                        {{if .Pos}}
+                        <div class="mb-1">
+                            <strong>Part of Speech:</strong>
+                            {{range .Pos}}
+                            <span class="badge bg-secondary">{{.}}</span>
+                            {{end}}
+                        </div>
+                        {{end}}
+
+                        {{if .Field}}
+                        <div class="mb-1">
+                            <strong>Fields:</strong>
+                            {{range .Field}}
+                            <span class="badge bg-info text-dark">{{.}}</span>
+                            {{end}}
+                        </div>
+                        {{end}}
+
+                        {{if .Gloss}}
+                        <div class="mb-1">
+                            <strong>Glosses:</strong>
+                            <ul class="mb-0">
+                                {{range .Gloss}}
+                                <li>{{.Value}}</li>
+                                {{end}}
+                            </ul>
+                        </div>
+                        {{end}}
+
+                        {{if .Example}}
+                        <div>
+                            <strong>Examples:</strong>
+                            {{range .Example}}
+                            <div class="example-block">
+                                <div><strong>{{.ExText}}</strong></div>
+                                {{range .ExSent}}
+                                <div>{{.Value}}</div>
+                                {{end}}
+                            </div>
+                            {{end}}
+                        </div>
+                        {{end}}
+
+                    </div>
+                </div>
+                {{end}}
+
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}

@@ -161,6 +161,31 @@ func Words(w http.ResponseWriter, r *http.Request) {
     renderer.Render(session, w, fil, dto)
 }
 
+func OneWord(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        // FIXME: Load new non saved word from dictionary...
+        AccessViolation(w, r)
+        return
+    }
+
+    kanji := r.PathValue("word")
+    if "" == kanji {
+        AccessViolation(w, r)
+        return
+    }
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    word := logic.Word{}
+    word.FindByKanji(user, kanji)
+
+    fil, _ := renderer.ReadArtifact("show_word.html", w.Header())
+    renderer.Render(session, w, fil, word)
+}
+
 func getWordMeaning(dictf config.Entry) (string) {
     // Fill in data [english only...]
     for _, s := range(dictf.Sense) {

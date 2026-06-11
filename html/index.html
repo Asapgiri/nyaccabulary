@@ -47,9 +47,6 @@ body {
 /* ===== Planner table ===== */
 .planner-header,
 .planner-row {
-    display: grid;
-    grid-template-columns: 2fr 2fr 3fr 3fr 120px;
-    align-items: center;
     padding: 8px 4px;
 }
 
@@ -164,22 +161,6 @@ body {
 .icon-btn-delete:hover {
     background: #dc3545;
     color: #fff;
-}
-
-/* ===== Planner Row ===== */
-.planner-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1.5fr 3fr 2fr 1.5fr;
-    gap: 8px;
-    padding: 10px 8px;
-    border-bottom: 1px solid #eee;
-    align-items: center;
-    font-size: 15px;
-    transition: background 0.15s;
-}
-
-.planner-row:hover {
-    background: #f8f8f8;
 }
 
 /* Word chip */
@@ -368,7 +349,7 @@ body {
     <form method="POST" action="/word/save" class="add-form">
         <div class="row g-2">
             <div class="col-md-3">
-                <input name="form[kanji]" class="form-control clean-input" placeholder="Word" lang="ja">
+                <input name="form[kanji]" class="form-control clean-input" placeholder="Word (with kanjis)" lang="ja">
             </div>
             <div class="col-md-3">
                 <input name="form[kana]" class="form-control clean-input" placeholder="Kana" lang="ja">
@@ -383,31 +364,31 @@ body {
     </form>
 
     <!-- Header -->
-    <div class="planner-header">
-        <div>WORD</div>
-        <div>KANA</div>
-        <div>MEANING</div>
-        <div>PROGRESS</div>
-        <div style="text-align:right;">ACTIONS</div>
+    <div class="row planner-header">
+        <div class="col-3 col-md-3 col-sm-3">WORD</div>
+        <div class="col-3 col-md-3 col-sm-3">KANA</div>
+        <div class="col-4 col-md-3 col-sm-4">MEANING</div>
+        <div class="col-md-2 d-none d-md-block">PROGRESS</div>
+        <div class="col-2 col-md-1 col-sm-2" style="text-align:right;">ACTIONS</div>
     </div>
 
     <!-- Rows -->
     {{range $i, $d := .Dto.Words}}
-    <div class='planner-row {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'>
+    <div class='row planner-row {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'>
 
         <!-- Word -->
-        <a class='word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
+        <a class='col-3 col-md-3 col-sm-3 word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
             data-bs-toggle="modal"
             data-bs-target="#word-{{.Id}}">
             {{.Kanji}}
         </a>
 
         <!-- Kana & Meaning -->
-        <div class="kana">{{.Kana}}</div>
-        <div class="meaning">{{.Meaning}}</div>
+        <div class="col-3 col-md-3 col-sm-3 kana">{{.Kana}}</div>
+        <div class="col-4 col-md-3 col-sm-4 meaning">{{.Meaning}}</div>
 
         <!-- Mini bar -->
-        <div>
+        <div class="col-md-2 d-none d-md-block">
             {{if not (eq .Status "MASTERED")}}
             <div class="mini-bar">
                 <div class="bad" style="width: {{.Display.PercentageN}}%"></div>
@@ -417,7 +398,7 @@ body {
         </div>
 
         <!-- Actions -->
-        <div class="actions">
+        <div class="col-2 col-md-1 col-sm-2 actions">
             {{if eq .Status "MASTERED"}}
             <a class="icon-btn icon-btn-unmaster" href="/word/mastered/unset/{{.Id}}" title="Unmaster">⟲</a>
             {{else}}
@@ -426,105 +407,7 @@ body {
             <a class="icon-btn icon-btn-delete" href="/word/delete/{{.Id}}" title="Delete">×</a>
         </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="word-{{.Id}}" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                <div class="modal-content">
-
-                    <div class="modal-header study-modal-header">
-
-                        <!-- Title -->
-                        <div class="study-title">
-                            <div class="study-kanji">{{.Kanji}}</div>
-                            <div class="study-kana">{{.Kana}}</div>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="study-actions">
-                            {{if eq .Status "MASTERED"}}
-                            <a class="icon-btn icon-btn-unmaster" href="/word/mastered/unset/{{.Id}}">⟲ Unmark</a>
-                            {{else}}
-                            <a class="icon-btn icon-btn-master" href="/word/mastered/force/{{.Id}}">✓ Master</a>
-                            <a class="icon-btn icon-btn-master" href="/word/mastered/set/{{.Id}}">✓ Mark</a>
-                            {{end}}
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                    </div>
-
-                    <div class="modal-body">
-                        <p><strong>Meaning:</strong> {{.Meaning}}</p>
-                        <hr>
-
-                        <h6>Kanji</h6>
-                        <ul>
-                            {{range .DictForm.KEle}}
-                            <li>{{.KEB}}</li>
-                            {{end}}
-                        </ul>
-
-                        <h6>Readings</h6>
-                        <ul>
-                            {{range .DictForm.REle}}
-                            <li>{{.REB}}</li>
-                            {{end}}
-                        </ul>
-
-                        <h6>Senses</h6>
-                        {{range .DictForm.Sense}}
-                        <div class="card mb-2">
-                            <div class="card-body p-2">
-                                {{if .Pos}}
-                                <div class="mb-1">
-                                    <strong>Part of Speech:</strong>
-                                    {{range .Pos}}
-                                    <span class="badge bg-secondary">{{.}}</span>
-                                    {{end}}
-                                </div>
-                                {{end}}
-
-                                {{if .Field}}
-                                <div class="mb-1">
-                                    <strong>Fields:</strong>
-                                    {{range .Field}}
-                                    <span class="badge bg-info text-dark">{{.}}</span>
-                                    {{end}}
-                                </div>
-                                {{end}}
-
-                                {{if .Gloss}}
-                                <div class="mb-1">
-                                    <strong>Glosses:</strong>
-                                    <ul class="mb-0">
-                                        {{range .Gloss}}
-                                        <li>{{.Value}}</li>
-                                        {{end}}
-                                    </ul>
-                                </div>
-                                {{end}}
-
-                                {{if .Example}}
-                                <div>
-                                    <strong>Examples:</strong>
-                                    {{range .Example}}
-                                    <div class="example-block">
-                                        <div><strong>{{.ExText}}</strong></div>
-                                        {{range .ExSent}}
-                                        <div>{{.Value}}</div>
-                                        {{end}}
-                                    </div>
-                                    {{end}}
-                                </div>
-                                {{end}}
-
-                            </div>
-                        </div>
-                        {{end}}
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        {{template "word_modal" .}}
 
     </div>
     {{end}}
