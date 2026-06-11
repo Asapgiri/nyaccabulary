@@ -60,6 +60,19 @@ func (word *Word) List(user User, showMastered bool) []Word {
     return words
 }
 
+func (word *Word) ListFailed(user User) []Word {
+    dw := dbase.Word{}
+
+    ws, _ := dw.List(&user._db, []string{MASTERY.LOOKUP_FAILED})
+
+    words := make([]Word, len(ws))
+    for i, w := range(ws) {
+        words[i].Map(w)
+    }
+
+    return words
+}
+
 func (word *Word) FindByKanji(user User, kanji string) error {
     dword := dbase.Word{}
     err := dword.FindByKanji(&user._db, kanji)

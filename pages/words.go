@@ -165,6 +165,7 @@ func Words(w http.ResponseWriter, r *http.Request) {
 
     word := logic.Word{}
     words := word.List(user, mastered)
+    // FIXME: Add sort func by query parameter...
     slices.SortFunc(words, func(a, b logic.Word) int {
         return strings.Compare(a.Kanji, b.Kanji)
     })
@@ -182,6 +183,29 @@ func Words(w http.ResponseWriter, r *http.Request) {
                 dto.Mastered++
             }
         }
+    }
+
+    fil, _ := renderer.ReadArtifact("words.html", w.Header())
+    renderer.Render(session, w, fil, dto)
+}
+
+func WordsFailedToAdd(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    word := logic.Word{}
+    words := word.ListFailed(user)
+
+    dto := DtoRoot{
+        Words: words,
+        WordCount: len(words),
     }
 
     fil, _ := renderer.ReadArtifact("words.html", w.Header())

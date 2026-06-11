@@ -29,6 +29,7 @@ func setup_routes() {
     http.HandleFunc("GET /word/list",                   pages.WordList)
     http.HandleFunc("GET /word/delete/{id}",            pages.WordDelete)
     http.HandleFunc("GET /word/mastered/{func}/{id}",   pages.WordMaster)
+    http.HandleFunc("GET /word/failed-to-add",          pages.WordsFailedToAdd)
 
     http.HandleFunc("GET /learn",                       pages.WordLearn)
     http.HandleFunc("POST /learn/{id}/{answer}",        pages.WordAnswer)
