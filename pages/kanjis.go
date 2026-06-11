@@ -1,8 +1,7 @@
 package pages
 
 import (
-	"encoding/json"
-	"io"
+	"fmt"
 	"net/http"
 	"nyaccabulary/logic"
 	"slices"
@@ -124,23 +123,35 @@ func AdminKanjisSyncAllWords(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    w.Header().Set("Content-Type", "text/plain")
+    w.Header().Set("Cache-Control", "no-cache")
+
+    // Ensure the ResponseWriter supports flushing
+    flusher, ok := w.(http.Flusher)
+    if !ok {
+        http.Error(w, "Streaming not supported", http.StatusInternalServerError)
+        return
+    }
+
     user := logic.User{}
     word := logic.Word{}
 
     users := user.List()
-    new_kanjis := [][]logic.Kanji{}
 
-    for _, u := range(users) {
+
+    for i, u := range(users) {
         words := word.List(u, true)
 
-        for _, w := range(words) {
-            w.Kanjis = logic.FetchAndAddKanjisFromWord(w)
-            w.Update()
-            new_kanjis = append(new_kanjis, w.Kanjis)
+        for j, wd := range(words) {
+            wd.Kanjis = logic.FetchAndAddKanjisFromWord(wd)
+            wd.Update()
+
+            fmt.Fprintf(w, "User: %d/%d; Word: %d/%d done\n", i+1, len(users), j+1, len(words))
+            flusher.Flush()
         }
     }
 
-    b, _ := json.MarshalIndent(new_kanjis, "", "  ")
-    io.WriteString(w, string(b))
+    fmt.Fprintf(w, "Done")
+    flusher.Flush()
 }
 
