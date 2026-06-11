@@ -7,17 +7,19 @@ import (
 )
 
 type Mastery struct {
-    MASTERED    string
-    LEARNING    string
-    UNKNOWN     string
-    NEW         string
+    MASTERED        string
+    LEARNING        string
+    UNKNOWN         string
+    NEW             string
+    LOOKUP_FAILED   string
 }
 
 var MASTERY = Mastery{
-    MASTERED: "MASTERED",
-    LEARNING: "LEARNING",
-    UNKNOWN:  "UNKNOWN",
-    NEW:      "NEW",
+    MASTERED:       "MASTERED",
+    LEARNING:       "LEARNING",
+    UNKNOWN:        "UNKNOWN",
+    NEW:            "NEW",
+    LOOKUP_FAILED:  "LOOKUP_FAILED",
 }
 
 

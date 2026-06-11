@@ -199,6 +199,45 @@ func getWordMeaning(dictf config.Entry) (string) {
     return ""
 }
 
+type bulkP struct {
+    Kanji   string
+    Kana    string
+    Meaning string
+    Status  string
+}
+
+// Clean up word from syntax
+// kanji[,hiragana][,meaning][+]
+func parseBulkLine(line string) logic.Word {
+    var ret logic.Word
+
+    if len(line) == 1 {
+        ret.Kanji = line
+        return ret
+    }
+
+    runic := []rune(line)
+    lc := runic[len(runic)-1]
+    if '+' == lc || '＋' == lc {
+        ret.Status = logic.MASTERY.MASTERED
+        line = strings.ReplaceAll(line, "+", "")
+        line = strings.ReplaceAll(line, "＋", "")
+    } else {
+        ret.Status = logic.MASTERY.NEW
+    }
+
+    parts := strings.Split(line, ",")
+    if len(parts) >= 3 {
+        ret.Kana = parts[1]
+        ret.Meaning = parts[2]
+    } else if len(parts) == 2 {
+        ret.Meaning = parts[1]
+    }
+    ret.Kanji = parts[0]
+
+    return ret
+}
+
 func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
     sess := GetCurrentSession(w, r)
 
@@ -207,7 +246,7 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    words := r.FormValue("form[words]")
+    lines := r.FormValue("form[words]")
 
     user := logic.User{}
     user.Find(sess.Auth.Id)
@@ -215,45 +254,45 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
     ww := logic.Word{}
     known_words := ww.List(user, true)
 
-    if "" != words {
-        for _, w := range(strings.Split(words, "\n")) {
-            word := strings.TrimSpace(w)
-            if "" != word {
+    if "" != lines {
+        for _, l := range(strings.Split(lines, "\n")) {
+            line := strings.TrimSpace(l)
+            if "" != line {
+                bulkline := parseBulkLine(line)
+
                 // Check if word is already in users dictionary...
                 exists := false
                 for _, kw := range(known_words) {
-                    if kw.Kanji == word {
+                    if kw.Kanji == bulkline.Kanji {
                         exists = true
                     }
                 }
                 if exists {
-                    sess.Notice.Set(session.NOTICE.INFO, "Word '" + word + "' is already in known list.")
+                    sess.Notice.Set(session.NOTICE.INFO, "Word '" + bulkline.Kanji + "' is already in known list.")
                     continue
                 }
 
-                dictf, ok := lookUpWords(word)
+                dictf, ok := lookUpWords(bulkline.Kanji)
                 if ok {
-                    kana := ""
-                    if len(dictf.REle) > 0 {
-                        kana = dictf.REle[0].REB
+                    bulkline.DictForm = dictf
+
+                    if "" == bulkline.Kana && len(dictf.REle) > 0 {
+                        bulkline.Kana = dictf.REle[0].REB
                     }
 
-                    meaning := getWordMeaning(dictf)
-
-                    new_word := logic.Word{
-                        Date: time.Now(),
-                        User: user,
-                        Kanji: word,
-                        Kana: kana,
-                        Meaning: meaning,
-                        Status: logic.MASTERY.NEW,
-                        DictForm: dictf,
+                    if "" == bulkline.Meaning {
+                        bulkline.Meaning = getWordMeaning(dictf)
                     }
-                    new_word.Add()
-                    sess.Notice.Set(session.NOTICE.SUCCESS, "Added '" + word + "' successfully.")
+
+                    sess.Notice.Set(session.NOTICE.SUCCESS, "Added '" + bulkline.Kanji + "' successfully.")
                 } else {
-                    sess.Notice.Set(session.NOTICE.WARNING, "Failed to add word: '" + word + "'.")
+                    sess.Notice.Set(session.NOTICE.WARNING, "Failed to add word: '" + bulkline.Kanji + "' definition not found. Adding to checkup list")
+                    bulkline.Status = logic.MASTERY.LOOKUP_FAILED
                 }
+
+                bulkline.Date = time.Now()
+                bulkline.User = user
+                bulkline.Add()
             }
         }
 
