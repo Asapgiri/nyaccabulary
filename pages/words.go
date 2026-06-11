@@ -161,6 +161,19 @@ func Words(w http.ResponseWriter, r *http.Request) {
     renderer.Render(session, w, fil, dto)
 }
 
+func getWordMeaning(dictf config.Entry) (string) {
+    // Fill in data [english only...]
+    for _, s := range(dictf.Sense) {
+        for _, gloss := range(s.Gloss) {
+            if "en" == gloss.Lang || "" == gloss.Lang || "eng" == gloss.Lang {
+                // FIXME: Pay attention te examples and stuff...
+                return gloss.Value
+            }
+        }
+    }
+    return ""
+}
+
 func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
     sess := GetCurrentSession(w, r)
 
@@ -196,21 +209,11 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
                 dictf, ok := lookUpWords(word)
                 if ok {
                     kana := ""
-                    meaning := ""
-
                     if len(dictf.REle) > 0 {
                         kana = dictf.REle[0].REB
                     }
 
-                    // Fill in data [english only...]
-                    for _, s := range(dictf.Sense) {
-                        for _, gloss := range(s.Gloss) {
-                            if "en" == gloss.Lang || "" == gloss.Lang || "eng" == gloss.Lang {
-                                // FIXME: Pay attention te examples and stuff...
-                                meaning = gloss.Value
-                            }
-                        }
-                    }
+                    meaning := getWordMeaning(dictf)
 
                     new_word := logic.Word{
                         Date: time.Now(),
