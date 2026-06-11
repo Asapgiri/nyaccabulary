@@ -363,6 +363,8 @@ body {
         </div>
     </form>
 
+    <input id="wordSearch" class="form-control form-control-sm" placeholder="Search...">
+
     <!-- Header -->
     <div class="row planner-header">
         <div class="col-3 col-md-3 col-sm-3">WORD</div>
@@ -413,3 +415,16 @@ body {
     {{end}}
 
 </div>
+
+<script>
+document.getElementById("wordSearch").addEventListener("input", function() {
+    const q = this.value.toLowerCase();
+
+    document.querySelectorAll(".planner-row").forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none";
+    });
+});
+</script>

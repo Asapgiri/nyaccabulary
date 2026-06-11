@@ -229,18 +229,21 @@
 
     </div>
 
+    <input id="wordSearch" class="form-control form-control-sm" placeholder="Search...">
+
     <div class="card shadow-sm border-0">
         <div class="card-body">
 
             <div class="word-grid">
                 {{range .Dto.Words}}
-                <a class='word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
-                    data-bs-toggle="modal"
-                    data-bs-target="#word-{{.Id}}">
-                    <div>{{.Kanji}}</div>
-                </a>
-
-                {{template "word_modal" .}}
+                <span class="searchable">
+                    <a class='word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
+                        data-bs-toggle="modal"
+                        data-bs-target="#word-{{.Id}}">
+                        <div>{{.Kanji}}</div>
+                    </a>
+                    {{template "word_modal" .}}
+                </span>
                 {{end}}
             </div>
 
@@ -248,3 +251,16 @@
     </div>
 
 </div>
+
+<script>
+document.getElementById("wordSearch").addEventListener("input", function() {
+    const q = this.value.toLowerCase();
+
+    document.querySelectorAll(".searchable").forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none";
+    });
+});
+</script>
