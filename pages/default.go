@@ -50,7 +50,7 @@ func Root(w http.ResponseWriter, r *http.Request) {
         if nil != err {
             post_per_page = 25
         }
-        mastered := bool_cookie_query("mastered", w, r)
+        mastered := BOOL_COOKIE_QUERY("mastered", w, r)
         // FIXME: remove if done
         // log.Println(page, post_per_page, mastered)
 

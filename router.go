@@ -1,8 +1,9 @@
 package main
 
 import (
-	"nyaccabulary/pages"
 	"net/http"
+	"nyaccabulary/pages"
+	"nyaccabulary/pages/api"
 )
 
 func setup_routes() {
@@ -40,6 +41,13 @@ func setup_routes() {
     http.HandleFunc("GET /kanji/{kanji}",               pages.OneKanji)
     http.HandleFunc("GET /kanji/mastered/{func}/{id}",  pages.KanjiMaster)
     // http.HandleFunc("GET /kanji/pdf",                   pages.KanjisPdf)
+
+    // api pages
+    http.HandleFunc("POST   /api/word",                 api.WordAdd)
+    http.HandleFunc("GET    /api/word",                 api.WordList)
+    http.HandleFunc("GET    /api/word/{id}",            pages.NotFound)
+    http.HandleFunc("PUT    /api/word/{id}",            pages.NotFound)
+    http.HandleFunc("DELETE /api/word/{id}",            pages.NotFound)
 
 
     http.HandleFunc("GET /admin/kanji/sync-all-words",  pages.AdminKanjisSyncAllWords)

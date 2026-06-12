@@ -67,7 +67,7 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    mastered := bool_cookie_query("mastered", w, r)
+    mastered := BOOL_COOKIE_QUERY("mastered", w, r)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
@@ -124,7 +124,7 @@ func WordSync(w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/word", http.StatusSeeOther)
 }
 
-func bool_cookie_query(name string, w http.ResponseWriter, r *http.Request) bool {
+func BOOL_COOKIE_QUERY(name string, w http.ResponseWriter, r *http.Request) bool {
     m := r.URL.Query().Get(name)
     var result bool
 
@@ -158,7 +158,8 @@ func Words(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    mastered := bool_cookie_query("mastered", w, r)
+    // FIXME: Should be replaced for proper filter..
+    mastered := BOOL_COOKIE_QUERY("mastered", w, r)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
