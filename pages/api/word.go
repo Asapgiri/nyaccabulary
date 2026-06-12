@@ -50,7 +50,7 @@ func WordList(w http.ResponseWriter, r *http.Request) {
     elapsed := time.Since(start) // time since start
     log.Printf("End: %s\n", elapsed)
 
-    write_json(w, to_send)
+    write_json_gz(w, to_send)
 
     log.Printf("End: %s\n", elapsed)
 }
