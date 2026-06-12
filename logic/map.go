@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"errors"
 	"nyaccabulary/dbase"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -36,14 +37,10 @@ func (user *User) UnMap() dbase.User {
     return duser
 }
 
-func (word *Word) Map(dword dbase.Word) {
-    user := User{}
-    user.Find(dword.User.Hex())
-
+func (word *Word) raw_map(dword dbase.Word) {
     word._db            = dword
     word.Id             = dword.Id.Hex()
     word.Date           = dword.Date
-    word.User           = user
     word.Kanji          = dword.Kanji
     word.Kana           = dword.Kana
     word.Meaning        = dword.Meaning
@@ -52,6 +49,14 @@ func (word *Word) Map(dword dbase.Word) {
     word.Status         = dword.Status
     word.LastShown      = dword.LastShown
     word.DictForm       = dword.DictForm
+}
+
+func (word *Word) Map(dword dbase.Word) {
+    user := User{}
+    user.Find(dword.User.Hex())
+    word.User = user
+
+    word.raw_map(dword)
 
     word.Kanjis = make([]Kanji, len(dword.Kanjis))
     for i, k := range(dword.Kanjis) {
@@ -60,6 +65,42 @@ func (word *Word) Map(dword dbase.Word) {
         word.Kanjis[i].Map(dk)
     }
 }
+
+func (word *Word) MapList(dwords []dbase.Word, statuses []string) ([]Word, error) {
+    if len(dwords) == 0 {
+        return []Word{}, errors.New("List is empty")
+    }
+
+    user := User{}
+    user.Find(dwords[0].User.Hex())
+
+    dkanji := dbase.Kanji{}
+    dkanjis, _ := dkanji.List(&user._db, statuses)
+
+    words := make([]Word, len(dwords))
+    for i, w := range dwords {
+        if w.User.Hex() != user.Id {
+            return words, errors.New("List contains words from different users!")
+        }
+
+        words[i].raw_map(w)
+        words[i].User = user
+
+        words[i].Kanjis = make([]Kanji, len(w.Kanjis))
+        for j, k := range w.Kanjis {
+            for _, dk := range dkanjis {
+                if dk.Id.Hex() == k.Hex() {
+                    words[i].Kanjis[j].raw_map(dk)
+                    words[i].Kanjis[j].User = user
+                    break
+                }
+            }
+        }
+    }
+
+    return words, nil
+}
+
 
 func (word *Word) UnMap() dbase.Word {
     dword := word._db
@@ -84,13 +125,9 @@ func (word *Word) UnMap() dbase.Word {
     return dword
 }
 
-func (kanji *Kanji) Map(dkanji dbase.Kanji) {
-    user := User{}
-    user.Find(dkanji.User.Hex())
-
+func (kanji *Kanji) raw_map(dkanji dbase.Kanji) {
     kanji.Id            = dkanji.Id.Hex()
     kanji.Date          = dkanji.Date
-    kanji.User          = user
     kanji.Kanji         = dkanji.Kanji
     kanji.On            = dkanji.On
     kanji.Kun           = dkanji.Kun
@@ -100,12 +137,53 @@ func (kanji *Kanji) Map(dkanji dbase.Kanji) {
     kanji.LastShown     = dkanji.LastShown
     kanji.Status        = dkanji.Status
     kanji.DictForm      = dkanji.DictForm
+}
+
+func (kanji *Kanji) Map(dkanji dbase.Kanji) {
+    user := User{}
+    user.Find(dkanji.User.Hex())
+
+    kanji.raw_map(dkanji)
+    kanji.User = user
 
     dwords := dkanji.ListWords()
     kanji.Words = make([]string, len(dwords))
     for i, w := range dwords {
         kanji.Words[i] = w.Kanji
     }
+}
+
+func (kanji *Kanji) MapList(dkanjis []dbase.Kanji, statuses []string) ([]Kanji, error) {
+    if len(dkanjis) == 0 {
+        return []Kanji{}, errors.New("List is empty")
+    }
+
+    user := User{}
+    user.Find(dkanjis[0].User.Hex())
+
+    dword := dbase.Word{}
+    dwords, _ := dword.List(&user._db, statuses)
+
+    kanjis := make([]Kanji, len(dkanjis))
+    for i, k := range dkanjis {
+        if k.User.Hex() != user.Id {
+            return kanjis, errors.New("List contains words from different users!")
+        }
+
+        kanjis[i].raw_map(k)
+        kanjis[i].User = user
+
+        kanjis[i].Words = []string{}
+        for _, w := range dwords {
+            for _, oi := range w.Kanjis {
+                if oi.Hex() == k.Id.Hex() {
+                    kanjis[i].Words = append(kanjis[i].Words, w.Kanji)
+                }
+            }
+        }
+    }
+
+    return kanjis, nil
 }
 
 func (kanji *Kanji) UnMap() dbase.Kanji {

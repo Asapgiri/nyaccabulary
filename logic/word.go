@@ -51,10 +51,9 @@ func (word *Word) List(user User, showMastered bool) []Word {
     }
     ws, _ := dw.List(&user._db, slist)
 
-    words := make([]Word, len(ws))
-    for i, w := range(ws) {
-        words[i].Map(w)
-        words[i].Display = formatDisplay(words[i])
+    words, _ := word.MapList(ws, slist)
+    for _, w := range(words) {
+        w.Display = formatDisplay(w)
     }
 
     return words

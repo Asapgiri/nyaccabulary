@@ -100,10 +100,7 @@ func (kanji *Kanji) List(user User, showMastered bool) []Kanji {
     }
     ws, _ := dw.List(&user._db, slist)
 
-    kanjis := make([]Kanji, len(ws))
-    for i, w := range(ws) {
-        kanjis[i].Map(w)
-    }
+    kanjis, _ := kanji.MapList(ws, slist)
 
     return kanjis
 }
