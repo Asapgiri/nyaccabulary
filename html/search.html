@@ -1,3 +1,14 @@
+<script>
+// Live search filter
+document.getElementById("wordSearch").addEventListener("input", function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll(".word-card").forEach(card => {
+        card.style.display =
+            card.textContent.toLowerCase().includes(q) ? "" : "none";
+    });
+});
+</script>
+
 <div class="container-fluid py-4 px-3 px-md-4" style="max-width:1200px;">
 
     <!-- Topbar -->
@@ -36,7 +47,7 @@
                 {{else if eq .Word.Status "NEW"}}border-primary
                 {{end}}
             {{end}}">
-            
+
             <div class="card-body d-flex flex-column">
 
                 <!-- Header: Kanji + Reading -->
@@ -104,14 +115,3 @@
     {{end}}
 </div>
 </div>
-
-<script>
-// Live search filter
-document.getElementById("wordSearch").addEventListener("input", function() {
-    const q = this.value.toLowerCase();
-    document.querySelectorAll(".word-card").forEach(card => {
-        card.style.display =
-            card.textContent.toLowerCase().includes(q) ? "" : "none";
-    });
-});
-</script>

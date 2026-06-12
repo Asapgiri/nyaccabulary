@@ -1,0 +1,46 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.kana-cell {
+    position: relative;
+    font-size: 2rem;
+    padding: 14px 0;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border-radius: 8px;
+}
+
+.kana-cell:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: white;
+}
+
+/* Romaji overlay */
+.kana-romaji {
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+    font-size: 0.75rem;
+    color: #6c757d;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Show romaji on hover */
+.kana-cell:hover .kana-romaji {
+    opacity: 1;
+}
+
+/* Show romaji on mobile tap */
+.kana-cell.active .kana-romaji {
+    opacity: 1;
+}
+
+/* Slightly more compact rows */
+.kana-row {
+    margin-bottom: 6px;
+}
