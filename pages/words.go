@@ -374,26 +374,12 @@ func WordSave(w http.ResponseWriter, r *http.Request) {
 
     dictf, ok := lookUpWords(kanji)
 
-    if "" == meaning {
-        if ok {
-            // b, _ := json.MarshalIndent(dictf, "", "  ")
-            // log.Println(string(b))
-            // for _, k := range(dictf) {}
-
-            if len(dictf.REle) > 0 {
-                kana = dictf.REle[0].REB
-            }
-
-            // Fill in data [english only...]
-            for _, s := range(dictf.Sense) {
-                for _, gloss := range(s.Gloss) {
-                    if "en" == gloss.Lang || "" == gloss.Lang || "eng" == gloss.Lang {
-                        // FIXME: Pay attention te examples and stuff...
-                        meaning = gloss.Value
-                    }
-                }
-            }
+    if "" == meaning && ok {
+        if len(dictf.REle) > 0 {
+            kana = dictf.REle[0].REB
         }
+
+        meaning = getWordMeaning(dictf)
     }
 
     if "" != strings.TrimSpace(kanji) || "" != strings.TrimSpace(meaning) {

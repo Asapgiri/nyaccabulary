@@ -1,10 +1,11 @@
 package pages
 
 import (
-	"github.com/asapgiri/golib/session"
+	"net/http"
 	"nyaccabulary/config"
 	"nyaccabulary/logic"
-	"net/http"
+
+	"github.com/asapgiri/golib/session"
 )
 
 func GetCurrentSession(w http.ResponseWriter, r *http.Request) session.Sessioner {
@@ -13,7 +14,7 @@ func GetCurrentSession(w http.ResponseWriter, r *http.Request) session.Sessioner
     logic.Authenticate(&sess.Auth)
 
     sess.Config = config.Config.Site
-    sess.Path = r.URL.String()
+    sess.Path = r.URL.Path
 
     sess.Meta = session.MetaData{}
 
