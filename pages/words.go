@@ -673,7 +673,7 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
         }
         word.Add()
         // FIXME: using kanji for word lookup will fail after some point...
-        http.Redirect(w, r, "/word/" + word.Kanji, http.StatusSeeOther)
+        sess.Notice.Set(session.NOTICE.SUCCESS, "Successfully added word: " + word.Kanji)
     } else {
         sess.Notice.Set(session.NOTICE.DANGER, "Failed to add word with entry: " + entseq)
     }
