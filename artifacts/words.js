@@ -159,7 +159,7 @@ function fetch_paged(sender) {
 
 fetch_paged({
     page: 0,
-    limit: 25,
+    limit: 100,
     mastered: true,
     sort: {
         field: "kanji",
