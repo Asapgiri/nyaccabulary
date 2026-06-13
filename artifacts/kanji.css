@@ -53,7 +53,7 @@
 }
 
 /* Word chip styles */
-.word-chip {
+.kanji-chip {
     display: inline-block;
     padding: .2rem .4rem;
     text-align: center;
@@ -67,26 +67,26 @@
     transition: all .15s ease;
 }
 
-.word-chip:hover {
+.kanji-chip:hover {
     background: #f8f9fa;
     border-color: #adb5bd;
     transform: translateY(-2px);
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.word-chip.mastered {
+.kanji-chip.mastered {
     background: #e8f5e9;
     border-color: #66bb6a;
     color: #2e7d32;
 }
 
-.word-chip.learning {
+.kanji-chip.learning {
     background: #fff3e0;
     border-color: #ffb74d;
     color: #e65100;
 }
 
-.word-chip.new {
+.kanji-chip.new {
     background: #e3f2fd;
     border-color: #64b5f6;
     color: #1565c0;
@@ -119,14 +119,14 @@
 }
 
 /* Container spacing */
-.word-grid {
+.kanji-grid {
     display: flex;
     flex-wrap: wrap;
     gap: .5rem;
     margin-top: 1rem;
 }
 
-.word-grid a {
+.kanji-grid a {
     cursor: pointer;
 }
 
@@ -140,7 +140,7 @@
     background: #fff;
 }
 
-/* Left side (word identity) */
+/* Left side (kanji identity) */
 .study-title {
     display: flex;
     flex-direction: column;

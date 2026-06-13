@@ -170,7 +170,7 @@ function delete_row(event) {
 }
 
 function fill_rows(data) {
-    box         = document.getElementById('planner-box');
+    box = document.getElementById('planner-box');
 
     for (let i = 0; i < data.length; i++) {
         box.appendChild(build_row(data[i]));

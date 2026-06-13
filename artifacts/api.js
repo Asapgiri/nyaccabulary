@@ -103,6 +103,7 @@ function buildSenseCards(senses) {
 
     return container;
 }
+
 function build_word_modal(clone, word, fn_mastered, fn_master, fn_mark, fn_delete) {
     modal = clone.querySelector(".modal")
 
@@ -167,5 +168,113 @@ function build_word_modal(clone, word, fn_mastered, fn_master, fn_mark, fn_delet
 
     if (word.DictForm.Sense) {
         senses.appendChild(buildSenseCards(word.DictForm.Sense))
+    }
+}
+
+function buildReadingMeaning(rmGroups) {
+    const container = document.createDocumentFragment();
+
+    if (!rmGroups) return container;
+
+    for (const group of rmGroups) {
+
+        // ---------------- READINGS ----------------
+        if (group.Readings && group.Readings.length > 0) {
+            const div = document.createElement("div");
+            div.className = "mb-2";
+
+            const strong = document.createElement("strong");
+            strong.textContent = "Readings:";
+            div.appendChild(strong);
+
+            div.appendChild(document.createElement("br"));
+
+            for (const r of group.Readings) {
+                const span = document.createElement("span");
+                span.className = "badge bg-secondary";
+                span.textContent = `${r.Value} (${r.Type})`;
+                div.appendChild(span);
+                div.appendChild(document.createTextNode(" "));
+            }
+
+            container.appendChild(div);
+        }
+
+        // ---------------- MEANINGS ----------------
+        if (group.Meanings && group.Meanings.length > 0) {
+            const div = document.createElement("div");
+            div.className = "mb-2";
+
+            const strong = document.createElement("strong");
+            strong.textContent = "Meanings:";
+            div.appendChild(strong);
+
+            const ul = document.createElement("ul");
+            ul.className = "mb-1";
+
+            for (const m of group.Meanings) {
+                const li = document.createElement("li");
+                li.textContent = m.Value;
+                ul.appendChild(li);
+            }
+
+            div.appendChild(ul);
+            container.appendChild(div);
+        }
+    }
+
+    return container;
+}
+
+function build_kanji_modal(clone, kanji, fn_mastered, fn_master, fn_mark, fn_delete) {
+    modal = clone.querySelector(".modal");
+
+    title = modal.querySelector(".study-kanji");
+    small_text = modal.querySelector(".study-kana");
+    hero = modal.querySelector(".kanji-hero");
+    readings = modal.querySelector(".kanji-readings");
+
+    action_mastered = modal.querySelector(".btn-mastered");
+    action_master = modal.querySelector(".btn-master");
+    action_mark = modal.querySelector(".btn-mark");
+    action_delete = modal.querySelector(".btn-delete");
+
+    meaning = modal.querySelector(".modal-meaning")
+    words = modal.querySelector(".modal-words")
+    modalreadings = modal.querySelector(".modal-readings")
+
+    action_mastered.addEventListener("click", fn_mastered);
+    action_master.addEventListener("click", fn_master);
+    action_mark.addEventListener("click", fn_mark);
+    action_delete.addEventListener("click", fn_delete);
+
+    modal.id = `kanji-${kanji.Id}`;
+    title.textContent = kanji.Kanji;
+    small_text.textContent = `On: ${kanji.OnStr} | Kun: ${kanji.KunStr}`;
+    hero.textContent = kanji.Kanji;
+    readings.textContent = small_text.textContent;
+
+    meaning.textContent = kanji.Meaning
+
+    if ("MASTERED" == kanji.Status) {
+        action_master.remove()
+        action_mark.remove()
+    }
+    else {
+        action_mastered.remove()
+    }
+
+    for (let i = 0; i < kanji.Words.length; i++) {
+        a = document.createElement("a");
+        a.textContent = kanji.Words[i]
+        a.href = `/word/${kanji.Words[i]}`
+        words.appendChild(a)
+        if (i < kanji.Words.length - 1) {
+            words.innerHTML += ", "
+        }
+    }
+
+    if (kanji.DictForm.ReadingMeaning) {
+        modalreadings.appendChild(buildReadingMeaning(kanji.DictForm.ReadingMeaning.RMGroups))
     }
 }

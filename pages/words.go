@@ -164,26 +164,9 @@ func Words(w http.ResponseWriter, r *http.Request) {
     user := logic.User{}
     user.Find(session.Auth.Id)
 
-    word := logic.Word{}
-    words := word.List(user, mastered)
-    // FIXME: Add sort func by query parameter...
-    slices.SortFunc(words, func(a, b logic.Word) int {
-        return strings.Compare(a.Kanji, b.Kanji)
-    })
-
     dto := DtoRoot{
-        Words: words,
         ShowMastered: mastered,
         Mastered: 0,
-        WordCount: len(words),
-    }
-
-    if mastered {
-        for _, w := range(words) {
-            if logic.MASTERY.MASTERED == w.Status {
-                dto.Mastered++
-            }
-        }
     }
 
     fil, _ := renderer.ReadArtifact("words.html", w.Header())

@@ -44,23 +44,22 @@
     <div class="card shadow-sm border-0">
         <div class="card-body">
 
-            <div class="word-grid">
-                {{range .Dto.Words}}
-                <span class="searchable">
-                    <a class='word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
-                        data-bs-toggle="modal"
-                        data-bs-target="#word-{{.Id}}">
-                        <div>{{.Kanji}}</div>
-                    </a>
-                    {{template "word_modal" .}}
-                </span>
-                {{end}}
+            <div class="word-grid" id="word-grid">
             </div>
 
         </div>
     </div>
 
 </div>
+
+<template id="template-chip">
+    <span class="searchable chip">
+        <button class='word-chip' data-bs-toggle="modal"></button>
+
+        {{template "template_word_modal"}}
+    </span>
+</template>
+
 
 <script>
 document.getElementById("wordSearch").addEventListener("input", function() {
@@ -74,3 +73,6 @@ document.getElementById("wordSearch").addEventListener("input", function() {
     });
 });
 </script>
+
+<script src="/api.js"></script>
+<script src="/words.js"></script>

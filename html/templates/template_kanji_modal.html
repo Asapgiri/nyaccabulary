@@ -1,0 +1,54 @@
+{{define "template_kanji_modal"}}
+<!-- Modal -->
+<div class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header study-modal-header">
+
+                <!-- Title block -->
+                <div class="study-title">
+                    <div class="study-kanji"></div>
+                    <div class="study-kana">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="study-actions">
+
+                    <button type="button" class="icon-btn btn-mastered">Mastered</a>
+                    <button type="button" class="icon-btn btn-master">Master</a>
+                    <button type="button" class="icon-btn btn-mark">Mark</a>
+
+                    <button type="button" class="icon-btn btn-delete">Delete</button>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+            </div>
+
+            <div class="modal-body">
+                <div class="kanji-hero">
+                </div>
+                <div class="kanji-readings">
+                </div>
+
+                <hr>
+
+                <p><strong>Meaning:</strong> <span class="modal-meaning"></span></p>
+                <hr>
+
+                <p>
+                <strong>Words:</strong>
+                <span class="modal-words"></span>
+                </p>
+                <hr>
+
+                <h6>Readings & Meanings</h6>
+                <div class="modal-readings"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
