@@ -43,7 +43,7 @@ function build_chip(data) {
     return clone
 }
 
-function row_m(event, fun) {
+function row_m(event, fun, after) {
     row = event.srcElement.closest(".chip")
     wc = row.querySelector(".word-chip")
 
@@ -61,6 +61,9 @@ function row_m(event, fun) {
                 modal.hide();
             }
             row.replaceWith(build_chip(data))
+            if (after) {
+                after(data);
+            }
         })
         .catch(err => {
             console.error("Fetch error:", err);
@@ -68,15 +71,19 @@ function row_m(event, fun) {
 }
 
 function chip_mastered(event) {
-    row_m(event, 'unset')
+    row_m(event, 'unset', decrease_mastery)
 }
 
 function chip_master(event) {
-    row_m(event, 'force')
+    row_m(event, 'force', increase_mastery)
 }
 
 function chip_mark(event) {
-    row_m(event, 'set')
+    row_m(event, 'set', word => {
+        if ("MASTERED" == word.Status) {
+            increase_mastery()
+        }
+    })
 }
 
 function delete_chip(event) {
@@ -96,6 +103,9 @@ function delete_chip(event) {
             if (modal) {
                 modal.hide();
             }
+            if (wc.classList.contains("mastered")) {
+                decrease_mastery()
+            }
             row.remove();
         })
         .catch(err => {
@@ -105,9 +115,8 @@ function delete_chip(event) {
 
 function fill_chipss(data) {
     box = document.getElementById('word-grid');
-    progress = document.getElementById('study-progress')
 
-    progress.innerText = `${data.Stats.Mastered} / ${data.Stats.Count}`
+    set_mastery(data.Stats)
 
     console.log(data)
 
@@ -120,6 +129,10 @@ function fill_chipss(data) {
             page: data.Page.Current + 1,
             limit: data.Page.Limit,
             mastered: true,
+            sort: {
+                field: "kanji",
+                order: -1,
+            },
         })
     }
 }
@@ -148,4 +161,8 @@ fetch_paged({
     page: 0,
     limit: 50,
     mastered: true,
+    sort: {
+        field: "kanji",
+        order: -1,
+    },
 })

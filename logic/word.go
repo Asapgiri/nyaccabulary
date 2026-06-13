@@ -60,13 +60,18 @@ func (word *Word) List(user User, filter Filter) []Word {
     if filter.Mastered {
         slist = append(slist, MASTERY.MASTERED)
     }
-    ws, err := dw.List(&user._db, dbase.Filter{
+
+    if "" == filter.Sort.Field {
+        filter.Sort.Field = "date"
+        filter.Sort.Order = -1
+    }
+
+    ws, _ := dw.List(&user._db, dbase.Filter{
         Status: slist,
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
-        Sort: dbase.Sort{Field: "date", Order: -1},
+        Sort: filter.Sort,
     })
-    log.Println(err)
 
     words, _ := word.MapList(ws, slist)
     for _, w := range(words) {

@@ -278,3 +278,21 @@ function build_kanji_modal(clone, kanji, fn_mastered, fn_master, fn_mark, fn_del
         modalreadings.appendChild(buildReadingMeaning(kanji.DictForm.ReadingMeaning.RMGroups))
     }
 }
+
+const study_progress = document.getElementById('study-progress')
+var stats
+
+function set_mastery(s) {
+    stats = s
+    study_progress.innerText = `${stats.Mastered} / ${stats.Count}`
+}
+
+function increase_mastery() {
+    stats.Mastered++
+    study_progress.innerText = `${stats.Mastered} / ${stats.Count}`
+}
+
+function decrease_mastery() {
+    stats.Mastered--
+    study_progress.innerText = `${stats.Mastered} / ${stats.Count}`
+}

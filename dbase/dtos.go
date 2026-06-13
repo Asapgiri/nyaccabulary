@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Sort   struct {
+type Sort struct {
     Field   string
     Order   int64
 }

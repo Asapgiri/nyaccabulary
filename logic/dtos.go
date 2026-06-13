@@ -10,6 +10,7 @@ type Filter struct {
     Page        int
     Limit       int
     Mastered    bool
+    Sort        dbase.Sort
 }
 
 type Display struct {

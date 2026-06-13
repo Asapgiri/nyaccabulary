@@ -33,18 +33,16 @@ function build_row(data) {
     actions_x = clone.querySelector(".icon-btn-delete")
 
     planner_row.id = data.Id
-    actions_u.href = `/word/mastered/set/${data.Id}`
+    actions_u.addEventListener("click", row_mark);
 
     if ("NEW" == data.Status) {
         planner_row.classList.add("new");
         word_chip.classList.add("new");
         word_chip.addEventListener("click", remove_new);
-        actions_u.addEventListener("click", row_mark);
     }
     else if ("LEARNING" == data.Status) {
         planner_row.classList.add("learning");
         word_chip.classList.add("learning");
-        actions_u.addEventListener("click", row_mark);
     }
     else if ("MASTERED" == data.Status) {
         planner_row.classList.add("mastered");
@@ -54,6 +52,7 @@ function build_row(data) {
         actions_u.textContent = "⟲"
         actions_u.classList.remove("icon-btn-master")
         actions_u.classList.add("icon-btn-unmaster")
+        actions_u.removeEventListener("click", row_mark);
         actions_u.addEventListener("click", row_mastered);
     }
 
@@ -111,7 +110,7 @@ function add_row() {
         });
 }
 
-function row_m(event, fun) {
+function row_m(event, fun, after) {
     row = event.srcElement.closest(".planner-row")
 
     fetch(`/api/word/${row.id}/${fun}`, {method: "POST"})
@@ -128,6 +127,9 @@ function row_m(event, fun) {
                 modal.hide();
             }
             row.replaceWith(build_row(data))
+            if (after) {
+                after(data);
+            }
         })
         .catch(err => {
             console.error("Fetch error:", err);
@@ -135,15 +137,19 @@ function row_m(event, fun) {
 }
 
 function row_mastered(event) {
-    row_m(event, 'unset')
+    row_m(event, 'unset', decrease_mastery)
 }
 
 function row_master(event) {
-    row_m(event, 'force')
+    row_m(event, 'force', increase_mastery)
 }
 
 function row_mark(event) {
-    row_m(event, 'set')
+    row_m(event, 'set', word => {
+        if ("MASTERED" == word.Status) {
+            increase_mastery()
+        }
+    })
 }
 
 function delete_row(event) {
@@ -162,6 +168,9 @@ function delete_row(event) {
             if (modal) {
                 modal.hide();
             }
+            if (wc.classList.contains("mastered")) {
+                decrease_mastery()
+            }
             row.remove();
         })
         .catch(err => {
@@ -171,9 +180,8 @@ function delete_row(event) {
 
 function fill_rows(data) {
     box = document.getElementById('planner-box');
-    progress = document.getElementById('study-progress')
 
-    progress.innerText = `${data.Stats.Mastered} / ${data.Stats.Count}`
+    set_mastery(data.Stats)
 
     console.log(data)
 
