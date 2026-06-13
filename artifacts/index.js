@@ -1,3 +1,25 @@
+const remove_new = (e) => {
+    word_chip = e.srcElement
+    planner_row = word_chip.parentElement
+
+    fetch(`/api/word/${planner_row.id}/new`, {method: "POST"})
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
+        .then(() => {
+            planner_row.classList.remove("new");
+            word_chip.classList.remove("new");
+
+            word_chip.removeEventListener("click", remove_new);
+        })
+        .catch(err => {
+            console.error("Fetch error:", err);
+        });
+}
+
 function build_row(data) {
     template = document.getElementById('template-row');
     clone = template.content.cloneNode(true);
@@ -16,6 +38,7 @@ function build_row(data) {
     if ("NEW" == data.Status) {
         planner_row.classList.add("new");
         word_chip.classList.add("new");
+        word_chip.addEventListener("click", remove_new);
     }
     else if ("LEARNING" == data.Status) {
         planner_row.classList.add("learning");
@@ -96,7 +119,7 @@ function delete_row(event) {
 
     row = event.srcElement.parentElement.parentElement
 
-    fetch(`/api/word/${row.id}`, {method: "POST"})
+    fetch(`/api/word/${row.id}/delete`, {method: "POST"})
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

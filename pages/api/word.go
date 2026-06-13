@@ -151,7 +151,9 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    if "force" == function {
+    if "new" == function {
+        word.Status = logic.MASTERY.UNKNOWN
+    } else if "force" == function {
         word.Status = logic.MASTERY.MASTERED
     } else if "set" == function {
         if logic.MASTERY.LEARNING == word.Status {
