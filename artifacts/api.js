@@ -254,7 +254,7 @@ function build_kanji_modal(clone, kanji, fn_mastered, fn_master, fn_mark, fn_del
     hero.textContent = kanji.Kanji;
     readings.textContent = small_text.textContent;
 
-    meaning.textContent = kanji.Meaning
+    meaning.textContent = kanji.MeaningStr
 
     if ("MASTERED" == kanji.Status) {
         action_master.remove()
