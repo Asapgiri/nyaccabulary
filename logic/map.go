@@ -162,7 +162,9 @@ func (kanji *Kanji) MapList(dkanjis []dbase.Kanji, statuses []string) ([]Kanji, 
     user.Find(dkanjis[0].User.Hex())
 
     dword := dbase.Word{}
-    dwords, _ := dword.List(&user._db, statuses)
+    dwords, _ := dword.List(&user._db, dbase.Filter{
+        Status: statuses,
+    })
 
     kanjis := make([]Kanji, len(dkanjis))
     for i, k := range dkanjis {

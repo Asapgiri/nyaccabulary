@@ -24,7 +24,7 @@ func lookUpAllWordMatches(user logic.User, query string, em bool) []SearchResult
     var retlist []SearchResult
 
     word := logic.Word{}
-    words := word.List(user, true)
+    words := word.List(user, logic.Filter{Mastered: true})
 
     for _, dictf := range(config.Config.JMdict.Entries) {
         for _, kele := range(dictf.KEle) {
@@ -67,13 +67,13 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    mastered := BOOL_COOKIE_QUERY("mastered", w, r)
+    filter := ParseFilter(r)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
 
     word := logic.Word{}
-    words := word.List(user, mastered)
+    words := word.List(user, filter)
     slices.Reverse(words)
 
     pdf := gofpdf.New("P", "mm", "A4", "")
@@ -287,7 +287,7 @@ func BulkAdd(user logic.User, s string) BulkInfo {
     }
 
     ww := logic.Word{}
-    known_words := ww.List(user, true)
+    known_words := ww.List(user, logic.Filter{Mastered: true})
 
     for _, l := range(strings.Split(s, "\n")) {
         line := strings.TrimSpace(l)
@@ -506,7 +506,7 @@ func WordLearn(w http.ResponseWriter, r *http.Request) {
         user.Find(session.Auth.Id)
 
         word := logic.Word{}
-        words = orderWordsLearn(word.List(user, false))
+        words = orderWordsLearn(word.List(user, logic.Filter{}))
         session.Store.Set("words-learn", words)
     }
 

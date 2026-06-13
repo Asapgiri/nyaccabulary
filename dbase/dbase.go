@@ -6,7 +6,6 @@ import (
 	"nyaccabulary/config"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -14,9 +13,9 @@ import (
 var mongo_client *mongo.Client
 var db *mongo.Database
 
-var dbUSERS             *mongo.Collection
-var dbWORDS             *mongo.Collection
-var dbKANJI             *mongo.Collection
+var dbUSERS *mongo.Collection
+var dbWORDS *mongo.Collection
+var dbKANJI *mongo.Collection
 
 var log = logger.Logger {
     Color: logger.Colors.Purple,
@@ -75,179 +74,9 @@ func Connect() error {
 	}
 	log.Println("Pinged your deployment. You successfully connected to MongoDB!")
 
-    dbUSERS             = db.Collection("users")
-    dbWORDS             = db.Collection("words")
-    dbKANJI             = db.Collection("kanji")
+    dbUSERS = db.Collection("users")
+    dbWORDS = db.Collection("words")
+    dbKANJI = db.Collection("kanji")
 
     return nil
-}
-
-// =====================================================================================================================
-// Internal User Listing CRUD
-
-func (user *User) List() ([]User, error) {
-    var anyime []User
-
-    cursor, err := dbUSERS.Find(context.Background(), bson.D{{}})
-    if nil != err {
-        return anyime, err
-    }
-    defer cursor.Close(context.Background())
-
-    err = cursor.All(context.Background(), &anyime)
-
-    return anyime, err
-}
-
-func (user *User) Select(id primitive.ObjectID) error {
-    return dbUSERS.FindOne(context.Background(), bson.D{{"_id", id}}).Decode(user)
-}
-
-func (user *User) FindByUsername(username string) error {
-    return dbUSERS.FindOne(context.Background(), bson.D{{"username", username}}).Decode(user)
-}
-
-func (user *User) FindByEmail(email string) error {
-    return dbUSERS.FindOne(context.Background(), bson.D{{"email", email}}).Decode(user)
-}
-
-func (user *User) Add() error {
-    _, err := dbUSERS.InsertOne(context.Background(), user)
-    return err
-}
-
-func (user *User) Update() error {
-    _, err := dbUSERS.ReplaceOne(context.Background(), bson.D{{"_id", user.Id}}, user)
-    return err
-}
-
-func (user *User) Delete() error {
-    filter := bson.D{{"_id", user.Id}}
-    _, err := dbUSERS.DeleteOne(context.Background(), filter)
-    return err
-}
-
-// =====================================================================================================================
-// Internal Word Listing CRUD
-
-func (word *Word) List(user *User, statuses []string) ([]Word, error) {
-    var anyime []Word
-
-    filter := bson.D{
-        {"user", user.Id},
-        {"$or", bson.A{
-            bson.D{{"status", bson.D{{"$in", statuses}}}},
-            bson.D{{"status", bson.D{{"$exists", false}}}}, // include docs without status
-        }},
-    }
-
-    cursor, err := dbWORDS.Find(context.Background(), filter)
-    if nil != err {
-        return anyime, err
-    }
-    defer cursor.Close(context.Background())
-
-    err = cursor.All(context.Background(), &anyime)
-
-    return anyime, err
-}
-
-func (word *Word) FindByKanji(user *User, kanji string) error {
-    filter := bson.D{
-        {"user", user.Id},
-        {"kanji", kanji},
-    }
-    return dbWORDS.FindOne(context.Background(), filter).Decode(word)
-}
-
-func (word *Word) Select(id primitive.ObjectID) error {
-    return dbWORDS.FindOne(context.Background(), bson.D{{"_id", id}}).Decode(word)
-}
-
-func (word *Word) Add() error {
-    _, err := dbWORDS.InsertOne(context.Background(), word)
-    return err
-}
-
-func (word *Word) Update() error {
-    _, err := dbWORDS.ReplaceOne(context.Background(), bson.D{{"_id", word.Id}}, word)
-    return err
-}
-
-func (word *Word) Delete() error {
-    filter := bson.D{{"_id", word.Id}}
-    _, err := dbWORDS.DeleteOne(context.Background(), filter)
-    return err
-}
-
-// =====================================================================================================================
-// Internal User Listing CRUD
-
-func (kanji *Kanji) List(user *User, statuses []string) ([]Kanji, error) {
-    var anyime []Kanji
-
-    filter := bson.D{
-        {"user", user.Id},
-        {"$or", bson.A{
-            bson.D{{"status", bson.D{{"$in", statuses}}}},
-            bson.D{{"status", bson.D{{"$exists", false}}}}, // include docs without status
-        }},
-    }
-
-    cursor, err := dbKANJI.Find(context.Background(), filter)
-    if nil != err {
-        return anyime, err
-    }
-    defer cursor.Close(context.Background())
-
-    err = cursor.All(context.Background(), &anyime)
-
-    return anyime, err
-}
-
-func (kanji *Kanji) ListWords() []Word {
-    var wl []Word
-
-    filter := bson.D{
-        {"user", kanji.User},
-        {"kanjis", kanji.Id},
-    }
-
-    cursor, err := dbWORDS.Find(context.Background(), filter)
-    if nil != err {
-        return []Word{}
-    }
-    defer cursor.Close(context.Background())
-
-    err = cursor.All(context.Background(), &wl)
-
-    return wl
-}
-
-func (kanji *Kanji) FindByName(user *User, q string) error {
-    filter := bson.D{
-        {"user", user.Id},
-        {"kanji", q},
-    }
-    return dbKANJI.FindOne(context.Background(), filter).Decode(kanji)
-}
-
-func (kanji *Kanji) Select(id primitive.ObjectID) error {
-    return dbKANJI.FindOne(context.Background(), bson.D{{"_id", id}}).Decode(kanji)
-}
-
-func (kanji *Kanji) Add() error {
-    _, err := dbKANJI.InsertOne(context.Background(), kanji)
-    return err
-}
-
-func (kanji *Kanji) Update() error {
-    _, err := dbKANJI.ReplaceOne(context.Background(), bson.D{{"_id", kanji.Id}}, kanji)
-    return err
-}
-
-func (kanji *Kanji) Delete() error {
-    filter := bson.D{{"_id", kanji.Id}}
-    _, err := dbKANJI.DeleteOne(context.Background(), filter)
-    return err
 }

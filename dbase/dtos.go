@@ -7,6 +7,34 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type Sort   struct {
+    Field   string
+    Order   int64
+}
+
+type Filter struct {
+    Page    int64
+    Limit   int64
+    Sort    Sort
+    Status  []string
+}
+
+type WordMeta struct {
+    Mastered    int64
+    Count       int64
+    PageCount   int64
+}
+
+// type PagedResponse struct {
+//     Page    ResponsePage
+//     Words   struct {
+//         Mastered    int
+//         Count       int
+//         Order       string
+//     }
+//     Data            any
+// }
+
 type User struct {
     Id              primitive.ObjectID `bson:"_id"`
     RegDate         time.Time

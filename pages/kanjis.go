@@ -115,7 +115,7 @@ func AdminKanjisSyncAllWords(w http.ResponseWriter, r *http.Request) {
 
 
     for i, u := range(users) {
-        words := word.List(u, true)
+        words := word.List(u, logic.Filter{Mastered: true})
 
         for j, wd := range(words) {
             wd.Kanjis = logic.FetchAndAddKanjisFromWord(wd)

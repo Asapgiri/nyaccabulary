@@ -11,6 +11,24 @@ type Response struct {
     Errors  any
 }
 
+type Page struct {
+    Current     int
+    Count       int
+    Limit       int
+}
+
+type Stats struct {
+    Mastered    int
+    Count       int
+    Order       string
+}
+
+type PagedResponse struct {
+    Page    Page
+    Stats   Stats
+    Data    any
+}
+
 type WordAddRequest struct {
     Kanji   string `json:"kanji"`
     Kana    string `json:"kana"`

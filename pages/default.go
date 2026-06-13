@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 	"nyaccabulary/config"
@@ -15,6 +16,12 @@ import (
 var log = logger.Logger {
     Color: logger.Colors.Red,
     Pretext: "pages",
+}
+
+func ParseFilter(r *http.Request) logic.Filter {
+    filter := logic.Filter{}
+    json.NewDecoder(r.Body).Decode(&filter)
+    return filter
 }
 
 func Unexpected(session session.Sessioner, w http.ResponseWriter, r *http.Request) {

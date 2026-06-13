@@ -33,7 +33,18 @@ func formatDisplay(word Word) Display {
     return display
 }
 
-func (word *Word) List(user User, showMastered bool) []Word {
+func (word *Word) GetMeta(user User, filter Filter) dbase.WordMeta {
+    dw := dbase.Word{}
+
+    df := dbase.Filter{
+        Page: int64(filter.Page),
+        Limit: int64(filter.Limit),
+    }
+
+    return dw.GetMeta(&user._db, df)
+}
+
+func (word *Word) List(user User, filter Filter) []Word {
     dw := dbase.Word{}
 
     if "" == user.Id {
@@ -46,10 +57,16 @@ func (word *Word) List(user User, showMastered bool) []Word {
         MASTERY.NEW,
         "",
     }
-    if showMastered {
+    if filter.Mastered {
         slist = append(slist, MASTERY.MASTERED)
     }
-    ws, _ := dw.List(&user._db, slist)
+    ws, err := dw.List(&user._db, dbase.Filter{
+        Status: slist,
+        Page: int64(filter.Page),
+        Limit: int64(filter.Limit),
+        Sort: dbase.Sort{Field: "date", Order: -1},
+    })
+    log.Println(err)
 
     words, _ := word.MapList(ws, slist)
     for _, w := range(words) {
@@ -62,7 +79,9 @@ func (word *Word) List(user User, showMastered bool) []Word {
 func (word *Word) ListFailed(user User) []Word {
     dw := dbase.Word{}
 
-    ws, _ := dw.List(&user._db, []string{MASTERY.LOOKUP_FAILED})
+    ws, _ := dw.List(&user._db, dbase.Filter{
+        Status: []string{MASTERY.LOOKUP_FAILED},
+    })
 
     words := make([]Word, len(ws))
     for i, w := range(ws) {

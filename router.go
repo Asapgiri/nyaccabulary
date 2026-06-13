@@ -46,6 +46,7 @@ func setup_routes() {
     http.HandleFunc("POST   /api/word/{entseq}",        api.WordAdd)
     http.HandleFunc("POST   /api/word/bulk",            api.WordBulkAdd)
     http.HandleFunc("GET    /api/word",                 api.WordList)
+    http.HandleFunc("POST   /api/word/paged",           api.WordList)
     http.HandleFunc("GET    /api/word/{id}",            api.WordList)
     http.HandleFunc("POST   /api/word/{id}/{func}",     api.WordPatch)
     http.HandleFunc("POST   /api/word/{id}/delete",     api.WordDelete)

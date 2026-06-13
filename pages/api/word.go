@@ -6,7 +6,6 @@ import (
 	"nyaccabulary/config"
 	"nyaccabulary/logic"
 	"nyaccabulary/pages"
-	"slices"
 	"strings"
 	"time"
 )
@@ -34,10 +33,23 @@ func WordList(w http.ResponseWriter, r *http.Request) {
         to_send = wd
     } else {
         // FIXME: Should be replaced for proper filter..
-        mastered := pages.BOOL_COOKIE_QUERY("mastered", w, r)
-        words := word.List(user, mastered)
-        slices.Reverse(words)
-        to_send = MapWordList(words)
+        filter := pages.ParseFilter(r)
+
+        meta := word.GetMeta(user, filter)
+        words := word.List(user, filter)
+
+        to_send = PagedResponse{
+            Page: Page{
+                Current: filter.Page,
+                Count: int(meta.PageCount),
+                Limit: filter.Limit,
+            },
+            Stats: Stats{
+                Mastered: int(meta.Mastered),
+                Count: int(meta.Count),
+            },
+            Data:   MapWordList(words),
+        }
     }
 
     write_json_gz(w, to_send)

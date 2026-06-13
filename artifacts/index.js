@@ -171,20 +171,47 @@ function delete_row(event) {
 
 function fill_rows(data) {
     box = document.getElementById('planner-box');
+    progress = document.getElementById('study-progress')
 
-    for (let i = 0; i < data.length; i++) {
-        box.appendChild(build_row(data[i]));
+    progress.innerText = `${data.Stats.Mastered} / ${data.Stats.Count}`
+
+    console.log(data)
+
+    for (let i = 0; i < data.Data.length; i++) {
+        box.appendChild(build_row(data.Data[i]));
+    }
+
+    if (data.Page.Count > 0 && data.Page.Current < (data.Page.Count-1)) {
+        fetch_paged({
+            page: data.Page.Current + 1,
+            limit: data.Page.Limit,
+            mastered: true,
+        })
     }
 }
 
-fetch("/api/word")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json()
+function fetch_paged(sender) {
+    fetch("/api/word/paged", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(sender)
     })
-    .then(data => fill_rows(data))
-    .catch(err => {
-        console.error("Fetch error:", err);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
+        .then(data => fill_rows(data))
+        .catch(err => {
+            console.error("Fetch error:", err);
+        });
+}
+
+fetch_paged({
+    page: 0,
+    limit: 50,
+    mastered: true,
+})

@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+type Filter struct {
+    Page        int
+    Limit       int
+    Mastered    bool
+}
+
 type Display struct {
     PercentageP     float64
     PercentageN     float64

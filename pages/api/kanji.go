@@ -43,8 +43,6 @@ func KanjiList(w http.ResponseWriter, r *http.Request) {
             k.MeaningStr = strings.Join(k.Meaning, ", ")
         }
         to_send = MapKanjiList(kanjis)
-
-        log.Println(kanjis[0].Words)
     }
 
     write_json_gz(w, to_send)

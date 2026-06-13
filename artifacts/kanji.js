@@ -107,7 +107,6 @@ function fill_chipss(data) {
     box = document.getElementById('kanji-grid');
 
     for (let i = 0; i < data.length; i++) {
-        console.log(data[i])
         box.appendChild(build_chip(data[i]));
     }
 }
