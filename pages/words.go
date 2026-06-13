@@ -20,6 +20,51 @@ import (
 //     // TODO: ...
 // }
 
+func foundInKele(dictf config.Entry, query string, em bool) bool {
+    for _, kele := range(dictf.KEle) {
+        if !em && strings.Contains(kele.KEB, query) || em && kele.KEB == query {
+            return true
+        }
+    }
+    return false
+}
+
+func foundInRele(dictf config.Entry, query string, em bool) bool {
+    for _, rele := range(dictf.REle) {
+        if !em && strings.Contains(rele.REB, query) || em && rele.REB == query {
+            return true
+        }
+    }
+    return false
+}
+
+func foundInGloss(dictf config.Entry, query string, em bool) bool {
+    for _, sense := range(dictf.Sense) {
+        for _, gloss := range sense.Gloss {
+            if !em && strings.Contains(gloss.Value, query) || em && gloss.Value == query {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+func createResult(dictf config.Entry, words []logic.Word) SearchResult {
+    res := SearchResult{
+        Result: dictf,
+    }
+
+    // Look up if user already have the word saved
+    for _, w := range words {
+        if w.DictForm.EntSeq == dictf.EntSeq {
+            res.Word = w
+            break
+        }
+    }
+
+    return res
+}
+
 func lookUpAllWordMatches(user logic.User, query string, em bool) []SearchResult {
     var retlist []SearchResult
 
@@ -27,21 +72,8 @@ func lookUpAllWordMatches(user logic.User, query string, em bool) []SearchResult
     words := word.List(user, logic.Filter{Mastered: true})
 
     for _, dictf := range(config.Config.JMdict.Entries) {
-        for _, kele := range(dictf.KEle) {
-            if !em && strings.Contains(kele.KEB, query) || em && kele.KEB == query {
-                res := SearchResult{
-                    Result: dictf,
-                }
-
-                for _, w := range words {
-                    if w.DictForm.EntSeq == dictf.EntSeq {
-                        res.Word = w
-                        break
-                    }
-                }
-
-                retlist = append(retlist, res)
-            }
+        if foundInKele(dictf, query, em) || foundInRele(dictf, query, em) || foundInGloss(dictf, query, em) {
+            retlist = append(retlist, createResult(dictf, words))
         }
     }
 

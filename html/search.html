@@ -1,3 +1,26 @@
+<script>
+function add(btn) {
+    console.log(btn.id)
+
+    fetch("/api/word/"+btn.id, {method: "POST"})
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
+        .then(data => {
+            console.log(data)
+            document.getElementById('div-'+btn.id).classList.add("border-primary")
+            btn.outerHTML = "<span class=\"badge bg-success\">Added</span>"
+        })
+        .catch(err => {
+            console.error("Fetch error:", err);
+        });
+
+}
+</script>
+
 <div class="container-fluid py-4 px-3 px-md-4" style="max-width:1200px;">
 
     <!-- Topbar -->
@@ -29,7 +52,7 @@
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
     {{range .Dto.Results}}
     <div class="col word-card">
-        <div class="card h-100 shadow-sm
+        <div id="div-{{.Result.EntSeq}}" class="card h-100 shadow-sm
             {{if .Word.Id}}
                 {{if eq .Word.Status "MASTERED"}}border-success
                 {{else if eq .Word.Status "LEARNING"}}border-warning
@@ -54,9 +77,9 @@
                     {{if .Word.Id}}
                         <span class="badge bg-success">Added</span>
                     {{else}}
-                        <a class="btn btn-sm btn-outline-primary" href="/word/add/{{.Result.EntSeq}}" title="Add to deck">
+                    <button id="{{.Result.EntSeq}}" type="button" class="btn btn-sm btn-outline-primary" title="Add to deck" onclick="add(this);">
                             Add
-                        </a>
+                        </button>
                     {{end}}
                 </div>
 
