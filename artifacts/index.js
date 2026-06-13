@@ -96,9 +96,7 @@ function delete_row(event) {
 
     row = event.srcElement.parentElement.parentElement
 
-    console.log(row);
-
-    fetch(`/api/word/${row.id}`, {method: "DELETE"})
+    fetch(`/api/word/${row.id}`, {method: "POST"})
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

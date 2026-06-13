@@ -47,8 +47,8 @@ func setup_routes() {
     http.HandleFunc("POST   /api/word/bulk",            api.WordBulkAdd)
     http.HandleFunc("GET    /api/word",                 api.WordList)
     http.HandleFunc("GET    /api/word/{id}",            api.WordList)
-    http.HandleFunc("PATCH  /api/word/{id}/{func}",     api.WordPatch)
-    http.HandleFunc("DELETE /api/word/{id}",            api.WordDelete)
+    http.HandleFunc("POST   /api/word/{id}/{func}",     api.WordPatch)
+    http.HandleFunc("POST   /api/word/{id}/delete",     api.WordDelete)
 
 
     http.HandleFunc("GET /admin/kanji/sync-all-words",  pages.AdminKanjisSyncAllWords)
