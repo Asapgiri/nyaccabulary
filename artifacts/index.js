@@ -39,20 +39,22 @@ function build_row(data) {
         planner_row.classList.add("new");
         word_chip.classList.add("new");
         word_chip.addEventListener("click", remove_new);
+        actions_u.addEventListener("click", row_mark);
     }
     else if ("LEARNING" == data.Status) {
         planner_row.classList.add("learning");
         word_chip.classList.add("learning");
+        actions_u.addEventListener("click", row_mark);
     }
     else if ("MASTERED" == data.Status) {
         planner_row.classList.add("mastered");
         word_chip.classList.add("mastered");
         mini_bar.remove();
-        actions_u.href = `/word/mastered/unset/${data.Id}`
         actions_u.title = "Unmaster"
         actions_u.textContent = "⟲"
         actions_u.classList.remove("icon-btn-master")
         actions_u.classList.add("icon-btn-unmaster")
+        actions_u.addEventListener("click", row_mastered);
     }
 
     word_chip.setAttribute("data-bs-target", `#word-${data.Id}`);
@@ -65,7 +67,6 @@ function build_row(data) {
         mini_bar.querySelector(".good").style.width = `${data.Display.PercentageP}%`;
     }
 
-    //actions_x.href = `/word/delete/${data.Id}`
     actions_x.addEventListener("click", delete_row);
 
     build_word_modal(clone, data, row_mastered, row_master, row_mark, delete_row)
@@ -110,14 +111,43 @@ function add_row() {
         });
 }
 
-function row_mastered() {}
-function row_master() {}
-function row_mark() {}
+function row_m(event, fun) {
+    row = event.srcElement.closest(".planner-row")
+
+    fetch(`/api/word/${row.id}/${fun}`, {method: "POST"})
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
+        .then(data => {
+            modalel = row.querySelector(".modal");
+            modal = bootstrap.Modal.getInstance(modalel);
+            if (modal) {
+                modal.hide();
+            }
+            row.replaceWith(build_row(data))
+        })
+        .catch(err => {
+            console.error("Fetch error:", err);
+        });
+}
+
+function row_mastered(event) {
+    row_m(event, 'unset')
+}
+
+function row_master(event) {
+    row_m(event, 'force')
+}
+
+function row_mark(event) {
+    row_m(event, 'set')
+}
 
 function delete_row(event) {
-    event.preventDefault();
-
-    row = event.srcElement.parentElement.parentElement
+    row = event.srcElement.closest(".planner-row")
 
     fetch(`/api/word/${row.id}/delete`, {method: "POST"})
         .then(response => {
@@ -126,7 +156,14 @@ function delete_row(event) {
             }
             return response.json()
         })
-        .then(() => row.remove())
+        .then(() => {
+            modalel = row.querySelector(".modal");
+            modal = bootstrap.Modal.getInstance(modalel);
+            if (modal) {
+                modal.hide();
+            }
+            row.remove();
+        })
         .catch(err => {
             console.error("Fetch error:", err);
         });
@@ -136,10 +173,7 @@ function fill_rows(data) {
     box         = document.getElementById('planner-box');
 
     for (let i = 0; i < data.length; i++) {
-        //console.log(data[i])
-
         box.appendChild(build_row(data[i]));
-        //console.log(build_row(data[i]))
     }
 }
 
