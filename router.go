@@ -54,6 +54,7 @@ func setup_routes() {
     // api kanjis
     //http.HandleFunc("POST   /api/kanji",                api.KanjiAdd)
     http.HandleFunc("GET    /api/kanji",                api.KanjiList)
+    http.HandleFunc("POST   /api/kanji/paged",          api.KanjiList)
     http.HandleFunc("GET    /api/kanji/{id}",           api.KanjiList)
     http.HandleFunc("POST   /api/kanji/{id}/{func}",    api.KanjiPatch)
     http.HandleFunc("POST   /api/kanji/{id}/delete",    api.KanjiDelete)

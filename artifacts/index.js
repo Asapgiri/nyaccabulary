@@ -185,8 +185,6 @@ function fill_rows(data) {
 
     set_mastery(data.Stats)
 
-    console.log(data)
-
     for (let i = 0; i < data.Data.length; i++) {
         box.appendChild(build_row(data.Data[i]));
     }

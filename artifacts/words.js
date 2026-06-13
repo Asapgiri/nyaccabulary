@@ -118,8 +118,6 @@ function fill_chipss(data) {
 
     set_mastery(data.Stats)
 
-    console.log(data)
-
     for (let i = 0; i < data.Data.length; i++) {
         box.appendChild(build_chip(data.Data[i]));
     }

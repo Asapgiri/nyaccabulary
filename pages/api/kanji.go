@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"nyaccabulary/logic"
 	"nyaccabulary/pages"
-	"slices"
 	"strings"
 )
 
@@ -30,19 +29,30 @@ func KanjiList(w http.ResponseWriter, r *http.Request) {
         wd.Map(kanji)
         to_send = wd
     } else {
-        // FIXME: Should be replaced for proper filter..
-        mastered := pages.BOOL_COOKIE_QUERY("mastered", w, r)
-        kanjis := kanji.List(user, mastered)
-        slices.SortFunc(kanjis, func(a, b logic.Kanji) int {
-            return strings.Compare(a.Kanji, b.Kanji)
-        })
+        filter := pages.ParseFilter(r)
+
+        meta := kanji.GetMeta(user, filter)
+        kanjis := kanji.List(user, filter)
+
         for i := range kanjis {
             k := &kanjis[i]
             k.OnStr = strings.Join(k.On, ", ")
             k.KunStr = strings.Join(k.Kun, ", ")
             k.MeaningStr = strings.Join(k.Meaning, ", ")
         }
-        to_send = MapKanjiList(kanjis)
+
+        to_send = PagedResponse{
+            Page: Page{
+                Current: filter.Page,
+                Count: int(meta.PageCount),
+                Limit: filter.Limit,
+            },
+            Stats: Stats{
+                Mastered: int(meta.Mastered),
+                Count: int(meta.Count),
+            },
+            Data:   MapKanjiList(kanjis),
+        }
     }
 
     write_json_gz(w, to_send)

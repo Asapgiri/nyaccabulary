@@ -61,7 +61,7 @@ func FetchAndAddKanjisFromWord(word Word) []Kanji {
     var kanjis_already_present []Kanji
 
     kanji := Kanji{}
-    kanjis_already_present = kanji.List(word.User, true)
+    kanjis_already_present = kanji.List(word.User, Filter{Mastered: true})
 
 	for _, r := range(word.Kanji) {
 		if unicode.Is(unicode.Han, r) {
@@ -82,7 +82,19 @@ func FetchAndAddKanjisFromWord(word Word) []Kanji {
 	return kanjis_to_return
 }
 
-func (kanji *Kanji) List(user User, showMastered bool) []Kanji {
+func (kanji *Kanji) GetMeta(user User, filter Filter) dbase.Meta {
+    dw := dbase.Kanji{}
+
+    df := dbase.Filter{
+        Page: int64(filter.Page),
+        Limit: int64(filter.Limit),
+        Status: MASTERY.ALL,
+    }
+
+    return dw.GetMeta(&user._db, df)
+}
+
+func (kanji *Kanji) List(user User, filter Filter) []Kanji {
     dw := dbase.Kanji{}
 
     if "" == user.Id {
@@ -95,10 +107,21 @@ func (kanji *Kanji) List(user User, showMastered bool) []Kanji {
         MASTERY.NEW,
         "",
     }
-    if showMastered {
+    if filter.Mastered {
         slist = append(slist, MASTERY.MASTERED)
     }
-    ws, _ := dw.List(&user._db, slist)
+
+    if "" == filter.Sort.Field {
+        filter.Sort.Field = "date"
+        filter.Sort.Order = -1
+    }
+
+    ws, _ := dw.List(&user._db, dbase.Filter{
+        Status: slist,
+        Page: int64(filter.Page),
+        Limit: int64(filter.Limit),
+        Sort: filter.Sort,
+    })
 
     kanjis, _ := kanji.MapList(ws, slist)
 

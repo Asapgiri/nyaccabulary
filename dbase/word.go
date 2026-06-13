@@ -11,8 +11,8 @@ import (
 // =====================================================================================================================
 // Internal Word Listing CRUD
 
-func (word *Word) GetMeta(user *User, filter Filter) WordMeta {
-    var meta WordMeta
+func (word *Word) GetMeta(user *User, filter Filter) Meta {
+    var meta Meta
 
     query := bson.D{{"user", user.Id}}
     if len(filter.Status) > 0 {

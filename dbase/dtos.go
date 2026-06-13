@@ -19,7 +19,7 @@ type Filter struct {
     Status  []string
 }
 
-type WordMeta struct {
+type Meta struct {
     Mastered    int64
     Count       int64
     PageCount   int64

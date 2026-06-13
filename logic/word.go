@@ -12,6 +12,7 @@ type Mastery struct {
     UNKNOWN         string
     NEW             string
     LOOKUP_FAILED   string
+    ALL             []string
 }
 
 var MASTERY = Mastery{
@@ -20,8 +21,14 @@ var MASTERY = Mastery{
     UNKNOWN:        "UNKNOWN",
     NEW:            "NEW",
     LOOKUP_FAILED:  "LOOKUP_FAILED",
+    ALL: []string{
+        "MASTERED",
+        "LEARNING",
+        "UNKNOWN",
+        "NEW",
+        "",
+    },
 }
-
 
 func formatDisplay(word Word) Display {
     var display Display
@@ -33,19 +40,13 @@ func formatDisplay(word Word) Display {
     return display
 }
 
-func (word *Word) GetMeta(user User, filter Filter) dbase.WordMeta {
+func (word *Word) GetMeta(user User, filter Filter) dbase.Meta {
     dw := dbase.Word{}
 
     df := dbase.Filter{
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
-        Status: []string{
-            MASTERY.MASTERED,
-            MASTERY.LEARNING,
-            MASTERY.UNKNOWN,
-            MASTERY.NEW,
-            "",
-        },
+        Status: MASTERY.ALL,
     }
 
     return dw.GetMeta(&user._db, df)

@@ -33,7 +33,6 @@ func WordList(w http.ResponseWriter, r *http.Request) {
         wd.Map(word)
         to_send = wd
     } else {
-        // FIXME: Should be replaced for proper filter..
         filter := pages.ParseFilter(r)
 
         meta := word.GetMeta(user, filter)

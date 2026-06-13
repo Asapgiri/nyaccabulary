@@ -43,7 +43,7 @@ function build_chip(data) {
     return clone
 }
 
-function row_m(event, fun) {
+function row_m(event, fun, after) {
     row = event.srcElement.closest(".chip")
     wc = row.querySelector(".kanji-chip")
 
@@ -61,6 +61,9 @@ function row_m(event, fun) {
                 modal.hide();
             }
             row.replaceWith(build_chip(data))
+            if (after) {
+                after(data);
+            }
         })
         .catch(err => {
             console.error("Fetch error:", err);
@@ -68,15 +71,19 @@ function row_m(event, fun) {
 }
 
 function chip_mastered(event) {
-    row_m(event, 'unset')
+    row_m(event, 'unset', decrease_mastery)
 }
 
 function chip_master(event) {
-    row_m(event, 'force')
+    row_m(event, 'force', increase_mastery)
 }
 
 function chip_mark(event) {
-    row_m(event, 'set')
+    row_m(event, 'set', word => {
+        if ("MASTERED" == word.Status) {
+            increase_mastery()
+        }
+    })
 }
 
 function delete_chip(event) {
@@ -106,19 +113,51 @@ function delete_chip(event) {
 function fill_chipss(data) {
     box = document.getElementById('kanji-grid');
 
-    for (let i = 0; i < data.length; i++) {
-        box.appendChild(build_chip(data[i]));
+    set_mastery(data.Stats)
+
+    for (let i = 0; i < data.Data.length; i++) {
+        box.appendChild(build_chip(data.Data[i]));
+    }
+
+    if (data.Page.Count > 0 && data.Page.Current < (data.Page.Count-1)) {
+        fetch_paged({
+            page: data.Page.Current + 1,
+            limit: data.Page.Limit,
+            mastered: true,
+            sort: {
+                field: "kanji",
+                order: -1,
+            },
+        })
     }
 }
 
-fetch("/api/kanji")
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json()
+function fetch_paged(sender) {
+    fetch("/api/kanji/paged", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(sender)
     })
-    .then(data => fill_chipss(data))
-    .catch(err => {
-        console.error("Fetch error:", err);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
+        .then(data => fill_chipss(data))
+        .catch(err => {
+            console.error("Fetch error:", err);
+        });
+}
+
+fetch_paged({
+    page: 0,
+    limit: 100,
+    mastered: true,
+    sort: {
+        field: "kanji",
+        order: -1,
+    },
+})
