@@ -178,6 +178,8 @@ function delete_row(event) {
         });
 }
 
+var pageing
+
 function fill_rows(data) {
     box = document.getElementById('planner-box');
 
@@ -189,17 +191,11 @@ function fill_rows(data) {
         box.appendChild(build_row(data.Data[i]));
     }
 
-    if (data.Page.Count > 0 && data.Page.Current < (data.Page.Count-1)) {
-        fetch_paged({
-            page: data.Page.Current + 1,
-            limit: data.Page.Limit,
-            mastered: true,
-        })
-    }
+    pageing = data.Page
 }
 
-function fetch_paged(sender) {
-    fetch("/api/word/paged", {
+async function fetch_paged(sender) {
+    return fetch("/api/word/paged", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -216,6 +212,21 @@ function fetch_paged(sender) {
         .catch(err => {
             console.error("Fetch error:", err);
         });
+}
+
+function load_next_batch(btn) {
+    if (pageing.Count > 0 && pageing.Current < (pageing.Count-1)) {
+        fetch_paged({
+            page: pageing.Current + 1,
+            limit: pageing.Limit,
+            mastered: true,
+        })
+        .then(() => {
+            if (pageing.Current >= (pageing.Count-1)) {
+                btn.remove()
+            }
+        })
+    }
 }
 
 fetch_paged({
