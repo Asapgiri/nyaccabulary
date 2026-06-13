@@ -220,6 +220,6 @@ function fetch_paged(sender) {
 
 fetch_paged({
     page: 0,
-    limit: 50,
+    limit: 25,
     mastered: true,
 })

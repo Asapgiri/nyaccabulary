@@ -15,6 +15,12 @@ func (word *Word) GetMeta(user *User, filter Filter) WordMeta {
     var meta WordMeta
 
     query := bson.D{{"user", user.Id}}
+    if len(filter.Status) > 0 {
+        query = append(query, bson.E{"$or", bson.A{
+            bson.D{{"status", bson.D{{"$in", filter.Status}}}},
+            bson.D{{"status", bson.D{{"$exists", false}}}}, // include docs without status
+        }})
+    }
     meta.Count, _ = dbWORDS.CountDocuments(context.Background(), query)
 
     query = append(query, bson.E{"status", "MASTERED"})

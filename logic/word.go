@@ -39,6 +39,13 @@ func (word *Word) GetMeta(user User, filter Filter) dbase.WordMeta {
     df := dbase.Filter{
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
+        Status: []string{
+            MASTERY.MASTERED,
+            MASTERY.LEARNING,
+            MASTERY.UNKNOWN,
+            MASTERY.NEW,
+            "",
+        },
     }
 
     return dw.GetMeta(&user._db, df)
