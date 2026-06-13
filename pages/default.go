@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"nyaccabulary/config"
 	"nyaccabulary/logic"
-	"slices"
 	"strconv"
 
 	"github.com/asapgiri/golib/logger"
@@ -54,19 +53,14 @@ func Root(w http.ResponseWriter, r *http.Request) {
         // FIXME: remove if done
         // log.Println(page, post_per_page, mastered)
 
-        words := []logic.Word{}
-
         if "" != session.Auth.Username {
             user := logic.User{}
             user.FindByUsername(session.Auth.Username)
 
-            word := logic.Word{}
-            words = word.List(user, mastered)
-            slices.Reverse(words)
         }
 
         dto := DtoRoot{
-            Words: words,
+            //Words: words,
             //Posts: plist,
             Page: Pages{
                 Current: int(page),

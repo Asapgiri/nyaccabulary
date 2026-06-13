@@ -6,6 +6,17 @@ import (
 	"time"
 )
 
+type Response struct {
+    Status  string
+    Errors  any
+}
+
+type WordAddRequest struct {
+    Kanji   string `json:"kanji"`
+    Kana    string `json:"kana"`
+    Meaning string `json:"meaning"`
+}
+
 type User struct {
     Id              string
     RegDate         time.Time

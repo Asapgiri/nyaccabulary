@@ -1,18 +1,5 @@
 <link href="/index.css" rel="stylesheet">
 
-<script>
-document.getElementById("wordSearch").addEventListener("input", function() {
-    const q = this.value.toLowerCase();
-
-    document.querySelectorAll(".planner-row").forEach(row => {
-        row.style.display =
-            row.textContent.toLowerCase().includes(q)
-                ? ""
-                : "none";
-    });
-});
-</script>
-
 <div class="container-fluid py-4 px-3 px-md-4" style="max-width:1000px;">
 
     <!-- Topbar -->
@@ -34,22 +21,22 @@ document.getElementById("wordSearch").addEventListener("input", function() {
     </div>
 
     <!-- Add form -->
-    <form method="POST" action="/word/save" class="add-form">
+    <div class="add-form">
         <div class="row g-2">
             <div class="col-md-3">
-                <input name="form[kanji]" class="form-control clean-input" placeholder="Word (with kanjis)" lang="ja">
+                <input id="form[kanji]" name="form[kanji]" class="form-control clean-input" placeholder="Word (with kanjis)" lang="ja">
             </div>
             <div class="col-md-3">
-                <input name="form[kana]" class="form-control clean-input" placeholder="Kana" lang="ja">
+                <input id="form[kana]" name="form[kana]" class="form-control clean-input" placeholder="Kana" lang="ja">
             </div>
             <div class="col-md-4">
-                <input name="form[meaning]" class="form-control clean-input" placeholder="Meaning">
+                <input id="form[meaning]" name="form[meaning]" class="form-control clean-input" placeholder="Meaning">
             </div>
             <div class="col-md-2">
-                <button class="btn btn-dark w-100">Add</button>
+                <button class="btn btn-dark w-100" onclick="add_row();">Add</button>
             </div>
         </div>
-    </form>
+    </div>
 
     <input id="wordSearch" class="form-control form-control-sm" placeholder="Search...">
 
@@ -62,44 +49,97 @@ document.getElementById("wordSearch").addEventListener("input", function() {
         <div class="col-2 col-md-1 col-sm-2" style="text-align:right;">ACTIONS</div>
     </div>
 
-    <!-- Rows -->
-    {{range $i, $d := .Dto.Words}}
-    <div class='row planner-row {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'>
-
-        <!-- Word -->
-        <a class='col-3 col-md-3 col-sm-3 word-chip {{if eq .Status "MASTERED"}}mastered{{end}} {{if eq .Status "LEARNING"}}learning{{end}} {{if eq .Status "NEW"}}new{{end}}'
-            data-bs-toggle="modal"
-            data-bs-target="#word-{{.Id}}">
-            {{.Kanji}}
-        </a>
-
-        <!-- Kana & Meaning -->
-        <div class="col-3 col-md-3 col-sm-3 kana">{{.Kana}}</div>
-        <div class="col-4 col-md-3 col-sm-4 meaning">{{.Meaning}}</div>
-
-        <!-- Mini bar -->
-        <div class="col-md-2 d-none d-md-block">
-            {{if not (eq .Status "MASTERED")}}
-            <div class="mini-bar">
-                <div class="bad" style="width: {{.Display.PercentageN}}%"></div>
-                <div class="good" style="width: {{.Display.PercentageP}}%"></div>
-            </div>
-            {{end}}
-        </div>
-
-        <!-- Actions -->
-        <div class="col-2 col-md-1 col-sm-2 actions">
-            {{if eq .Status "MASTERED"}}
-            <a class="icon-btn icon-btn-unmaster" href="/word/mastered/unset/{{.Id}}" title="Unmaster">⟲</a>
-            {{else}}
-            <a class="icon-btn icon-btn-master" href="/word/mastered/set/{{.Id}}" title="Mark mastered">✓</a>
-            {{end}}
-            <a class="icon-btn icon-btn-delete" href="/word/delete/{{.Id}}" title="Delete">×</a>
-        </div>
-
-        {{template "word_modal" .}}
-
+    <div id="planner-box">
     </div>
-    {{end}}
+
+    <template id="template-row">
+        <div class='row planner-row'>
+            <a class='col-3 col-md-3 col-sm-3 word-chip' data-bs-toggle="modal"></a>
+
+            <div class="col-3 col-md-3 col-sm-3 kana"></div>
+            <div class="col-4 col-md-3 col-sm-4 meaning"></div>
+
+            <div class="col-md-2 d-none d-md-block">
+                <div class="mini-bar">
+                    <div class="bad"></div>
+                    <div class="good"></div>
+                </div>
+            </div>
+
+            <div class="col-2 col-md-1 col-sm-2 actions">
+                <button class="icon-btn icon-btn-master" type="button" title="Mark mastered">✓</button>
+                <button class="icon-btn icon-btn-delete" type="button" title="Delete">×</button>
+            </div>
+
+            <div class="modal fade" tabindex="-1">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                    <div class="modal-content">
+
+                        <div class="modal-header study-modal-header">
+
+                            <!-- Title block -->
+                            <div class="study-title">
+                                <div class="study-kanji"></div>
+                                <div class="study-kana"></div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="study-actions">
+
+                                <button type="button" class="icon-btn btn-mastered">Mastered</a>
+                                <button type="button" class="icon-btn btn-master">Master</a>
+                                <button type="button" class="icon-btn btn-mark">Mark</a>
+
+                                <button type="button" class="icon-btn btn-delete">Delete</button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-body">
+                            <p><strong>Meaning:</strong> <span class="modal-meaning"></span></p>
+                            <hr>
+
+                            <p>
+                            <strong>Kanjis:</strong>
+                            <span class="modal-kanjis"></span>
+                            </p>
+                            <hr>
+
+
+                            <h6>Kanji</h6>
+                            <ul class="modal-kanji">
+                            </ul>
+
+                            <h6>Readings</h6>
+                            <ul class="modal-readings">
+                            </ul>
+
+                            <h6>Senses</h6>
+                            <div class="modal-senses"></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </template>
 
 </div>
+
+<script>
+document.getElementById("wordSearch").addEventListener("input", function() {
+    const q = this.value.toLowerCase();
+
+    document.querySelectorAll(".planner-row").forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none";
+    });
+});
+</script>
+
+<script src="/api.js"></script>
+<script src="/index.js"></script>

@@ -1,18 +1,5 @@
 <link href="/words.css" rel="stylesheet">
 
-<script>
-document.getElementById("wordSearch").addEventListener("input", function() {
-    const q = this.value.toLowerCase();
-
-    document.querySelectorAll(".searchable").forEach(row => {
-        row.style.display =
-            row.textContent.toLowerCase().includes(q)
-                ? ""
-                : "none";
-    });
-});
-</script>
-
 <div class="container py-4">
 
     <div class="study-header">
@@ -74,3 +61,16 @@ document.getElementById("wordSearch").addEventListener("input", function() {
     </div>
 
 </div>
+
+<script>
+document.getElementById("wordSearch").addEventListener("input", function() {
+    const q = this.value.toLowerCase();
+
+    document.querySelectorAll(".searchable").forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none";
+    });
+});
+</script>

@@ -48,7 +48,7 @@ func lookUpAllWordMatches(user logic.User, query string, em bool) []SearchResult
     return retlist
 }
 
-func lookUpWords(word string) (config.Entry, bool) {
+func LookUpWords(word string) (config.Entry, bool) {
     for _, w := range(config.Config.JMdict.Entries) {
         for _, kele := range(w.KEle) {
             if kele.KEB == word {
@@ -238,7 +238,7 @@ func OneWord(w http.ResponseWriter, r *http.Request) {
     renderer.Render(session, w, fil, word)
 }
 
-func getWordMeaning(dictf config.Entry) (string) {
+func GetWordMeaning(dictf config.Entry) (string) {
     // Fill in data [english only...]
     for _, s := range(dictf.Sense) {
         for _, gloss := range(s.Gloss) {
@@ -290,6 +290,66 @@ func parseBulkLine(line string) logic.Word {
     return ret
 }
 
+type BulkInfo struct {
+    Added   []string
+    Exists  []string
+    Failed  []string
+}
+
+func BulkAdd(user logic.User, s string) BulkInfo {
+    var info BulkInfo
+
+    if "" == s {
+        return info
+    }
+
+    ww := logic.Word{}
+    known_words := ww.List(user, true)
+
+    for _, l := range(strings.Split(s, "\n")) {
+        line := strings.TrimSpace(l)
+        if "" != line {
+            bulkline := parseBulkLine(line)
+
+            // Check if word is already in users dictionary...
+            exists := false
+            for _, kw := range(known_words) {
+                if kw.Kanji == bulkline.Kanji {
+                    exists = true
+                }
+            }
+            if exists {
+                info.Exists = append(info.Exists, bulkline.Kanji)
+                continue
+            }
+
+            dictf, ok := LookUpWords(bulkline.Kanji)
+            if ok {
+                bulkline.DictForm = dictf
+
+                if "" == bulkline.Kana && len(dictf.REle) > 0 {
+                    bulkline.Kana = dictf.REle[0].REB
+                }
+
+                if "" == bulkline.Meaning {
+                    bulkline.Meaning = GetWordMeaning(dictf)
+                }
+
+                info.Added = append(info.Added, bulkline.Kanji)
+            } else {
+                info.Failed = append(info.Failed, bulkline.Kanji)
+                bulkline.Status = logic.MASTERY.LOOKUP_FAILED
+            }
+
+            bulkline.Date = time.Now()
+            bulkline.User = user
+            bulkline.Add()
+        }
+    }
+
+    return info
+}
+
 func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
     sess := GetCurrentSession(w, r)
 
@@ -299,63 +359,22 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
     }
 
     lines := r.FormValue("form[words]")
+    if "" == lines {
+        fil, _ := renderer.ReadArtifact("wordsbulk.html", w.Header())
+        renderer.Render(sess, w, fil, nil)
+    }
 
     user := logic.User{}
     user.Find(sess.Auth.Id)
 
-    ww := logic.Word{}
-    known_words := ww.List(user, true)
+    info := BulkAdd(user, lines)
 
-    if "" != lines {
-        for _, l := range(strings.Split(lines, "\n")) {
-            line := strings.TrimSpace(l)
-            if "" != line {
-                bulkline := parseBulkLine(line)
+    sess.Notice.Set(session.NOTICE.INFO, "Words already on list: " + strings.Join(info.Exists, ", "))
+    sess.Notice.Set(session.NOTICE.SUCCESS, "Added: '" + strings.Join(info.Added, ", "))
+    sess.Notice.Set(session.NOTICE.WARNING, "Failed to add: '" + strings.Join(info.Added, ", "))
+    // ...
 
-                // Check if word is already in users dictionary...
-                exists := false
-                for _, kw := range(known_words) {
-                    if kw.Kanji == bulkline.Kanji {
-                        exists = true
-                    }
-                }
-                if exists {
-                    sess.Notice.Set(session.NOTICE.INFO, "Word '" + bulkline.Kanji + "' is already in known list.")
-                    continue
-                }
-
-                dictf, ok := lookUpWords(bulkline.Kanji)
-                if ok {
-                    bulkline.DictForm = dictf
-
-                    if "" == bulkline.Kana && len(dictf.REle) > 0 {
-                        bulkline.Kana = dictf.REle[0].REB
-                    }
-
-                    if "" == bulkline.Meaning {
-                        bulkline.Meaning = getWordMeaning(dictf)
-                    }
-
-                    sess.Notice.Set(session.NOTICE.SUCCESS, "Added '" + bulkline.Kanji + "' successfully.")
-                } else {
-                    sess.Notice.Set(session.NOTICE.WARNING, "Failed to add word: '" + bulkline.Kanji + "' definition not found. Adding to checkup list")
-                    bulkline.Status = logic.MASTERY.LOOKUP_FAILED
-                }
-
-                bulkline.Date = time.Now()
-                bulkline.User = user
-                bulkline.Add()
-            }
-        }
-
-        // ...
-
-        http.Redirect(w, r, "/word", http.StatusSeeOther)
-        return
-    }
-
-    fil, _ := renderer.ReadArtifact("wordsbulk.html", w.Header())
-    renderer.Render(sess, w, fil, nil)
+    http.Redirect(w, r, "/word", http.StatusSeeOther)
 }
 
 func WordSave(w http.ResponseWriter, r *http.Request) {
@@ -373,14 +392,14 @@ func WordSave(w http.ResponseWriter, r *http.Request) {
     kana    := r.FormValue("form[kana]")
     meaning := r.FormValue("form[meaning]")
 
-    dictf, ok := lookUpWords(kanji)
+    dictf, ok := LookUpWords(kanji)
 
     if "" == meaning && ok {
         if len(dictf.REle) > 0 {
             kana = dictf.REle[0].REB
         }
 
-        meaning = getWordMeaning(dictf)
+        meaning = GetWordMeaning(dictf)
     }
 
     if "" != strings.TrimSpace(kanji) || "" != strings.TrimSpace(meaning) {
@@ -399,16 +418,6 @@ func WordSave(w http.ResponseWriter, r *http.Request) {
     }
 
     http.Redirect(w, r, "/", http.StatusSeeOther)
-}
-
-func WordList(w http.ResponseWriter, r *http.Request) {
-    session := GetCurrentSession(w, r)
-
-    if "" == session.Auth.Username {
-        AccessViolation(w, r)
-        return
-    }
-
 }
 
 func WordDelete(w http.ResponseWriter, r *http.Request) {
@@ -433,13 +442,13 @@ func WordDelete(w http.ResponseWriter, r *http.Request) {
     // Remove word from current word store for user..
     words, ok := session.Store.Get("words-learn")
     if ok {
-        findWordInStore(session, words.([]logic.Word), word.Id)
+        FindWordInStore(session, words.([]logic.Word), word.Id)
     }
 
     http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func findWordInStore(session session.Sessioner, words []logic.Word, id string) logic.Word {
+func FindWordInStore(session session.Sessioner, words []logic.Word, id string) logic.Word {
     for i, w := range(words) {
         if w.Id == id {
             word := w
@@ -542,7 +551,7 @@ func WordAnswer(w http.ResponseWriter, r *http.Request) {
     id      := r.PathValue("id")
     answer  := r.PathValue("answer")
 
-    word := findWordInStore(session, words.([]logic.Word), id)
+    word := FindWordInStore(session, words.([]logic.Word), id)
 
     if "" == word.Id {
         http.Redirect(w, r, "/learn", http.StatusSeeOther)
@@ -584,6 +593,11 @@ func WordMaster(w http.ResponseWriter, r *http.Request) {
     } else if "set" == function {
         if logic.MASTERY.LEARNING == word.Status {
             word.Status = logic.MASTERY.MASTERED
+            // Remove word from current word store for user..
+            words, ok := session.Store.Get("words-learn")
+            if ok {
+                FindWordInStore(session, words.([]logic.Word), word.Id)
+            }
         } else {
             word.Status = logic.MASTERY.LEARNING
         }
@@ -591,12 +605,6 @@ func WordMaster(w http.ResponseWriter, r *http.Request) {
         word.Status = logic.MASTERY.UNKNOWN
     }
     word.Update()
-
-    // Remove word from current word store for user..
-    words, ok := session.Store.Get("words-learn")
-    if ok {
-        findWordInStore(session, words.([]logic.Word), word.Id)
-    }
 
     http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
@@ -654,7 +662,7 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
             User: user,
             Kanji: dictf.KEle[0].KEB,
             Kana: dictf.REle[0].REB,
-            Meaning: getWordMeaning(dictf),
+            Meaning: GetWordMeaning(dictf),
             Status: logic.MASTERY.NEW,
             DictForm: dictf,
         }
