@@ -11,6 +11,10 @@
                 kanjis[,meaning][＋]</br>
                 </p>
 
+                <div>
+                    <div id="progress-bar" style="width: 55%; background: #666; height: 10px; display: none;"></div>
+                </div>
+
                 <form method="post">
                     <div class="mb-4">
                         <label for="words" class="form-label fw-semibold">
@@ -38,8 +42,39 @@
                     </div>
                 </form>
 
+                <!-- <button type="button" class="btn btn-primary btn-lg" onclick="submit_words();"> -->
+                <!--     Submit Words Progress bar -->
+                <!-- </button> -->
+
             </div>
         </div>
 
     </div>
 </div>
+
+<script>
+    const pb = document.getElementById('progress-bar')
+    const ta = document.getElementById('words')
+
+    function submit_words() {
+        pb.style.display = ""
+
+        fetch("/api/word/bulk", {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain"
+            },
+            body: ta.value,
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text()
+            })
+            .then(data => console.log(data))
+            .catch(err => {
+                console.error("Fetch error:", err);
+            });
+    }
+</script>

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"nyaccabulary/config"
 	"nyaccabulary/logic"
@@ -133,15 +134,34 @@ func WordBulkAdd(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    lines := r.FormValue("form[words]")
+    l, _ := io.ReadAll(r.Body)
+    lines := string(l)
     if "" == lines {
         AccessViolation(w, r)
+        return
     }
 
     user := logic.User{}
     user.Find(session.Auth.Id)
 
-    write_json(w, pages.BulkAdd(user, lines))
+    w.Header().Set("Content-Type", "text/event-stream")
+    w.Header().Set("Cache-Control", "no-cache")
+    w.Header().Set("Connection", "keep-alive")
+
+    flusher, ok := w.(http.Flusher)
+    if !ok {
+        http.Error(w, "Streaming not supported", http.StatusInternalServerError)
+        return
+    }
+
+    write_json(w, pages.BulkAdd(user, lines, func(i, count int) {
+        write_json(w, struct{
+            Index int
+            Count int
+        }{Index: i, Count: count})
+        flusher.Flush()
+    }))
+    flusher.Flush()
 }
 
 func WordPatch(w http.ResponseWriter, r *http.Request) {

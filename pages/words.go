@@ -279,7 +279,7 @@ type BulkInfo struct {
     Failed  []string
 }
 
-func BulkAdd(user logic.User, s string) BulkInfo {
+func BulkAdd(user logic.User, s string, progress func(int, int)) BulkInfo {
     var info BulkInfo
 
     if "" == s {
@@ -289,7 +289,9 @@ func BulkAdd(user logic.User, s string) BulkInfo {
     ww := logic.Word{}
     known_words := ww.List(user, logic.Filter{Mastered: true})
 
-    for _, l := range(strings.Split(s, "\n")) {
+    lines := strings.Split(s, "\n")
+
+    for i, l := range(lines) {
         line := strings.TrimSpace(l)
         if "" != line {
             bulkline := parseBulkLine(line)
@@ -328,6 +330,9 @@ func BulkAdd(user logic.User, s string) BulkInfo {
             bulkline.User = user
             bulkline.Add()
         }
+        if nil != progress {
+            progress(i, len(lines))
+        }
     }
 
     return info
@@ -350,14 +355,14 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
     user := logic.User{}
     user.Find(sess.Auth.Id)
 
-    info := BulkAdd(user, lines)
+    info := BulkAdd(user, lines, nil)
 
     sess.Notice.Set(session.NOTICE.INFO, "Words already on list: " + strings.Join(info.Exists, ", "))
     sess.Notice.Set(session.NOTICE.SUCCESS, "Added: '" + strings.Join(info.Added, ", "))
     sess.Notice.Set(session.NOTICE.WARNING, "Failed to add: '" + strings.Join(info.Added, ", "))
     // ...
 
-    http.Redirect(w, r, "/word", http.StatusSeeOther)
+    http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
 
 func WordSave(w http.ResponseWriter, r *http.Request) {

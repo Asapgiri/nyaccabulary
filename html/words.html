@@ -30,6 +30,7 @@
 
             <!-- Actions -->
             <div class="study-actions">
+                <button type="button" class="btn btn-outline-primary btn-mini" id="copy-btn">Copy</button>
                 <a href="/word/sync" class="btn btn-outline-primary btn-mini">Sync</a>
                 <a href="/word/bulkadd" class="btn btn-outline-secondary btn-mini">Bulk</a>
                 <a href="/word/pdf?mastered={{.Dto.ShowMastered}}" class="btn btn-outline-success btn-mini">PDF</a>
@@ -71,6 +72,15 @@ document.getElementById("wordSearch").addEventListener("input", function() {
                 ? ""
                 : "none";
     });
+});
+
+document.getElementById("copy-btn").addEventListener("click", function() {
+    const chips = document.getElementsByClassName('chip')
+    text = ""
+    for (let i = 0; i < chips.length; i++) {
+        text += chips[i].innerText + "\n"
+    }
+    navigator.clipboard.writeText(text);
 });
 </script>
 
