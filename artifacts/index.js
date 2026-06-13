@@ -223,7 +223,24 @@ function load_next_batch(btn) {
         })
         .then(() => {
             if (pageing.Current >= (pageing.Count-1)) {
-                btn.remove()
+                btn.parentElement.remove()
+            }
+        })
+    }
+}
+
+function load_all(btn) {
+    if (pageing.Count > 0 && pageing.Current < (pageing.Count-1)) {
+        fetch_paged({
+            page: pageing.Current + 1,
+            limit: pageing.Limit,
+            mastered: true,
+        })
+        .then(() => {
+            if (pageing.Current >= (pageing.Count-1)) {
+                btn.parentElement.remove()
+            } else {
+                load_all(btn)
             }
         })
     }
