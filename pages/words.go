@@ -100,6 +100,7 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // FIXME: Can I get the same from GET?
     filter := ParseFilter(r)
 
     user := logic.User{}
@@ -114,8 +115,6 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
 
     pdf.SetFont("NotoSansJP", "", 12)
     pdf.AddPage()
-
-    // pdf.Ln(5)
 
     for _, word := range words {
         // Check if the word is mastered

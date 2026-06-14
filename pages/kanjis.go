@@ -41,6 +41,19 @@ func trim(pdf *gofpdf.Fpdf, text string, width float64) string {
     return string(runes[:maxRunes])
 }
 
+func statusColor(status string) (r, g, b int) {
+	switch status {
+	case logic.MASTERY.MASTERED:
+		return 46, 125, 50 // green
+	case logic.MASTERY.LEARNING:
+		return 255, 193, 7 // amber
+	case logic.MASTERY.NEW:
+		return 33, 150, 243 // blue
+	default:
+		return 255, 255, 255
+	}
+}
+
 func KanjisPdf(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)
 
@@ -49,6 +62,7 @@ func KanjisPdf(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // FIXME: Can I get the same from GET?
     filter := ParseFilter(r)
 
     user := logic.User{}
@@ -69,11 +83,18 @@ func KanjisPdf(w http.ResponseWriter, r *http.Request) {
     kanjiWidth := cellWidth / 4
     textWidth := (kanjiWidth * 3) - 3
     textHeight := kanjiWidth / 3
-    log.Println(usableWidth, cellWidth, kanjiWidth, textWidth)
 
     pdf.AddPage()
 
     for i, k := range kanjis {
+        r, g, b := statusColor(k.Status)
+        pdf.SetFillColor(r, g, b)
+        pdf.SetTextColor(255, 255, 255)
+        pdf.SetFont("NotoSansJP", "", 7)
+        pdf.CellFormat(1, kanjiWidth-1, "", "", 0, "l", true, 0, "")
+        pdf.SetTextColor(0, 0, 0)
+
+
         pdf.SetFont("NotoSansJP", "", 32)
         pdf.CellFormat(kanjiWidth, kanjiWidth, k.Kanji, "", 0, "L", false, 0, "")
 
