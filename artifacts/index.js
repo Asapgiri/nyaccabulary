@@ -43,6 +43,7 @@ function build_row(data) {
     else if ("LEARNING" == data.Status) {
         planner_row.classList.add("learning");
         word_chip.classList.add("learning");
+        actions_u.textContent = "✓"
     }
     else if ("MASTERED" == data.Status) {
         planner_row.classList.add("mastered");
