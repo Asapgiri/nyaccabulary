@@ -41,6 +41,7 @@ func KanjiList(w http.ResponseWriter, r *http.Request) {
             },
             Stats: Stats{
                 Mastered: int(meta.Mastered),
+                Learning: int(meta.Learning),
                 Count: int(meta.Count),
             },
             Data:   MapKanjiList(kanjis),

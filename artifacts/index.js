@@ -142,13 +142,25 @@ function row_mastered(event) {
 }
 
 function row_master(event) {
-    row_m(event, 'force', increase_mastery)
+    const row = event.srcElement.closest(".planner-row")
+    if (row.classList.contains('learning')) {
+        var change_from_learning = true
+    }
+    row_m(event, 'force', () => {
+        if (change_from_learning) {
+            decrease_marked()
+        }
+        increase_mastery()
+    })
 }
 
 function row_mark(event) {
     row_m(event, 'set', word => {
         if ("MASTERED" == word.Status) {
+            decrease_marked()
             increase_mastery()
+        } else {
+            increase_marked()
         }
     })
 }

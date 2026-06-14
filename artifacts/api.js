@@ -307,17 +307,31 @@ function build_kanji_modal(clone, kanji, fn_mastered, fn_master, fn_mark, fn_del
 const study_progress = document.getElementById('study-progress')
 var stats
 
+function p_stat() {
+    study_progress.innerHTML = `<span class="mastered">${stats.Mastered}</span> / <span class="learning">${stats.Learning}</span> / <span>${stats.Count}</span>`
+}
+
 function set_mastery(s) {
     stats = s
-    study_progress.innerText = `${stats.Mastered} / ${stats.Count}`
+    p_stat()
 }
 
 function increase_mastery() {
     stats.Mastered++
-    study_progress.innerText = `${stats.Mastered} / ${stats.Count}`
+    p_stat()
 }
 
 function decrease_mastery() {
     stats.Mastered--
-    study_progress.innerText = `${stats.Mastered} / ${stats.Count}`
+    p_stat()
+}
+
+function increase_marked() {
+    stats.Learning++
+    p_stat()
+}
+
+function decrease_marked() {
+    stats.Learning--
+    p_stat()
 }

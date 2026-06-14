@@ -20,10 +20,10 @@ func get_meta(db *mongo.Collection, user *User, filter Filter) Meta {
     }
     meta.Count, _ = db.CountDocuments(context.Background(), query)
 
-    query = append(query, bson.E{"status", "MASTERED"})
+    query = bson.D{{"user", user.Id}, {"status", "MASTERED"}}
     meta.Mastered, _ = db.CountDocuments(context.Background(), query)
 
-    query = append(query, bson.E{"status", "LEARNING"})
+    query = bson.D{{"user", user.Id}, {"status", "LEARNING"}}
     meta.Learning, _ = db.CountDocuments(context.Background(), query)
 
     if filter.Limit > 0 {

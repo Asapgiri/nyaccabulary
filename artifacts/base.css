@@ -25,3 +25,11 @@ main {
 .dropdown-menu {
     min-width: 10rem;
 }
+
+.mastered {
+    color: #2e7d32;
+}
+
+.learning {
+    color: #e65100;
+}

@@ -75,13 +75,26 @@ function chip_mastered(event) {
 }
 
 function chip_master(event) {
-    row_m(event, 'force', increase_mastery)
+    row = event.srcElement.closest(".chip")
+    wc = row.querySelector(".kanji-chip")
+    if (wc.classList.contains('learning')) {
+        var change_from_learning = true
+    }
+    row_m(event, 'force', () => {
+        if (change_from_learning) {
+            decrease_marked()
+        }
+        increase_mastery()
+    })
 }
 
 function chip_mark(event) {
     row_m(event, 'set', word => {
         if ("MASTERED" == word.Status) {
+            decrease_marked()
             increase_mastery()
+        } else {
+            increase_marked()
         }
     })
 }

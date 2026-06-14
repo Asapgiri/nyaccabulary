@@ -19,6 +19,7 @@ type Page struct {
 
 type Stats struct {
     Mastered    int
+    Learning    int
     Count       int
     Order       string
 }
