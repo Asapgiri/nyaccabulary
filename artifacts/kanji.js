@@ -110,54 +110,34 @@ function delete_chip(event) {
         });
 }
 
-function fill_chipss(data) {
+function sort(kanjis, method) {
+    kanjis.sort((a, b) => new Date(b.Date) - new Date(a.Date));
+}
+
+function fill_chipss(meta, data) {
     box = document.getElementById('kanji-grid');
 
-    set_mastery(data.Stats)
+    set_mastery(meta)
 
-    for (let i = 0; i < data.Data.length; i++) {
-        box.appendChild(build_chip(data.Data[i]));
-    }
+    data.sort((a, b) => b.Kanji.localeCompare(a.Kanji));
 
-    if (data.Page.Count > 0 && data.Page.Current < (data.Page.Count-1)) {
-        fetch_paged({
-            page: data.Page.Current + 1,
-            limit: data.Page.Limit,
-            mastered: true,
-            sort: {
-                field: "kanji",
-                order: -1,
-            },
-        })
+    for (let i = 0; i < data.length; i++) {
+        box.appendChild(build_chip(data[i]));
     }
 }
 
-function fetch_paged(sender) {
-    fetch("/api/kanji/paged", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(sender)
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json()
-        })
-        .then(data => fill_chipss(data))
-        .catch(err => {
-            console.error("Fetch error:", err);
-        });
-}
+function db_sync_kanjis() {
+    const tx = nyantandb.transaction(["metadata", "kanjis"], "readonly");
+    const kanjiStore = tx.objectStore("kanjis");
+    const metaStore = tx.objectStore("metadata");
 
-fetch_paged({
-    page: 0,
-    limit: 100,
-    mastered: true,
-    sort: {
-        field: "kanji",
-        order: -1,
-    },
-})
+    const metaReq = metaStore.get("kanjisStats")
+    metaReq.onsuccess = function() {
+        meta = metaReq.result
+        const kanjisReq = kanjiStore.getAll()
+        kanjisReq.onsuccess = function() {
+            kanjis = kanjisReq.result
+            fill_chipss(meta, kanjis)
+        }
+    }
+}

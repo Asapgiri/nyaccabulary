@@ -120,6 +120,7 @@ func (kanji *Kanji) List(user User, filter Filter) []Kanji {
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
         Sort: filter.Sort,
+        LastUpdated: filter.LastUpdated,
     })
 
     kanjis, _ := kanji.MapList(ws, slist)

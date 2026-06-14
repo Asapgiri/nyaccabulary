@@ -178,74 +178,30 @@ function delete_row(event) {
         });
 }
 
-var pageing
-
-function fill_rows(data) {
+function fill_rows(meta, data) {
     box = document.getElementById('planner-box');
 
-    set_mastery(data.Stats)
+    set_mastery(meta)
 
-    for (let i = 0; i < data.Data.length; i++) {
-        box.appendChild(build_row(data.Data[i]));
-    }
+    data.sort((a, b) => new Date(b.Date) - new Date(a.Date));
 
-    pageing = data.Page
-}
-
-async function fetch_paged(sender) {
-    return fetch("/api/word/paged", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(sender)
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json()
-        })
-        .then(data => fill_rows(data))
-        .catch(err => {
-            console.error("Fetch error:", err);
-        });
-}
-
-function load_next_batch(btn) {
-    if (pageing.Count > 0 && pageing.Current < (pageing.Count-1)) {
-        fetch_paged({
-            page: pageing.Current + 1,
-            limit: pageing.Limit,
-            mastered: true,
-        })
-        .then(() => {
-            if (pageing.Current >= (pageing.Count-1)) {
-                btn.parentElement.remove()
-            }
-        })
+    for (let i = 0; i < data.length; i++) {
+        box.appendChild(build_row(data[i]));
     }
 }
 
-function load_all(btn) {
-    if (pageing.Count > 0 && pageing.Current < (pageing.Count-1)) {
-        fetch_paged({
-            page: pageing.Current + 1,
-            limit: pageing.Limit,
-            mastered: true,
-        })
-        .then(() => {
-            if (pageing.Current >= (pageing.Count-1)) {
-                btn.parentElement.remove()
-            } else {
-                load_all(btn)
-            }
-        })
+function db_sync_words() {
+    const tx = nyantandb.transaction(["metadata", "words"], "readonly");
+    const wordStore = tx.objectStore("words");
+    const metaStore = tx.objectStore("metadata");
+
+    const metaReq = metaStore.get("wordsStats")
+    metaReq.onsuccess = function() {
+        meta = metaReq.result
+        const wordsReq = wordStore.getAll()
+        wordsReq.onsuccess = function() {
+            words = wordsReq.result
+            fill_rows(meta, words)
+        }
     }
 }
-
-fetch_paged({
-    page: 0,
-    limit: 100,
-    mastered: true,
-})

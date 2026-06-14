@@ -11,6 +11,7 @@ type Filter struct {
     Limit       int
     Mastered    bool
     Sort        dbase.Sort
+    LastUpdated time.Time
 }
 
 type Display struct {

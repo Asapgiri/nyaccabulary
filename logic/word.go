@@ -80,6 +80,7 @@ func (word *Word) List(user User, filter Filter) []Word {
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
         Sort: filter.Sort,
+        LastUpdated: filter.LastUpdated,
     })
 
     words, _ := word.MapList(ws, slist)
