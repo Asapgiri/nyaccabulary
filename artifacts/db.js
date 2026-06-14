@@ -48,7 +48,7 @@ function sync(db, url, stype, callback) {
 
     getTimeRequest.onsuccess = function() {
         // Fallback to 0 (ISO string for 1970) if we've never synced before
-        const lastSynced = getTimeRequest.result || new Date(0).toISOString();
+        const lastSynced = getTimeRequest.result || null;
         console.log("Last sync timestamp was:", lastSynced);
 
         // Step 2: Request ONLY new data from the server
