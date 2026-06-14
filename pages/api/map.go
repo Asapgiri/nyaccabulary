@@ -39,10 +39,6 @@ func (k *Kanji) Map(lk logic.Kanji) {
     k.DictForm      = lk.DictForm
 
     k.Words         = lk.Words
-
-    k.OnStr         = lk.OnStr
-    k.KunStr        = lk.KunStr
-    k.MeaningStr    = lk.MeaningStr
 }
 
 func MapWordList(lwl []logic.Word) []Word {

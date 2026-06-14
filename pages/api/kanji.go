@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"nyaccabulary/logic"
 	"nyaccabulary/pages"
-	"strings"
 )
 
 func KanjiList(w http.ResponseWriter, r *http.Request) {
@@ -34,13 +33,6 @@ func KanjiList(w http.ResponseWriter, r *http.Request) {
         meta := kanji.GetMeta(user, filter)
         kanjis := kanji.List(user, filter)
 
-        for i := range kanjis {
-            k := &kanjis[i]
-            k.OnStr = strings.Join(k.On, ", ")
-            k.KunStr = strings.Join(k.Kun, ", ")
-            k.MeaningStr = strings.Join(k.Meaning, ", ")
-        }
-
         to_send = PagedResponse{
             Page: Page{
                 Current: filter.Page,
@@ -69,6 +61,7 @@ func KanjiPatch(w http.ResponseWriter, r *http.Request) {
     id          := r.PathValue("id")
     function    := r.PathValue("func")
 
+    var rkanji Kanji
     kanji := logic.Kanji{}
     kanji.Find(id)
 
@@ -91,8 +84,9 @@ func KanjiPatch(w http.ResponseWriter, r *http.Request) {
         kanji.Status = logic.MASTERY.UNKNOWN
     }
     kanji.Update()
+    rkanji.Map(kanji)
 
-    write_json(w, kanji)
+    write_json(w, rkanji)
 }
 
 func KanjiDelete(w http.ResponseWriter, r *http.Request) {

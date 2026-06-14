@@ -250,11 +250,11 @@ function build_kanji_modal(clone, kanji, fn_mastered, fn_master, fn_mark, fn_del
 
     modal.id = `kanji-${kanji.Id}`;
     title.textContent = kanji.Kanji;
-    small_text.textContent = `On: ${kanji.OnStr} | Kun: ${kanji.KunStr}`;
+    small_text.textContent = `On: ${kanji.On ? kanji.On.join(", ") : "-"} | Kun: ${kanji.Kun ? kanji.Kun.join(", ") : "-"}`;
     hero.textContent = kanji.Kanji;
     readings.textContent = small_text.textContent;
 
-    meaning.textContent = kanji.MeaningStr
+    meaning.textContent = kanji.Meaning ? kanji.Meaning.join(", ") : "-";
 
     if ("MASTERED" == kanji.Status) {
         action_master.remove()

@@ -171,6 +171,7 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
     id          := r.PathValue("id")
     function    := r.PathValue("func")
 
+    var rword Word
     word := logic.Word{}
     word.Find(id)
 
@@ -198,8 +199,9 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
         word.Status = logic.MASTERY.UNKNOWN
     }
     word.Update()
+    rword.Map(word)
 
-    write_json(w, word)
+    write_json(w, rword)
 }
 
 func WordDelete(w http.ResponseWriter, r *http.Request) {
