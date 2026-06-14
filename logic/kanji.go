@@ -64,6 +64,12 @@ func FetchAndAddKanjisFromWord(word Word) []Kanji {
 
 	for _, r := range(word.Kanji) {
 		if unicode.Is(unicode.Han, r) {
+            // Dont add the same entry twice
+            _, present := kanji_search(kanjis_to_return, string(r))
+            if present {
+                continue
+            }
+
             // Check if already exists
             kanji, ok := kanji_search(kanjis_already_present, string(r))
             if ok {

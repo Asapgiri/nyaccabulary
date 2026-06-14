@@ -180,11 +180,12 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    if "new" == function {
+    switch function {
+    case "new":
         word.Status = logic.MASTERY.UNKNOWN
-    } else if "force" == function {
+    case "force":
         word.Status = logic.MASTERY.MASTERED
-    } else if "set" == function {
+    case "set":
         if logic.MASTERY.LEARNING == word.Status {
             word.Status = logic.MASTERY.MASTERED
             // Remove word from current word store for user..
@@ -195,9 +196,26 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
         } else {
             word.Status = logic.MASTERY.LEARNING
         }
-    } else {
+    case "unset":
         word.Status = logic.MASTERY.UNKNOWN
+    case "update":
+        var update WordAddRequest
+        json.NewDecoder(r.Body).Decode(&update)
+        if "" != update.Kanji {
+            word.Kanji = strings.TrimSpace(update.Kanji)
+            word.Kanjis = logic.FetchAndAddKanjisFromWord(word)
+        }
+        if "" != update.Kana {
+            word.Kana = strings.TrimSpace(update.Kana)
+        }
+        if "" != update.Meaning {
+            word.Meaning = strings.TrimSpace(update.Meaning)
+        }
+    default:
+        write_json(w, Response{Status: "ERROR", Errors: "Undecognised function"})
+        return
     }
+
     word.Update()
     rword.Map(word)
 

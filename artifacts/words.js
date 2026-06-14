@@ -38,16 +38,16 @@ function build_chip(data) {
         word_chip.classList.add("mastered");
     }
 
-    build_word_modal(clone, data, chip_mastered, chip_master, chip_mark, delete_chip)
+    build_word_modal(clone, data, chip_mastered, chip_master, chip_mark, delete_chip, chip_update)
 
     return clone
 }
 
-function row_m(event, fun, after) {
+function row_m(event, fun, after, t_body) {
     row = event.srcElement.closest(".chip")
     wc = row.querySelector(".word-chip")
 
-    fetch(`/api/word/${wc.id}/${fun}`, {method: "POST"})
+    fetch(`/api/word/${wc.id}/${fun}`, {method: "POST", body: JSON.stringify(t_body)})
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -84,6 +84,10 @@ function chip_mark(event) {
             increase_mastery()
         }
     })
+}
+
+function chip_update(event, update) {
+    row_m(event, "update", null, update)
 }
 
 function delete_chip(event) {

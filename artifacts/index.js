@@ -69,7 +69,7 @@ function build_row(data) {
 
     actions_x.addEventListener("click", delete_row);
 
-    build_word_modal(clone, data, row_mastered, row_master, row_mark, delete_row)
+    build_word_modal(clone, data, row_mastered, row_master, row_mark, delete_row, row_update)
 
     return clone
 }
@@ -111,10 +111,10 @@ function add_row() {
         });
 }
 
-function row_m(event, fun, after) {
+function row_m(event, fun, after, t_body) {
     row = event.srcElement.closest(".planner-row")
 
-    fetch(`/api/word/${row.id}/${fun}`, {method: "POST"})
+    fetch(`/api/word/${row.id}/${fun}`, {method: "POST", body: JSON.stringify(t_body)})
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -151,6 +151,10 @@ function row_mark(event) {
             increase_mastery()
         }
     })
+}
+
+function row_update(event, update) {
+    row_m(event, "update", null, update)
 }
 
 function delete_row(event) {

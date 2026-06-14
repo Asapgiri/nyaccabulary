@@ -70,19 +70,24 @@ func KanjiPatch(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    if "new" == function {
+    switch function {
+    case "new":
         kanji.Status = logic.MASTERY.UNKNOWN
-    } else if "force" == function {
+    case "force":
         kanji.Status = logic.MASTERY.MASTERED
-    } else if "set" == function {
+    case "set":
         if logic.MASTERY.LEARNING == kanji.Status {
             kanji.Status = logic.MASTERY.MASTERED
         } else {
             kanji.Status = logic.MASTERY.LEARNING
         }
-    } else {
+    case "unset":
         kanji.Status = logic.MASTERY.UNKNOWN
+    default:
+        write_json(w, Response{Status: "ERROR", Errors: "Undecognised function"})
+        return
     }
+
     kanji.Update()
     rkanji.Map(kanji)
 

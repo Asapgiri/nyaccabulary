@@ -1,5 +1,26 @@
-function buildSenseCards(senses) {
+function createLiButton(set, lival, update) {
+    span = document.createElement(set == lival ? "mark" : "span");
+    span.innerText = lival + " "
+    const li = document.createElement("li");
+    li.appendChild(span)
+    if (set != lival) {
+        button = document.createElement("button")
+        button.classList.add("icon-btn")
+        button.textContent = "set"
+        button.addEventListener("click", event => {
+            word = event.srcElement.parentElement.children[0].textContent
+            modal = event.srcElement.closest(".modal")
+            id = modal.id.split('-')[1]
+            update(event, word)
+        })
+        li.appendChild(button)
+    }
+    return li
+}
+
+function buildSenseCards(word, fn_update) {
     const container = document.createDocumentFragment();
+    const senses = word.DictForm.Sense
 
     for (const sense of senses) {
         const card = document.createElement("div");
@@ -48,15 +69,21 @@ function buildSenseCards(senses) {
             div.className = "mb-1";
 
             const strong = document.createElement("strong");
-            strong.textContent = "Glosses:";
+            strong.textContent = "Glosses: ";
             div.appendChild(strong);
+
+            if (sense.Gloss) {
+                const span = document.createElement("span");
+                span.className = "badge bg-secondary";
+                span.textContent = sense.Gloss[0].Lang;
+                div.appendChild(span);
+            }
 
             const ul = document.createElement("ul");
             ul.className = "mb-0";
 
             for (const g of sense.Gloss) {
-                const li = document.createElement("li");
-                li.textContent = g.Value;
+                const li = createLiButton(word.Meaning, g.Value, (event, data) => fn_update(event, {meaning: data}))
                 ul.appendChild(li);
             }
 
@@ -104,7 +131,7 @@ function buildSenseCards(senses) {
     return container;
 }
 
-function build_word_modal(clone, word, fn_mastered, fn_master, fn_mark, fn_delete) {
+function build_word_modal(clone, word, fn_mastered, fn_master, fn_mark, fn_delete, fn_update) {
     modal = clone.querySelector(".modal")
 
     title = modal.querySelector(".study-kanji")
@@ -152,22 +179,20 @@ function build_word_modal(clone, word, fn_mastered, fn_master, fn_mark, fn_delet
 
     if (word.DictForm.KEle) {
         for (let i = 0; i < word.DictForm.KEle.length; i++) {
-            li = document.createElement("li");
-            li.textContent = word.DictForm.KEle[i].KEB
+            const li = createLiButton(word.Kanji, word.DictForm.KEle[i].KEB, (event, data) => fn_update(event, {kanji: data}))
             kanji.appendChild(li)
         }
     }
 
     if (word.DictForm.REle) {
         for (let i = 0; i < word.DictForm.REle.length; i++) {
-            li = document.createElement("li");
-            li.textContent = word.DictForm.REle[i].REB
+            const li = createLiButton(word.Kana, word.DictForm.REle[i].REB, (event, data) => fn_update(event, {kana: data}))
             readings.appendChild(li)
         }
     }
 
     if (word.DictForm.Sense) {
-        senses.appendChild(buildSenseCards(word.DictForm.Sense))
+        senses.appendChild(buildSenseCards(word, fn_update))
     }
 }
 
