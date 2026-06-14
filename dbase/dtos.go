@@ -13,14 +13,16 @@ type Sort struct {
 }
 
 type Filter struct {
-    Page    int64
-    Limit   int64
-    Sort    Sort
-    Status  []string
+    Page        int64
+    Limit       int64
+    Sort        Sort
+    Status      []string
+    LastUpdated time.Time
 }
 
 type Meta struct {
     Mastered    int64
+    Learning    int64
     Count       int64
     PageCount   int64
 }
@@ -53,6 +55,7 @@ type User struct {
 type Word struct {
     Id              primitive.ObjectID `bson:"_id"`
     Date            time.Time
+    LastUpdated     time.Time
     User            primitive.ObjectID
     Kanji           string
     Kana            string
@@ -68,6 +71,7 @@ type Word struct {
 type Kanji struct {
     Id              primitive.ObjectID `bson:"_id"`
     Date            time.Time
+    LastUpdated     time.Time
     User            primitive.ObjectID
     Kanji           string
     On              []string

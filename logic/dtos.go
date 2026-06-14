@@ -36,6 +36,7 @@ type Word struct {
     _db             dbase.Word
     Id              string
     Date            time.Time
+    LastUpdated     time.Time
     User            User
     Kanji           string
     Kana            string
@@ -53,6 +54,7 @@ type Kanji struct {
     _db             dbase.Kanji
     Id              string
     Date            time.Time
+    LastUpdated     time.Time
     User            User
     Kanji           string
     On              []string

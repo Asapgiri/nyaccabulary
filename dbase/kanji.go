@@ -5,72 +5,19 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // =====================================================================================================================
 // Internal Kanji Listing CRUD
 
 func (kanji *Kanji) GetMeta(user *User, filter Filter) Meta {
-    var meta Meta
-
-    query := bson.D{{"user", user.Id}}
-    if len(filter.Status) > 0 {
-        query = append(query, bson.E{"$or", bson.A{
-            bson.D{{"status", bson.D{{"$in", filter.Status}}}},
-            bson.D{{"status", bson.D{{"$exists", false}}}}, // include docs without status
-        }})
-    }
-    meta.Count, _ = dbKANJI.CountDocuments(context.Background(), query)
-
-    query = append(query, bson.E{"status", "MASTERED"})
-    meta.Mastered, _ = dbKANJI.CountDocuments(context.Background(), query)
-
-    if filter.Limit > 0 {
-        meta.PageCount = meta.Count / filter.Limit
-        if meta.Count % filter.Limit > 0 {
-            meta.PageCount++
-        }
-    }
-
-    return meta
+    return get_meta(dbKANJI, user, filter)
 }
 
 func (kanji *Kanji) List(user *User, filter Filter) ([]Kanji, error) {
     var kanjis []Kanji
-
-    query := bson.D{{"user", user.Id}}
-
-    if len(filter.Status) > 0 {
-        query = append(query, bson.E{"$or", bson.A{
-            bson.D{{"status", bson.D{{"$in", filter.Status}}}},
-            bson.D{{"status", bson.D{{"$exists", false}}}}, // include docs without status
-        }})
-    }
-
-    opts := options.Find()
-
-    if "" != filter.Sort.Field {
-        opts.SetSort(bson.D{{Key: filter.Sort.Field, Value: filter.Sort.Order}})
-    }
-
-    if 0 != filter.Limit {
-        meta := kanji.GetMeta(user, filter)
-        cursor_start := filter.Page * filter.Limit
-        if meta.Count >= cursor_start {
-            opts.SetSkip(cursor_start)
-            opts.SetLimit(filter.Limit)
-        }
-    }
-
-    cursor, err := dbKANJI.Find(context.Background(), query, opts)
-    if nil != err {
-        return kanjis, err
-    }
-    defer cursor.Close(context.Background())
-
-    err = cursor.All(context.Background(), &kanjis)
-
+    meta := kanji.GetMeta(user, filter)
+    err := list(dbKANJI, user, filter, meta, &kanjis)
     return kanjis, err
 }
 

@@ -2,6 +2,7 @@ package logic
 
 import (
 	"nyaccabulary/dbase"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -128,6 +129,8 @@ func (word *Word) Find(id string) {
 }
 
 func (word *Word) Add() error {
+    word.Date = time.Now()
+    word.LastUpdated = time.Now()
     // map the kanjis before anything else.. for unmap to work properly
     word.Kanjis = FetchAndAddKanjisFromWord(*word)
     dword := word.UnMap()
@@ -137,6 +140,7 @@ func (word *Word) Add() error {
 }
 
 func (word *Word) Update() error {
+    word.LastUpdated = time.Now()
     dw := word.UnMap()
     return dw.Update()
 }

@@ -8,7 +8,6 @@ import (
 	"nyaccabulary/logic"
 	"nyaccabulary/pages"
 	"strings"
-	"time"
 )
 
 func WordList(w http.ResponseWriter, r *http.Request) {
@@ -86,7 +85,6 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
 
         if "" != strings.TrimSpace(word_req.Kanji) || "" != strings.TrimSpace(word_req.Meaning) {
             word := logic.Word{
-                Date: time.Now(),
                 User: user,
                 Kanji: word_req.Kanji,
                 Kana: word_req.Kana,
@@ -108,7 +106,6 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
 
         if "" != dictf.EntSeq {
             word := logic.Word{
-                Date: time.Now(),
                 User: user,
                 Kanji: dictf.KEle[0].KEB,
                 Kana: dictf.REle[0].REB,

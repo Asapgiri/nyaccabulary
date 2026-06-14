@@ -41,6 +41,7 @@ func (word *Word) raw_map(dword dbase.Word) {
     word._db            = dword
     word.Id             = dword.Id.Hex()
     word.Date           = dword.Date
+    word.LastUpdated    = dword.LastUpdated
     word.Kanji          = dword.Kanji
     word.Kana           = dword.Kana
     word.Meaning        = dword.Meaning
@@ -107,6 +108,7 @@ func (word *Word) UnMap() dbase.Word {
 
     dword.Id, _         = primitive.ObjectIDFromHex(word.Id)
     dword.Date          = word.Date
+    dword.LastUpdated   = word.LastUpdated
     dword.User, _       = primitive.ObjectIDFromHex(word.User.Id)
     dword.Kanji         = word.Kanji
     dword.Kana          = word.Kana
@@ -128,6 +130,7 @@ func (word *Word) UnMap() dbase.Word {
 func (kanji *Kanji) raw_map(dkanji dbase.Kanji) {
     kanji.Id            = dkanji.Id.Hex()
     kanji.Date          = dkanji.Date
+    kanji.LastUpdated   = dkanji.LastUpdated
     kanji.Kanji         = dkanji.Kanji
     kanji.On            = dkanji.On
     kanji.Kun           = dkanji.Kun
@@ -192,7 +195,8 @@ func (kanji *Kanji) UnMap() dbase.Kanji {
     dkanji := kanji._db
 
     dkanji.Id, _        = primitive.ObjectIDFromHex(kanji.Id)
-    dkanji.Date         = dkanji.Date
+    dkanji.Date         = kanji.Date
+    dkanji.LastUpdated  = kanji.LastUpdated
     dkanji.User, _      = primitive.ObjectIDFromHex(kanji.User.Id)
     dkanji.Kanji        = kanji.Kanji
     dkanji.On           = kanji.On

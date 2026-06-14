@@ -20,7 +20,6 @@ func kanji_search(all []Kanji, s string) (Kanji, bool) {
 
 func kanji_generate_new(s string, user User) Kanji {
     kanji := Kanji{
-        Date: time.Now(),
         User: user,
         Kanji: s,
         Status: MASTERY.NEW,
@@ -152,6 +151,8 @@ func (kanji *Kanji) Find(id string) {
 }
 
 func (kanji *Kanji) Add() error {
+    kanji.Date = time.Now()
+    kanji.LastUpdated = time.Now()
     dkanji := kanji.UnMap()
     dkanji.Id = primitive.NewObjectID()
     kanji.Id = dkanji.Id.Hex()
@@ -159,6 +160,7 @@ func (kanji *Kanji) Add() error {
 }
 
 func (kanji *Kanji) Update() error {
+    kanji.LastUpdated = time.Now()
     dw := kanji.UnMap()
     return dw.Update()
 }

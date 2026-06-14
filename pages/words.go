@@ -424,7 +424,6 @@ func WordSave(w http.ResponseWriter, r *http.Request) {
 
     if "" != strings.TrimSpace(kanji) || "" != strings.TrimSpace(meaning) {
         word := logic.Word{
-            Date: time.Now(),
             User: user,
             Kanji: kanji,
             Kana: kana,
@@ -678,7 +677,6 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
 
     if "" != dictf.EntSeq {
         word := logic.Word{
-            Date: time.Now(),
             User: user,
             Kanji: dictf.KEle[0].KEB,
             Kana: dictf.REle[0].REB,
