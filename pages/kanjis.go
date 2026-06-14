@@ -4,9 +4,102 @@ import (
 	"fmt"
 	"net/http"
 	"nyaccabulary/logic"
+	"slices"
+	"strings"
 
 	"github.com/asapgiri/golib/renderer"
+	"github.com/phpdave11/gofpdf"
 )
+
+func calculateStringWidth(pdf *gofpdf.Fpdf, text string, width float64) int {
+    runes := []rune(text)
+
+    for i := 1; i <= len(runes); i++ {
+        if pdf.GetStringWidth(string(runes[:i])) > width {
+            return i - 1
+        }
+    }
+
+    return len(runes)
+}
+
+func trim(pdf *gofpdf.Fpdf, text string, width float64) string {
+    const suffix = " [...]"
+
+    runes := []rune(text)
+
+    if pdf.GetStringWidth(text) <= width-1 {
+        return text
+    }
+
+    maxRunes := calculateStringWidth(pdf, text, width-3)
+
+    if maxRunes < 0 {
+        maxRunes = 0
+    }
+
+    return string(runes[:maxRunes])
+}
+
+func KanjisPdf(w http.ResponseWriter, r *http.Request) {
+    session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    filter := ParseFilter(r)
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    kanji := logic.Kanji{}
+    kanjis := kanji.List(user, filter)
+    slices.Reverse(kanjis)
+
+    pdf := gofpdf.New("P", "mm", "A4", "")
+    pdf.AddUTF8Font("NotoSansJP", "", "fonts/NotoSansJP-Regular.ttf")
+
+    pageW, _ := pdf.GetPageSize()
+    left, _, right, _ := pdf.GetMargins()
+    usableWidth := pageW - left - right
+
+    cellWidth := usableWidth / 3
+    kanjiWidth := cellWidth / 4
+    textWidth := (kanjiWidth * 3) - 3
+    textHeight := kanjiWidth / 3
+    log.Println(usableWidth, cellWidth, kanjiWidth, textWidth)
+
+    pdf.AddPage()
+
+    for i, k := range kanjis {
+        pdf.SetFont("NotoSansJP", "", 32)
+        pdf.CellFormat(kanjiWidth, kanjiWidth, k.Kanji, "", 0, "L", false, 0, "")
+
+        pdf.SetFont("NotoSansJP", "", 10)
+        text := fmt.Sprintf(
+            "%s\n%s\n%s",
+            trim(pdf, "On: " + strings.Join(k.On, ", "), textWidth),
+            trim(pdf, "Kun: " + strings.Join(k.Kun, ", "), textWidth),
+            trim(pdf, strings.Join(k.Meaning, ", "), textWidth),
+        )
+        x, y := pdf.GetXY()
+        pdf.MultiCell(textWidth, textHeight, text, "", "L", false)
+        // reset cursor next to current cell, if not end of line
+        if 0 != ((i+1) % 3) {
+            pdf.SetXY(x+textWidth, y)
+        } else {
+            x, y := pdf.GetXY()
+            pdf.SetXY(x, y+5)
+        }
+    }
+
+    w.Header().Set("Content-Type", "application/pdf")
+    w.Header().Set("Content-Disposition", `inline; filename="kanjis.pdf"`)
+
+    pdf.Output(w)
+}
 
 func Kanjis(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)

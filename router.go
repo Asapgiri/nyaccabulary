@@ -39,7 +39,7 @@ func setup_routes() {
     http.HandleFunc("GET /kanji",                       pages.Kanjis)
     http.HandleFunc("GET /kanji/{kanji}",               pages.OneKanji)
     http.HandleFunc("GET /kanji/mastered/{func}/{id}",  pages.KanjiMaster)
-    // http.HandleFunc("GET /kanji/pdf",                   pages.KanjisPdf)
+    http.HandleFunc("GET /kanji/pdf",                   pages.KanjisPdf)
 
     // api pages
     http.HandleFunc("POST   /api/word",                 api.WordAdd)
