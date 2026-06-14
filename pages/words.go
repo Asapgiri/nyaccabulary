@@ -39,6 +39,7 @@ func foundInRele(dictf config.Entry, query string, em bool) bool {
 }
 
 func foundInGloss(dictf config.Entry, query string, em bool) bool {
+    query = strings.ToLower(query)
     for _, sense := range(dictf.Sense) {
         for _, gloss := range sense.Gloss {
             if !em && strings.Contains(gloss.Value, query) || em && gloss.Value == query {
