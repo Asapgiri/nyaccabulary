@@ -10,6 +10,7 @@ type Filter struct {
     Page        int
     Limit       int
     Mastered    bool
+    Status      []string
     Sort        dbase.Sort
     LastUpdated time.Time
 }

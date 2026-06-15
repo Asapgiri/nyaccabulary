@@ -41,6 +41,12 @@ span.learning {
     padding: 3px 8px;
 }
 
+#filterBar .form-select,
+#filterBar .form-control {
+    border-radius: 0 !important;
+    font-size: 12px;
+}
+
 /* Header container */
 .study-header {
     display: flex;

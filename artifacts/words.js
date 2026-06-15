@@ -18,6 +18,24 @@ const remove_new = (e) => {
         });
 }
 
+function filter_apply() {
+    const chips = document.getElementsByClassName('chip')
+
+    for (let i = 0; i < chips.length; i++) {
+        word_chip = chips[i].querySelector('.word-chip')
+
+        flen = filter.status.filter(v => word_chip.classList.contains(v.toLowerCase())).length
+        ulen = ['mastered', 'learning', 'new'].filter(v => word_chip.classList.contains(v.toLowerCase())).length
+
+        if (0 == filter.status.length || flen > 0 || (filter.status.includes('UNKNOWN') && 0 == ulen)) {
+            chips[i].style.display = ""
+        }
+        else {
+            chips[i].style.display = "none"
+        }
+    }
+}
+
 function build_chip(data) {
     template = document.getElementById('template-chip');
     clone = template.content.cloneNode(true);
@@ -154,6 +172,7 @@ function fill_chipss(meta, data) {
     }
 
     initResolve()
+    filter_init()
 }
 
 async function db_sync_words(data) {
@@ -170,6 +189,8 @@ async function db_sync_words(data) {
         }
         row.replaceWith(build_chip(d))
     });
+
+    filter_apply();
 }
 
 function db_init_words() {

@@ -11,30 +11,67 @@
         <!-- RIGHT -->
         <div class="study-controls">
 
-            <!-- Toggle -->
-            <form method="GET">
-                <!-- always send false by default -->
-                <input type="hidden" name="mastered" value="{{not .Dto.ShowMastered}}">
-                <label class="study-toggle">
-                    <input class="form-check-input"
-                    type="checkbox"
-                    name="mastered"
-                    id="showMastered"
-                    {{if .Dto.ShowMastered}}checked{{end}}
-                    onchange="this.form.submit()">
-                    Show mastered
-                </label>
-            </form>
-
             <!-- Actions -->
             <div class="study-actions">
                 <button type="button" class="btn btn-outline-primary btn-mini" id="copy-btn">Copy</button>
                 <a href="/word/sync" class="btn btn-outline-primary btn-mini">Sync</a>
                 <a href="/word/bulkadd" class="btn btn-outline-secondary btn-mini">Bulk</a>
-                <a href="/word/pdf?mastered={{.Dto.ShowMastered}}" class="btn btn-outline-success btn-mini">PDF</a>
+                <button class="btn btn-outline-success btn-mini" onclick="pdf()">PDF</button>
             </div>
 
         </div>
+
+    </div>
+
+    <div id="filterBar" class="d-flex flex-wrap align-items-center gap-2 p-2 border">
+
+        <!-- Status Filters -->
+        <div class="btn-group" role="group" aria-label="Status Filters">
+
+            <input type="checkbox" class="btn-check" id="status-mastered" onchange="filterer();">
+            <label class="btn btn-outline-success btn-mini" for="status-mastered">
+                Mastered
+            </label>
+
+            <input type="checkbox" class="btn-check" id="status-learning" onchange="filterer();">
+            <label class="btn btn-outline-warning btn-mini" for="status-learning">
+                Learning
+            </label>
+
+            <input type="checkbox" class="btn-check" id="status-unknown" onchange="filterer();">
+            <label class="btn btn-outline-secondary btn-mini" for="status-unknown">
+                Unknown
+            </label>
+
+            <input type="checkbox" class="btn-check" id="status-new" onchange="filterer();">
+            <label class="btn btn-outline-info btn-mini" for="status-new">
+                New
+            </label>
+
+        </div>
+
+        <!-- Sort Field -->
+        <select id="sortField" class="form-select form-select-sm" style="width: auto;" onchange="filterer();">
+            <option value="date">Date Added</option>
+            <option value="word">Word</option>
+            <option value="mastery">Mastery</option>
+            <option value="last_updated">Last Updated</option>
+        </select>
+
+        <!-- Sort Direction -->
+        <div class="btn-group">
+            <button id="sortAsc" class="btn btn-outline-secondary btn-mini" data-order="1" onclick="filterer(this);">
+                ↑
+            </button>
+
+            <button id="sortDesc" class="btn btn-outline-secondary btn-mini" data-order="-1" onclick="filterer(this);">
+                ↓
+            </button>
+        </div>
+
+        <button id="resetFilter" class="btn btn-outline-secondary btn-mini" onclick="filter_reset();">
+            Reset
+        </button>
 
     </div>
 

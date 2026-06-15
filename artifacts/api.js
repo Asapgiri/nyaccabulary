@@ -341,3 +341,93 @@ function decrease_count() {
     stats.Count--
     p_stat()
 }
+
+function pdf() {
+    url = window.location.pathname + "/pdf/" + JSON.stringify(filter)
+    window.location.href = url;
+}
+
+var filter = {
+    status: [],
+    sort: {
+        field: "date",
+        order: -1,
+    }
+};
+
+function filterer(btn) {
+    mastered = document.getElementById('status-mastered').checked;
+    learning = document.getElementById('status-learning').checked;
+    normal   = document.getElementById('status-unknown').checked;
+    wnew     = document.getElementById('status-new').checked;
+    sortfld  = document.getElementById('sortField').value;
+
+    if (btn) {
+        filter.sort.order = btn.getAttribute('data-order')
+    }
+
+    filter.status = []
+    if (mastered) {
+        filter.status.push("MASTERED")
+    }
+    if (learning) {
+        filter.status.push("LEARNING")
+    }
+    if (normal) {
+        filter.status.push("UNKNOWN")
+        filter.status.push("")
+    }
+    if (wnew) {
+        filter.status.push("NEW")
+    }
+
+    console.log(filter, sortfld)
+    filter_apply();
+
+    const tx = nyantandb.transaction(["metadata"], "readwrite");
+    const metaStore = tx.objectStore("metadata");
+    metaStore.put(filter, "filter")
+    tx.oncomplete = function() {
+        console.log(`Successfully synced filter!`);
+    };
+}
+
+function filter_init() {
+    const tx = nyantandb.transaction(["metadata"], "readonly");
+    const metaStore = tx.objectStore("metadata");
+
+    const freq = metaStore.get("filter")
+    freq.onsuccess = function() {
+        if (freq.result) {
+            filter = freq.result
+            document.getElementById('status-mastered').checked = filter.status.includes("MASTERED");
+            document.getElementById('status-learning').checked = filter.status.includes("LEARNING");
+            document.getElementById('status-unknown').checked = filter.status.includes("UNKNOWN");
+            document.getElementById('status-new').checked = filter.status.includes("NEW");
+            document.getElementById('sortField').value = filter.sort.field
+            filter_apply()
+        }
+    }
+}
+
+function filter_reset() {
+    document.getElementById('status-mastered').checked = false;
+    document.getElementById('status-learning').checked = false;
+    document.getElementById('status-unknown').checked = false;
+    document.getElementById('status-new').checked = false;
+    document.getElementById('sortField').value = "date"
+    filter = {
+        status: [],
+        sort: {
+            field: "date",
+            order: -1,
+        }
+    };
+    filter_apply();
+    const tx = nyantandb.transaction(["metadata"], "readwrite");
+    const metaStore = tx.objectStore("metadata");
+    metaStore.put(filter, "filter")
+    tx.oncomplete = function() {
+        console.log(`Successfully synced filter!`);
+    };
+}

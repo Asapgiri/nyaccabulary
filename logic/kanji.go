@@ -106,14 +106,19 @@ func (kanji *Kanji) List(user User, filter Filter) []Kanji {
         return []Kanji{}
     }
 
-    slist := []string{
-        MASTERY.LEARNING,
-        MASTERY.UNKNOWN,
-        MASTERY.NEW,
-        "",
-    }
-    if filter.Mastered {
-        slist = append(slist, MASTERY.MASTERED)
+    var slist []string
+    if len(filter.Status) > 0 {
+        slist = filter.Status
+    } else {
+        slist = []string{
+            MASTERY.LEARNING,
+            MASTERY.UNKNOWN,
+            MASTERY.NEW,
+            "",
+        }
+        if filter.Mastered {
+            slist = append(slist, MASTERY.MASTERED)
+        }
     }
 
     if "" == filter.Sort.Field {

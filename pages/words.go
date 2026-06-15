@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
@@ -100,8 +101,12 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // FIXME: Can I get the same from GET?
-    filter := ParseFilter(r)
+    f := r.PathValue("filter")
+    log.Println(f)
+
+    filter := logic.Filter{}
+    json.Unmarshal([]byte(f), &filter)
+    log.Println(filter)
 
     user := logic.User{}
     user.Find(session.Auth.Id)
