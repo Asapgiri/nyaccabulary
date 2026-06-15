@@ -161,6 +161,15 @@ func WordBulkAdd(w http.ResponseWriter, r *http.Request) {
     flusher.Flush()
 }
 
+func mark_word_kanjis(word logic.Word) {
+    for _, k := range word.Kanjis {
+        if logic.MASTERY.MASTERED != k.Status && logic.MASTERY.LEARNING != k.Status {
+            k.Status = logic.MASTERY.LEARNING
+            k.Update()
+        }
+    }
+}
+
 func WordPatch(w http.ResponseWriter, r *http.Request) {
     session := pages.GetCurrentSession(w, r)
 
@@ -186,6 +195,7 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
         word.Status = logic.MASTERY.UNKNOWN
     case "force":
         word.Status = logic.MASTERY.MASTERED
+        mark_word_kanjis(word)
     case "set":
         if logic.MASTERY.LEARNING == word.Status {
             word.Status = logic.MASTERY.MASTERED
@@ -197,6 +207,7 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
         } else {
             word.Status = logic.MASTERY.LEARNING
         }
+        mark_word_kanjis(word)
     case "unset":
         word.Status = logic.MASTERY.UNKNOWN
     case "update":
