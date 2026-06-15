@@ -31,16 +31,6 @@ var MASTERY = Mastery{
     },
 }
 
-func formatDisplay(word Word) Display {
-    var display Display
-
-    total := word.DontKnows + word.Knows
-    display.PercentageP = (float64(word.Knows) / float64(total)) * 100
-    display.PercentageN = (float64(word.DontKnows) / float64(total)) * 100
-
-    return display
-}
-
 func (word *Word) GetMeta(user User, filter Filter) dbase.Meta {
     dw := dbase.Word{}
 
@@ -84,9 +74,6 @@ func (word *Word) List(user User, filter Filter) []Word {
     })
 
     words, _ := word.MapList(ws, slist)
-    for _, w := range(words) {
-        w.Display = formatDisplay(w)
-    }
 
     return words
 }

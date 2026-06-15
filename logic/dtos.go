@@ -14,11 +14,6 @@ type Filter struct {
     LastUpdated time.Time
 }
 
-type Display struct {
-    PercentageP     float64
-    PercentageN     float64
-}
-
 type User struct {
     _db             dbase.User
     Id              string
@@ -46,7 +41,6 @@ type Word struct {
     DontKnows       int
     Status          string
     LastShown       time.Time
-    Display         Display
     DictForm        config.Entry
     Kanjis          []Kanji
 }

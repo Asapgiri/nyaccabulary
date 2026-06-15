@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"nyaccabulary/logic"
 )
 
@@ -19,9 +18,6 @@ func (w *Word) Map(lw logic.Word) {
     w.DictForm      = lw.DictForm
 
     w.Kanjis        = MapKanjiListString(lw.Kanjis)
-
-    w.Display.PercentageN   = fmt.Sprintf("%.2f", lw.Display.PercentageN)
-    w.Display.PercentageP   = fmt.Sprintf("%.2f", lw.Display.PercentageP)
 }
 
 func (k *Kanji) Map(lk logic.Kanji) {

@@ -20,7 +20,7 @@ const remove_new = (e) => {
         });
 }
 
-function build_row(data) {
+function build_row(word) {
     template = document.getElementById('template-row');
     clone = template.content.cloneNode(true);
 
@@ -32,20 +32,20 @@ function build_row(data) {
     actions_u = clone.querySelector(".icon-btn-master")
     actions_x = clone.querySelector(".icon-btn-delete")
 
-    planner_row.id = data.Id
+    planner_row.id = word.Id
     actions_u.addEventListener("click", row_mark);
 
-    if ("NEW" == data.Status) {
+    if ("NEW" == word.Status) {
         planner_row.classList.add("new");
         word_chip.classList.add("new");
         word_chip.addEventListener("click", remove_new);
     }
-    else if ("LEARNING" == data.Status) {
+    else if ("LEARNING" == word.Status) {
         planner_row.classList.add("learning");
         word_chip.classList.add("learning");
         actions_u.textContent = "✓"
     }
-    else if ("MASTERED" == data.Status) {
+    else if ("MASTERED" == word.Status) {
         planner_row.classList.add("mastered");
         word_chip.classList.add("mastered");
         mini_bar.remove();
@@ -57,19 +57,20 @@ function build_row(data) {
         actions_u.addEventListener("click", row_mastered);
     }
 
-    word_chip.setAttribute("data-bs-target", `#word-${data.Id}`);
-    word_chip.textContent = data.Kanji
-    kana.textContent = data.Kana
-    meaning.textContent = data.Meaning
+    word_chip.setAttribute("data-bs-target", `#word-${word.Id}`);
+    word_chip.textContent = word.Kanji
+    kana.textContent = word.Kana
+    meaning.textContent = word.Meaning
 
     if (mini_bar) {
-        mini_bar.querySelector(".bad").style.width = `${data.Display.PercentageN}%`;
-        mini_bar.querySelector(".good").style.width = `${data.Display.PercentageP}%`;
+        total = word.DontKnows + word.Knows
+        mini_bar.querySelector(".good").style.width = `${(word.Knows / total) * 100}%`;
+        mini_bar.querySelector(".bad").style.width = `${(word.DontKnows / total) * 100}%`;
     }
 
     actions_x.addEventListener("click", delete_row);
 
-    build_word_modal(clone, data, row_mastered, row_master, row_mark, delete_row, row_update)
+    build_word_modal(clone, word, row_mastered, row_master, row_mark, delete_row, row_update)
 
     return clone
 }

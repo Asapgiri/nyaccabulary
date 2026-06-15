@@ -2,7 +2,6 @@ package api
 
 import (
 	"nyaccabulary/config"
-	// "nyaccabulary/logic"
 	"time"
 )
 
@@ -60,10 +59,6 @@ type Word struct {
     DontKnows       int
     Status          string
     LastShown       time.Time
-    Display         struct{
-        PercentageP string
-        PercentageN string
-    }
     DictForm        config.Entry
     Kanjis          []string
 }
