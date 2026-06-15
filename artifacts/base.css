@@ -56,6 +56,9 @@ span.learning {
     font-size: 22px;
     font-weight: 600;
     letter-spacing: -0.3px;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
 }
 
 /* progress block */
@@ -116,21 +119,14 @@ span.learning {
     background: #fff;
 }
 
-/* Left side (word identity) */
-.study-title {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-}
-
 .study-kanji {
-    font-size: 18px;
+    font-size: 28px;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
 
 .study-kana {
-    font-size: 13px;
+    font-size: 14px;
     color: #666;
     margin-top: 2px;
 }
@@ -229,6 +225,14 @@ span.learning {
     transition: all .15s ease;
 }
 
+.chip .word-chip {
+    font-size: 1.22rem;
+}
+
+.card-body {
+    padding: 0px;
+}
+
 .word-chip:hover {
     background: #f8f9fa;
     border-color: #adb5bd;
@@ -270,4 +274,12 @@ span.learning {
 .form-control,
 .btn {
     border-radius: 0 !important;
+}
+
+.kanji-btn {
+    color: #212529;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all .15s ease;
 }

@@ -1,5 +1,5 @@
 .kanji-hero {
-    font-size: 96px;
+    font-size: 160px;
     font-weight: 700;
     text-align: center;
     line-height: 1;
@@ -13,7 +13,7 @@
 
 .kanji-readings {
     text-align: center;
-    font-size: 14px;
+    font-size: 18px;
     color: #666;
     margin-bottom: 16px;
 }

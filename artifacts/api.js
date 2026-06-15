@@ -171,10 +171,8 @@ function build_word_modal(clone, word, fn_mastered, fn_master, fn_mark, fn_delet
         a = document.createElement("a");
         a.textContent = word.Kanjis[i]
         a.href = `/kanji/${word.Kanjis[i]}`
+        a.className = "icon-btn me-2 mb-2 p-1 kanji-btn"
         kanjis.appendChild(a)
-        if (i < word.Kanjis.length - 1) {
-            kanjis.innerHTML += ", "
-        }
     }
 
     if (word.DictForm.KEle) {
@@ -293,10 +291,8 @@ function build_kanji_modal(clone, kanji, fn_mastered, fn_master, fn_mark, fn_del
         a = document.createElement("a");
         a.textContent = kanji.Words[i]
         a.href = `/word/${kanji.Words[i]}`
+        a.className = "icon-btn me-2 mb-2 p-1 kanji-btn"
         words.appendChild(a)
-        if (i < kanji.Words.length - 1) {
-            words.innerHTML += ", "
-        }
     }
 
     if (kanji.DictForm.ReadingMeaning) {
