@@ -4,6 +4,8 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"net/http"
+	"nyaccabulary/logic"
+	"nyaccabulary/pages"
 
 	"github.com/asapgiri/golib/logger"
 )
@@ -31,4 +33,41 @@ func write_json_gz(w http.ResponseWriter, s any) {
 
 func AccessViolation(w http.ResponseWriter, r *http.Request) {
     write_json(w, Response{Status: "ERROR", Errors: "AccessViolation"})
+}
+
+func Sync(w http.ResponseWriter, r *http.Request) {
+    session := pages.GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    filter := pages.ParseFilter(r)
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    word := logic.Word{}
+    kanji := logic.Kanji{}
+
+    wmeta := word.GetMeta(user, filter)
+    kmeta := kanji.GetMeta(user, filter)
+
+    to_send := SyncResponse{
+        WordStats: Stats{
+            Mastered: int(wmeta.Mastered),
+            Learning: int(wmeta.Learning),
+            Count: int(wmeta.Count),
+        },
+        KanjiStats: Stats{
+            Mastered: int(kmeta.Mastered),
+            Learning: int(kmeta.Learning),
+            Count: int(kmeta.Count),
+        },
+        Words: word.List(user, filter),
+        Kanjis: kanji.List(user, filter),
+    }
+
+    write_json_gz(w, to_send)
 }

@@ -24,12 +24,10 @@ request.onsuccess = function(event) {
     console.log("Database opened successfully!");
     console.log("Update from server...");
 
-    sync(nyantandb, "/api/word/paged", "words", () => {
+    sync(nyantandb, () => {
         if (typeof db_sync_words === "function") {
             db_sync_words();
         }
-    })
-    sync(nyantandb, "/api/kanji/paged", "kanjis", () => {
         if (typeof db_sync_kanjis === "function") {
             db_sync_kanjis();
         }
@@ -40,11 +38,11 @@ request.onerror = function(event) {
     console.error("Database failed to open:", event.target.error);
 };
 
-function sync(db, url, stype, callback) {
+function sync(db, callback) {
     // Step 1: Look up the last sync time from the metadata store
     const tx = db.transaction(["metadata"], "readonly");
     const metaStore = tx.objectStore("metadata");
-    const getTimeRequest = metaStore.get(`lastTimeSync-${stype}`);
+    const getTimeRequest = metaStore.get(`lastTimeSync`);
 
     getTimeRequest.onsuccess = function() {
         // Fallback to 0 (ISO string for 1970) if we've never synced before
@@ -56,7 +54,7 @@ function sync(db, url, stype, callback) {
         const currentSyncTime = new Date().toISOString();
 
 
-        fetch(url, {
+        fetch("/api/sync", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -68,12 +66,13 @@ function sync(db, url, stype, callback) {
         })
             .then(response => response.json())
             .then(data => {
-                const writeTx = db.transaction([stype, "metadata"], "readwrite");
+                const writeTx = db.transaction(["words", "kanjis", "metadata"], "readwrite");
                 const metaStoreToWrite = writeTx.objectStore("metadata");
-                metaStoreToWrite.put(data.Stats, stype+"Stats");
+                metaStoreToWrite.put(data.WordStats, "wordsStats");
+                metaStoreToWrite.put(data.KanjiStats, "kanjisStats");
 
-                if (data.Data.length === 0) {
-                    console.log(`Everything is up to date. No new ${stype}.`);
+                if (data.Words.length === 0 && data.Kanjis.length === 0) {
+                    console.log(`Everything is up to date..`);
                     if (callback) {
                         callback();
                     }
@@ -81,19 +80,24 @@ function sync(db, url, stype, callback) {
                 }
 
                 // Step 3: Write new data AND update the timestamp in a single transaction
-                const dataStore = writeTx.objectStore(stype);
+                const wordsStore = writeTx.objectStore("words");
+                const kanjisStore = writeTx.objectStore("kanjis");
 
                 // Loop and save/update each new data
-                data.Data.forEach(d => {
+                data.Words.forEach(d => {
                     console.log(d)
-                    dataStore.put(d); // 'put' inserts if new, updates if exists
+                    wordsStore.put(d);
+                });
+                data.Kanjis.forEach(d => {
+                    console.log(d)
+                    kanjisStore.put(d);
                 });
 
                 // Step 4: Update the timestamp for the NEXT sync
-                metaStoreToWrite.put(currentSyncTime, `lastTimeSync-${stype}`);
+                metaStoreToWrite.put(currentSyncTime, `lastTimeSync`);
 
                 writeTx.oncomplete = function() {
-                    console.log(`Successfully synced ${data.Data.length} new entries!`);
+                    console.log(`Successfully synced ${data.Words.length}+${data.Kanjis.length} new entries!`);
                     if (callback) {
                         callback();
                     }
