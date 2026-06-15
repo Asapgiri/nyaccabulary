@@ -73,7 +73,8 @@ func KanjisPdf(w http.ResponseWriter, r *http.Request) {
     slices.Reverse(kanjis)
 
     pdf := gofpdf.New("P", "mm", "A4", "")
-    pdf.AddUTF8Font("NotoSansJP", "", "fonts/NotoSansJP-Regular.ttf")
+    font := "UDDigiKyokashoN"
+    pdf.AddUTF8Font(font, "", "fonts/UDDigiKyokashoNK-R-03.ttf")
 
     pageW, _ := pdf.GetPageSize()
     left, _, right, _ := pdf.GetMargins()
@@ -90,15 +91,15 @@ func KanjisPdf(w http.ResponseWriter, r *http.Request) {
         r, g, b := statusColor(k.Status)
         pdf.SetFillColor(r, g, b)
         pdf.SetTextColor(255, 255, 255)
-        pdf.SetFont("NotoSansJP", "", 7)
+        pdf.SetFont(font, "", 7)
         pdf.CellFormat(1, kanjiWidth-1, "", "", 0, "l", true, 0, "")
         pdf.SetTextColor(0, 0, 0)
 
 
-        pdf.SetFont("NotoSansJP", "", 32)
+        pdf.SetFont(font, "", 32)
         pdf.CellFormat(kanjiWidth, kanjiWidth, k.Kanji, "", 0, "L", false, 0, "")
 
-        pdf.SetFont("NotoSansJP", "", 10)
+        pdf.SetFont(font, "", 10)
         text := fmt.Sprintf(
             "%s\n%s\n%s",
             trim(pdf, "On: " + strings.Join(k.On, ", "), textWidth),

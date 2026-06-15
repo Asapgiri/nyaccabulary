@@ -229,10 +229,6 @@ span.learning {
     font-size: 1.22rem;
 }
 
-.card-body {
-    padding: 0px;
-}
-
 .word-chip:hover {
     background: #f8f9fa;
     border-color: #adb5bd;

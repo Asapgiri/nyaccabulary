@@ -111,9 +111,9 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
     slices.Reverse(words)
 
     pdf := gofpdf.New("P", "mm", "A4", "")
-    pdf.AddUTF8Font("NotoSansJP", "", "fonts/NotoSansJP-Regular.ttf")
+    pdf.AddUTF8Font("UDDigiKyokashoN", "", "fonts/UDDigiKyokashoNK-R-03.ttf")
 
-    pdf.SetFont("NotoSansJP", "", 12)
+    pdf.SetFont("UDDigiKyokashoN", "", 12)
     pdf.AddPage()
 
     for _, word := range words {

@@ -1,10 +1,3 @@
-/* ===== Base ===== */
-body {
-    background: #fafafa;
-    color: #111;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-}
-
 /* ===== Topbar ===== */
 .topbar {
     display: flex;
