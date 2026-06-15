@@ -65,8 +65,8 @@ func Sync(w http.ResponseWriter, r *http.Request) {
             Learning: int(kmeta.Learning),
             Count: int(kmeta.Count),
         },
-        Words: word.List(user, filter),
-        Kanjis: kanji.List(user, filter),
+        Words: MapWordList(word.List(user, filter)),
+        Kanjis: MapKanjiList(kanji.List(user, filter)),
     }
 
     write_json_gz(w, to_send)

@@ -2,7 +2,6 @@ package api
 
 import (
 	"nyaccabulary/config"
-	"nyaccabulary/logic"
 	"time"
 )
 
@@ -33,8 +32,8 @@ type PagedResponse struct {
 type SyncResponse struct {
     WordStats   Stats
     KanjiStats  Stats
-    Words       []logic.Word
-    Kanjis      []logic.Kanji
+    Words       []Word
+    Kanjis      []Kanji
 }
 
 type WordAddRequest struct {
