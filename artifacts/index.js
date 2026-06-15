@@ -102,6 +102,7 @@ function add_row() {
         .then(data => {
             box = document.getElementById('planner-box');
             box.prepend(build_row(data));
+            increase_count();
             form_kanji.value = ""
             form_kana.value = ""
             form_meaning.value = ""
@@ -180,13 +181,20 @@ function delete_row(event) {
             return response.json()
         })
         .then(() => {
+            const tx = nyantandb.transaction(["words"], "readwrite");
+            const wordStore = tx.objectStore("words");
+            wordStore.delete(row.id)
             modalel = row.querySelector(".modal");
             modal = bootstrap.Modal.getInstance(modalel);
-            if (modal) {
+            if (modal) {_mastery
                 modal.hide();
             }
-            if (wc.classList.contains("mastered")) {
-                decrease_mastery()
+            decrease_count();
+            if (row.classList.contains("mastered")) {
+                decrease_mastery();
+            }
+            if (row.classList.contains("learning")) {
+                decrease_marked();
             }
             row.remove();
         })

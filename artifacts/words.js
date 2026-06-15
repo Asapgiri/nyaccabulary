@@ -115,13 +115,20 @@ function delete_chip(event) {
             return response.json()
         })
         .then(() => {
+            const tx = nyantandb.transaction(["words"], "readwrite");
+            const wordStore = tx.objectStore("words");
+            wordStore.delete(wc.id)
             modalel = row.querySelector(".modal");
             modal = bootstrap.Modal.getInstance(modalel);
             if (modal) {
                 modal.hide();
             }
+            decrease_count();
             if (wc.classList.contains("mastered")) {
-                decrease_mastery()
+                decrease_mastery();
+            }
+            if (wc.classList.contains("learning")) {
+                decrease_marked();
             }
             row.remove();
         })

@@ -68,6 +68,10 @@ function sync(db, url, stype, callback) {
         })
             .then(response => response.json())
             .then(data => {
+                const writeTx = db.transaction([stype, "metadata"], "readwrite");
+                const metaStoreToWrite = writeTx.objectStore("metadata");
+                metaStoreToWrite.put(data.Stats, stype+"Stats");
+
                 if (data.Data.length === 0) {
                     console.log(`Everything is up to date. No new ${stype}.`);
                     if (callback) {
@@ -77,9 +81,7 @@ function sync(db, url, stype, callback) {
                 }
 
                 // Step 3: Write new data AND update the timestamp in a single transaction
-                const writeTx = db.transaction([stype, "metadata"], "readwrite");
                 const dataStore = writeTx.objectStore(stype);
-                const metaStoreToWrite = writeTx.objectStore("metadata");
 
                 // Loop and save/update each new data
                 data.Data.forEach(d => {
@@ -89,7 +91,6 @@ function sync(db, url, stype, callback) {
 
                 // Step 4: Update the timestamp for the NEXT sync
                 metaStoreToWrite.put(currentSyncTime, `lastTimeSync-${stype}`);
-                metaStoreToWrite.put(data.Stats, stype+"Stats");
 
                 writeTx.oncomplete = function() {
                     console.log(`Successfully synced ${data.Data.length} new entries!`);

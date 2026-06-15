@@ -335,3 +335,13 @@ function decrease_marked() {
     stats.Learning--
     p_stat()
 }
+
+function increase_count() {
+    stats.Count++
+    p_stat()
+}
+
+function decrease_count() {
+    stats.Count--
+    p_stat()
+}
