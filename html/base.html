@@ -29,57 +29,187 @@
 <body class="bg-body">
     <div class="d-flex flex-column min-vh-100">
 
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark px-3">
-            <a class="navbar-brand" href="/">{{.Config.SiteTitle}}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <nav class="bg-dark border-bottom border-secondary shadow-sm">
 
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item">
-                        <a class='nav-link {{if eq .Path "/"}}active{{end}}' href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class='nav-link {{if eq .Path "/search"}}active{{end}}' href="/search">Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class='nav-link {{if eq .Path "/word"}}active{{end}}' href="/word">Word</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class='nav-link {{if eq .Path "/kanji"}}active{{end}}' href="/kanji">Kanji</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class='nav-link {{if eq .Path "/learn"}}active{{end}}' href="/learn">Learn</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class='nav-link {{if eq .Path "/kana"}}active{{end}}' href="/kana">Kana</a>
-                    </li>
-                </ul>
+            <div class="container-fluid">
 
-                <ul class="navbar-nav mb-2 mb-md-0">
-                    <!-- User Dropdown or Login -->
-                    {{if .Auth.Username}}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <!-- TOP BAR -->
+                <div class="d-flex flex-wrap align-items-center gap-2 py-2">
+
+                    <!-- Logo -->
+                    <a href="/"
+                       class="navbar-brand text-white mb-0 d-none d-md-block">
+                        {{.Config.SiteTitle}}
+                    </a>
+
+                    <!-- Search -->
+                    <form action="/search" method="GET" class="flex-grow-1">
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-body border-end-0">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+                            <input
+                                    name="query"
+                                    class="form-control border-start-0"
+                                    placeholder="Search words, kanji, readings..."
+                                    autocomplete="off">
+
+                            <button class="btn btn-light px-4"
+                                    type="submit">
+                                Search
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                    <!-- User -->
+                    <div class="dropdown d-none d-md-block">
+
+                        {{if .Auth.Username}}
+
+                        <button
+                                class="btn btn-outline-light dropdown-toggle"
+                                data-bs-toggle="dropdown">
+
                             {{.Auth.Username}}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="/user/{{.Auth.Username}}">{{.Auth.Username}}</a></li>
+
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="/user/{{.Auth.Username}}">
+                                    Profile
+                                </a>
+                            </li>
+
                             {{if .Auth.IsEditor}}
-                            <li><a class="dropdown-item" href="/admin">admin</a></li>
+                            <li>
+                                <a class="dropdown-item"
+                                   href="/admin">
+                                    Admin
+                                </a>
+                            </li>
                             {{end}}
-                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <a class="dropdown-item"
+                                   href="/logout">
+                                    Logout
+                                </a>
+                            </li>
+
                         </ul>
-                    </li>
-                    {{else}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    {{end}}
-                </ul>
+
+                        {{else}}
+
+                        <a href="/login"
+                           class="btn btn-outline-light">
+                            Login
+                        </a>
+
+                        {{end}}
+
+                    </div>
+
+                </div>
+
+                <!-- NAVIGATION -->
+                <div class="border-top border-secondary">
+
+                    <div class="d-flex flex-wrap align-items-center py-2 gap-1">
+
+                        <a href="/"
+                           class="btn btn-sm {{if eq .Path "/"}}btn-light{{else}}btn-outline-light{{end}}">
+                            Home
+                        </a>
+
+                        <a href="/word"
+                           class="btn btn-sm {{if eq .Path "/word"}}btn-light{{else}}btn-outline-light{{end}}">
+                            Word
+                        </a>
+
+                        <a href="/kanji"
+                           class="btn btn-sm {{if eq .Path "/kanji"}}btn-light{{else}}btn-outline-light{{end}}">
+                            Kanji
+                        </a>
+
+                        <a href="/learn"
+                           class="btn btn-sm {{if eq .Path "/learn"}}btn-light{{else}}btn-outline-light{{end}}">
+                            Learn
+                        </a>
+
+                        <a href="/kana"
+                           class="btn btn-sm {{if eq .Path "/kana"}}btn-light{{else}}btn-outline-light{{end}}">
+                            Kana
+                        </a>
+
+                        <!-- Mobile user menu -->
+                        <div class="dropdown ms-auto d-md-none">
+
+                            {{if .Auth.Username}}
+
+                            <button
+                                    class="btn btn-outline-light btn-sm dropdown-toggle"
+                                    data-bs-toggle="dropdown">
+
+                                {{.Auth.Username}}
+
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="/user/{{.Auth.Username}}">
+                                        Profile
+                                    </a>
+                                </li>
+
+                                {{if .Auth.IsEditor}}
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="/admin">
+                                        Admin
+                                    </a>
+                                </li>
+                                {{end}}
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="/logout">
+                                        Logout
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                            {{else}}
+
+                            <a href="/login"
+                               class="btn btn-outline-light btn-sm">
+                                Login
+                            </a>
+
+                            {{end}}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </nav>
 
         {{range .Notice.Notices}}
