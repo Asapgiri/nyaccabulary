@@ -24,12 +24,19 @@ request.onsuccess = function(event) {
     console.log("Database opened successfully!");
     console.log("Update from server...");
 
-    sync(nyantandb, () => {
+    if (typeof db_init_words === "function") {
+        db_init_words();
+    }
+    if (typeof db_init_kanjis === "function") {
+        db_init_kanjis();
+    }
+
+    sync(nyantandb, (data) => {
         if (typeof db_sync_words === "function") {
-            db_sync_words();
+            db_sync_words(data);
         }
         if (typeof db_sync_kanjis === "function") {
-            db_sync_kanjis();
+            db_sync_kanjis(data);
         }
     })
 };
@@ -99,7 +106,7 @@ function sync(db, callback) {
                 writeTx.oncomplete = function() {
                     console.log(`Successfully synced ${data.Words.length}+${data.Kanjis.length} new entries!`);
                     if (callback) {
-                        callback();
+                        callback(data);
                     }
                 };
 

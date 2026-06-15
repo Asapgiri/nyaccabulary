@@ -137,6 +137,11 @@ function delete_chip(event) {
         });
 }
 
+let initResolve;
+const initFinished = new Promise(resolve => {
+    initResolve = resolve;
+});
+
 function fill_chipss(meta, data) {
     box = document.getElementById('word-grid');
 
@@ -147,9 +152,27 @@ function fill_chipss(meta, data) {
     for (let i = 0; i < data.length; i++) {
         box.appendChild(build_chip(data[i]));
     }
+
+    initResolve()
 }
 
-function db_sync_words() {
+async function db_sync_words(data) {
+    await initFinished;
+
+    if (!data) {
+        return
+    }
+
+    data.Words.forEach(d => {
+        row = document.getElementById(d.Id)
+        if (!row) {
+            box.prepend(build_chip(d));
+        }
+        row.replaceWith(build_chip(d))
+    });
+}
+
+function db_init_words() {
     const tx = nyantandb.transaction(["metadata", "words"], "readonly");
     const wordStore = tx.objectStore("words");
     const metaStore = tx.objectStore("metadata");

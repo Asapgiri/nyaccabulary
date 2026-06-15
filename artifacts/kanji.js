@@ -137,6 +137,11 @@ function sort(kanjis, method) {
     kanjis.sort((a, b) => new Date(b.Date) - new Date(a.Date));
 }
 
+let initResolve;
+const initFinished = new Promise(resolve => {
+    initResolve = resolve;
+});
+
 function fill_chipss(meta, data) {
     box = document.getElementById('word-grid');
 
@@ -147,9 +152,27 @@ function fill_chipss(meta, data) {
     for (let i = 0; i < data.length; i++) {
         box.appendChild(build_chip(data[i]));
     }
+
+    initResolve()
 }
 
-function db_sync_kanjis() {
+async function db_sync_kanjis(data) {
+    await initFinished;
+
+    if (!data) {
+        return
+    }
+
+    data.Words.forEach(d => {
+        row = document.getElementById(d.Id)
+        if (!row) {
+            box.prepend(build_chip(d));
+        }
+        row.replaceWith(build_chip(d))
+    });
+}
+
+function db_init_kanjis() {
     const tx = nyantandb.transaction(["metadata", "kanjis"], "readonly");
     const kanjiStore = tx.objectStore("kanjis");
     const metaStore = tx.objectStore("metadata");

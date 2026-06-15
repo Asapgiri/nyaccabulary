@@ -204,6 +204,11 @@ function delete_row(event) {
         });
 }
 
+let initResolve;
+const initFinished = new Promise(resolve => {
+    initResolve = resolve;
+});
+
 function fill_rows(meta, data) {
     box = document.getElementById('planner-box');
 
@@ -214,9 +219,27 @@ function fill_rows(meta, data) {
     for (let i = 0; i < data.length; i++) {
         box.appendChild(build_row(data[i]));
     }
+
+    initResolve()
 }
 
-function db_sync_words() {
+async function db_sync_words(data) {
+    await initFinished;
+
+    if (!data) {
+        return
+    }
+
+    data.Words.forEach(d => {
+        row = document.getElementById(d.Id)
+        if (!row) {
+            box.prepend(build_row(d));
+        }
+        row.replaceWith(build_row(d))
+    });
+}
+
+function db_init_words() {
     const tx = nyantandb.transaction(["metadata", "words"], "readonly");
     const wordStore = tx.objectStore("words");
     const metaStore = tx.objectStore("metadata");
