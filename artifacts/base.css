@@ -26,10 +26,248 @@ main {
     min-width: 10rem;
 }
 
-.mastered {
+span.mastered {
     color: #2e7d32;
 }
 
-.learning {
+span.learning {
     color: #e65100;
+}
+
+/* buttons minimal */
+.btn-mini {
+    border-radius: 0 !important;
+    font-size: 12px;
+    padding: 3px 8px;
+}
+
+/* Header container */
+.study-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+/* Title block */
+.study-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+}
+
+/* progress block */
+.study-progress {
+    font-size: 14px;
+    color: #444;
+    font-variant-numeric: tabular-nums;
+}
+
+/* right side controls */
+.study-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+/* toggle row */
+.study-toggle {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: #555;
+    gap: 6px;
+}
+
+/* action buttons row */
+.study-actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* Modal improvements */
+.modal-body h6 {
+    margin-top: 1rem;
+    margin-bottom: .5rem;
+    font-weight: 600;
+}
+
+.modal-body .card {
+    border: 1px solid #dee2e6;
+    border-radius: .35rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.modal-body .badge {
+    font-size: .75rem;
+    margin-right: .25rem;
+}
+
+/* Modal header layout */
+.study-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e6e6e6;
+    background: #fff;
+}
+
+/* Left side (word identity) */
+.study-title {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.study-kanji {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.study-kana {
+    font-size: 13px;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* Right side actions */
+.study-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* minimal icon buttons */
+.icon-btn {
+    border: 1px solid #ddd;
+    background: transparent;
+    font-size: 12px;
+    padding: 2px 8px;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    border-color: #000;
+}
+
+/* Semantic actions */
+.icon-btn-master {
+    border-color: #198754;
+    color: #198754;
+}
+
+.icon-btn-master:hover {
+    background: #198754;
+    color: #fff;
+}
+
+.icon-btn-unmaster {
+    border-color: #6c757d;
+    color: #6c757d;
+    position: relative;
+}
+
+.icon-btn-unmaster:hover {
+    background: #6c757d;
+    color: #fff;
+}
+
+.icon-btn-unmaster::after {
+    content: 'Unmark as mastered';
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+}
+
+.icon-btn-unmaster:hover::after { opacity: 1; }
+
+.icon-btn-delete {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.icon-btn-delete:hover {
+    background: #dc3545;
+    color: #fff;
+}
+
+.example-block {
+    border: 1px solid #dee2e6;
+    border-radius: .35rem;
+    padding: .5rem;
+    margin-bottom: .5rem;
+    background: #f8f9fa;
+}
+
+/* Word chip styles */
+.word-chip {
+    display: inline-block;
+    padding: .2rem .4rem;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    border-radius: .35rem;
+    background: #fff;
+    color: #212529;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all .15s ease;
+}
+
+.word-chip:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.word-chip.mastered {
+    background: #e8f5e9;
+    border-color: #66bb6a;
+    color: #2e7d32;
+}
+
+.word-chip.learning {
+    background: #fff3e0;
+    border-color: #ffb74d;
+    color: #e65100;
+}
+
+.word-chip.new {
+    background: #e3f2fd;
+    border-color: #64b5f6;
+    color: #1565c0;
+}
+
+/* Container spacing */
+.word-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+.word-grid a {
+    cursor: pointer;
+}
+
+/* Remove rounding */
+.form-control,
+.btn {
+    border-radius: 0 !important;
 }

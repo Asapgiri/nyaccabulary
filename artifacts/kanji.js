@@ -22,7 +22,7 @@ function build_chip(data) {
     template = document.getElementById('template-chip');
     clone = template.content.cloneNode(true);
 
-    kanji_chip = clone.querySelector(".kanji-chip")
+    kanji_chip = clone.querySelector(".word-chip")
     kanji_chip.id = data.Id
     kanji_chip.setAttribute("data-bs-target", `#kanji-${data.Id}`);
     kanji_chip.textContent = data.Kanji
@@ -45,7 +45,7 @@ function build_chip(data) {
 
 function row_m(event, fun, after) {
     row = event.srcElement.closest(".chip")
-    wc = row.querySelector(".kanji-chip")
+    wc = row.querySelector(".word-chip")
 
     fetch(`/api/kanji/${wc.id}/${fun}`, {method: "POST"})
         .then(response => {
@@ -76,7 +76,7 @@ function chip_mastered(event) {
 
 function chip_master(event) {
     row = event.srcElement.closest(".chip")
-    wc = row.querySelector(".kanji-chip")
+    wc = row.querySelector(".word-chip")
     if (wc.classList.contains('learning')) {
         var change_from_learning = true
     }
@@ -101,7 +101,7 @@ function chip_mark(event) {
 
 function delete_chip(event) {
     row = event.srcElement.closest(".chip")
-    wc = row.querySelector(".kanji-chip")
+    wc = row.querySelector(".word-chip")
 
     fetch(`/api/kanji/${wc.id}/delete`, {method: "POST"})
         .then(response => {
@@ -138,7 +138,7 @@ function sort(kanjis, method) {
 }
 
 function fill_chipss(meta, data) {
-    box = document.getElementById('kanji-grid');
+    box = document.getElementById('word-grid');
 
     set_mastery(meta)
 
