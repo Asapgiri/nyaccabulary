@@ -102,6 +102,20 @@ function sync(db, callback) {
                         callback();
                     }
                 };
+
+                writeTx.onerror = function(event) {
+                    console.error("Transaction error:", event.target.error);
+                    if (callback) {
+                        callback();
+                    }
+                };
+
+                writeTx.onabort = function(event) {
+                    console.error("Transaction aborted:", event.target.error);
+                    if (callback) {
+                        callback();
+                    }
+                };
             })
             .catch(err => {
                 console.error("Sync failed:", err);
