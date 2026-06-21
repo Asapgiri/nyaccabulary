@@ -178,7 +178,9 @@ async function db_sync_kanjis(data) {
         return
     }
 
-    data.Words.forEach(d => {
+    set_mastery(data.KanjiStats)
+
+    data.Kanjis.forEach(d => {
         row = document.getElementById(d.Id)
         if (!row) {
             box.prepend(build_chip(d));

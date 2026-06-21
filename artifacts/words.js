@@ -182,6 +182,8 @@ async function db_sync_words(data) {
         return
     }
 
+    set_mastery(data.WordStats)
+
     data.Words.forEach(d => {
         row = document.getElementById(d.Id)
         if (!row) {

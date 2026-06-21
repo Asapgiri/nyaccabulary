@@ -304,7 +304,9 @@ const study_progress = document.getElementById('study-progress')
 var stats
 
 function p_stat() {
-    study_progress.innerHTML = `<span class="mastered">${stats.Mastered}</span> / <span class="learning">${stats.Learning}</span> / <span>${stats.Count}</span>`
+    if (stats) {
+        study_progress.innerHTML = `<span class="mastered">${stats.Mastered}</span> / <span class="learning">${stats.Learning}</span> / <span>${stats.Count}</span>`
+    }
 }
 
 function set_mastery(s) {
