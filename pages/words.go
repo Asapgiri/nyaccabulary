@@ -116,32 +116,48 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
     slices.Reverse(words)
 
     pdf := gofpdf.New("P", "mm", "A4", "")
-    pdf.AddUTF8Font("UDDigiKyokashoN", "", "fonts/UDDigiKyokashoNK-R-03.ttf")
+    font := "UDDigiKyokashoN"
+    pdf.AddUTF8Font(font, "", "fonts/UDDigiKyokashoNK-R-03.ttf")
 
-    pdf.SetFont("UDDigiKyokashoN", "", 12)
+    pageW, _ := pdf.GetPageSize()
+    left, _, right, _ := pdf.GetMargins()
+    usableWidth := pageW - left - right
+
+    cardWidth := usableWidth / 3
+    textHeight := cardWidth / 3
+
     pdf.AddPage()
 
-    for _, word := range words {
-        // Check if the word is mastered
-        masteredIndicator := ""
-        fillColor := false
-        if logic.MASTERY.MASTERED == word.Status {
-            masteredIndicator = "✓"
-            pdf.SetFillColor(144, 238, 144) // light green RGB
-            fillColor = true
-        } else {
-            pdf.SetFillColor(255, 255, 255) // white background
-            fillColor = false
-        }
+    for i, w := range words {
+        r, g, b := statusColor(w.Status)
+        pdf.SetFillColor(r, g, b)
+        pdf.SetTextColor(255, 255, 255)
+        pdf.SetFont(font, "", 7)
+        pdf.CellFormat(1, textHeight-1, "", "", 0, "l", true, 0, "")
+        pdf.SetTextColor(0, 0, 0)
 
-        // Indicator column
-        pdf.CellFormat(10, 10, masteredIndicator, "", 0, "C", fillColor, 0, "")
-        // Kana
-        pdf.CellFormat(40, 10, word.Kana, "", 0, "L", fillColor, 0, "")
-        // Kanji
-        pdf.CellFormat(40, 10, word.Kanji, "", 0, "L", fillColor, 0, "")
-        // Meaning
-        pdf.MultiCell(110, 10, word.Meaning, "", "L", fillColor)
+        x, y := pdf.GetXY()
+
+        // kanji
+        pdf.SetXY(x+1, y)
+        pdf.SetFont(font, "", 18)
+        pdf.CellFormat(cardWidth-2, textHeight / 3, trim(pdf, w.Kanji, cardWidth-2), "", 0, "L", false, 0, "")
+
+        // kana
+        pdf.SetXY(x+1, y + (textHeight / 3))
+        pdf.SetFont(font, "", 10)
+        pdf.CellFormat(cardWidth-2, textHeight / 3, trim(pdf, w.Kana, cardWidth-2), "", 0, "L", false, 0, "")
+
+        // meaning
+        pdf.SetXY(x+1, y + (textHeight / 3 * 2))
+        pdf.CellFormat(cardWidth-2, textHeight / 3, trim(pdf, w.Meaning, cardWidth-2), "", 0, "L", false, 0, "")
+
+        if 0 != ((i+1) % 3) {
+            pdf.SetXY(x+cardWidth-1, y)
+        } else {
+            x, y := pdf.GetXY()
+            pdf.SetXY(x-usableWidth, y+(textHeight / 3 * 2))
+        }
     }
 
     w.Header().Set("Content-Type", "application/pdf")
