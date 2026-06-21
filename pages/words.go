@@ -394,9 +394,15 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
 
     info := BulkAdd(user, lines, nil)
 
-    sess.Notice.Set(session.NOTICE.INFO, "Words already on list: " + strings.Join(info.Exists, ", "))
-    sess.Notice.Set(session.NOTICE.SUCCESS, "Added: '" + strings.Join(info.Added, ", "))
-    sess.Notice.Set(session.NOTICE.WARNING, "Failed to add: '" + strings.Join(info.Added, ", "))
+    if len(info.Exists) > 0 {
+        sess.Notice.Set(session.NOTICE.INFO, "Words already on list: " + strings.Join(info.Exists, ", "))
+    }
+    if len(info.Added) > 0 {
+        sess.Notice.Set(session.NOTICE.SUCCESS, "Added: '" + strings.Join(info.Added, ", "))
+    }
+    if len(info.Failed) > 0 {
+        sess.Notice.Set(session.NOTICE.WARNING, "Failed to add: '" + strings.Join(info.Failed, ", "))
+    }
     // ...
 
     http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
