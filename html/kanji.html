@@ -90,18 +90,5 @@
     </span>
 </template>
 
-<script>
-document.getElementById("wordSearch").addEventListener("input", function() {
-    const q = this.value.toLowerCase();
-
-    document.querySelectorAll(".searchable").forEach(row => {
-        row.style.display =
-            row.textContent.toLowerCase().includes(q)
-                ? ""
-                : "none";
-    });
-});
-</script>
-
 <script src="/api.js"></script>
 <script src="/kanji.js"></script>

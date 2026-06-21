@@ -416,6 +416,7 @@ function filter_reset() {
     document.getElementById('status-unknown').checked = false;
     document.getElementById('status-new').checked = false;
     document.getElementById('sortField').value = "date"
+    document.getElementById("wordSearch").value = ""
     filter = {
         status: [],
         sort: {
@@ -431,3 +432,14 @@ function filter_reset() {
         console.log(`Successfully synced filter!`);
     };
 }
+
+const wordSearchF = function() {
+    const q = document.getElementById("wordSearch").value.toLowerCase();
+    document.querySelectorAll(".searchable").forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(q)
+                ? ""
+                : "none";
+    });
+}
+document.getElementById("wordSearch").addEventListener("input", wordSearchF);

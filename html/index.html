@@ -95,7 +95,7 @@
 </div>
 
 <template id="template-row">
-    <div class='row planner-row'>
+    <div class='searchable row planner-row'>
         <button class='col-3 col-md-3 col-sm-3 word-chip' data-bs-toggle="modal"></button>
 
         <div class="col-3 col-md-3 col-sm-3 kana"></div>
@@ -117,19 +117,6 @@
 
     </div>
 </template>
-
-<script>
-document.getElementById("wordSearch").addEventListener("input", function() {
-    const q = this.value.toLowerCase();
-
-    document.querySelectorAll(".planner-row").forEach(row => {
-        row.style.display =
-            row.textContent.toLowerCase().includes(q)
-                ? ""
-                : "none";
-    });
-});
-</script>
 
 <script src="/api.js"></script>
 <script src="/index.js"></script>

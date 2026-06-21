@@ -92,22 +92,13 @@
 
 
 <script>
-document.getElementById("wordSearch").addEventListener("input", function() {
-    const q = this.value.toLowerCase();
-
-    document.querySelectorAll(".searchable").forEach(row => {
-        row.style.display =
-            row.textContent.toLowerCase().includes(q)
-                ? ""
-                : "none";
-    });
-});
-
 document.getElementById("copy-btn").addEventListener("click", function() {
     const chips = document.getElementsByClassName('chip')
     text = ""
     for (let i = 0; i < chips.length; i++) {
-        text += chips[i].innerText + "\n"
+        if ("" == chips[i].style.display) {
+            text += chips[i].innerText + "\n"
+        }
     }
     navigator.clipboard.writeText(text);
 });
