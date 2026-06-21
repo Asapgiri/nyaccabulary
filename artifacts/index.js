@@ -254,7 +254,9 @@ async function db_sync_words(data) {
         if (!row) {
             box.prepend(build_row(d));
         }
-        row.replaceWith(build_row(d))
+        else {
+            row.replaceWith(build_row(d))
+        }
     });
 
     filter_apply();

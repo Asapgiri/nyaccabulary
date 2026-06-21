@@ -108,12 +108,22 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
         if "" != dictf.EntSeq {
             word := logic.Word{
                 User: user,
-                Kanji: dictf.KEle[0].KEB,
-                Kana: dictf.REle[0].REB,
                 Meaning: pages.GetWordMeaning(dictf),
                 Status: logic.MASTERY.NEW,
                 DictForm: dictf,
             }
+
+            if len(dictf.KEle) > 0 && len(dictf.REle) > 0 {
+                word.Kanji = dictf.KEle[0].KEB
+                word.Kana = dictf.REle[0].REB
+            } else if len(dictf.REle) > 0 {
+                word.Kanji = dictf.REle[0].REB
+                word.Kana = dictf.REle[0].REB
+            } else {
+                write_json(w, Response{Status: "ERROR", Errors: "KEle and REle lookup failed from entseq: " + entseq})
+                return
+            }
+
             word.Add()
             // FIXME: using kanji for word lookup will fail after some point...
             rword.Map(word)

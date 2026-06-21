@@ -689,14 +689,24 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
     if "" != dictf.EntSeq {
         word := logic.Word{
             User: user,
-            Kanji: dictf.KEle[0].KEB,
-            Kana: dictf.REle[0].REB,
             Meaning: GetWordMeaning(dictf),
             Status: logic.MASTERY.NEW,
             DictForm: dictf,
         }
+
+        if len(dictf.KEle) > 0 && len(dictf.REle) > 0 {
+            word.Kanji = dictf.KEle[0].KEB
+            word.Kana = dictf.REle[0].REB
+        } else if len(dictf.REle) > 0 {
+            word.Kanji = dictf.REle[0].REB
+            word.Kana = dictf.REle[0].REB
+        } else {
+            sess.Notice.Set(session.NOTICE.DANGER, "Failed to add word with entry: " + entseq)
+            http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
+            return
+        }
+
         word.Add()
-        // FIXME: using kanji for word lookup will fail after some point...
         sess.Notice.Set(session.NOTICE.SUCCESS, "Successfully added word: " + word.Kanji)
     } else {
         sess.Notice.Set(session.NOTICE.DANGER, "Failed to add word with entry: " + entseq)

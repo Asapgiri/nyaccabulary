@@ -183,7 +183,9 @@ async function db_sync_kanjis(data) {
         if (!row) {
             box.prepend(build_chip(d));
         }
-        row.replaceWith(build_chip(d))
+        else {
+            row.replaceWith(build_chip(d))
+        }
     });
 
     filter_apply();
