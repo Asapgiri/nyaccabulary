@@ -384,6 +384,9 @@ func BulkAdd(user logic.User, s string, progress func(int, int)) BulkInfo {
             bulkline.Date = time.Now()
             bulkline.User = user
             bulkline.Add()
+            if ok || "" != bulkline.Meaning {
+                known_words = append(known_words, bulkline)
+            }
         }
         if nil != progress {
             progress(i, len(lines))
