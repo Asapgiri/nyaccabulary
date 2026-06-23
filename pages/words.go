@@ -374,6 +374,8 @@ func BulkAdd(user logic.User, s string, progress func(int, int)) BulkInfo {
                 }
 
                 info.Added = append(info.Added, bulkline.Kanji)
+            } else if "" != bulkline.Meaning {
+                info.Added = append(info.Added, bulkline.Kanji)
             } else {
                 info.Failed = append(info.Failed, bulkline.Kanji)
                 bulkline.Status = logic.MASTERY.LOOKUP_FAILED
@@ -411,13 +413,13 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
     info := BulkAdd(user, lines, nil)
 
     if len(info.Exists) > 0 {
-        sess.Notice.Set(session.NOTICE.INFO, "Words already on list: " + strings.Join(info.Exists, ", "))
+        sess.Notice.Set(session.NOTICE.INFO, "Words already on list: '" + strings.Join(info.Exists, ", ") + "'")
     }
     if len(info.Added) > 0 {
-        sess.Notice.Set(session.NOTICE.SUCCESS, "Added: '" + strings.Join(info.Added, ", "))
+        sess.Notice.Set(session.NOTICE.SUCCESS, "Added: '" + strings.Join(info.Added, ", ") + "'")
     }
     if len(info.Failed) > 0 {
-        sess.Notice.Set(session.NOTICE.WARNING, "Failed to add: '" + strings.Join(info.Failed, ", "))
+        sess.Notice.Set(session.NOTICE.WARNING, "Failed to add: '" + strings.Join(info.Failed, ", ") + "'")
     }
     // ...
 
