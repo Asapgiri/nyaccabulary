@@ -42,6 +42,10 @@ func setup_routes() {
     http.HandleFunc("GET /kanji/pdf/{filter}",          pages.KanjisPdf)
 
     // api pages
+    http.HandleFunc("GET    /api/user",                 api.UserAuth)
+    http.HandleFunc("POST   /api/login",                api.Login)
+    http.HandleFunc("POST   /api/logout",               api.Logout)
+
     http.HandleFunc("POST   /api/word",                 api.WordAdd)
     http.HandleFunc("POST   /api/word/{entseq}",        api.WordAdd)
     http.HandleFunc("POST   /api/word/bulk",            api.WordBulkAdd)

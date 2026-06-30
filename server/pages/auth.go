@@ -10,7 +10,10 @@ import (
 func Login(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)
 
-    // FIXME: Cannot do if logged in..
+    if "" != session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
 
     // TODO: login with phone number...?
     uname := r.FormValue("form[userNameOrEmail]")
@@ -43,7 +46,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 func Register(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)
 
-    // FIXME: Cannot do if logged in..
+    if "" != session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
 
     uuname := r.FormValue("form[userUsername]")
     uemail := r.FormValue("form[userEmail]")
@@ -83,6 +89,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 func Logout(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
     session.Delete(w, r)
     http.Redirect(w, r, "/", http.StatusSeeOther)
 }

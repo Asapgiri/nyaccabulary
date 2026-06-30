@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+type LoginRequest struct {
+    Username    string `json:"Username"`
+    Password    string `json:"password"`
+}
+
 type Response struct {
     Status  string
     Errors  any

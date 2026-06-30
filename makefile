@@ -9,6 +9,9 @@ build-release:
 run:
 	./${name}
 
+run-react:
+	cd web; VITE_API_URL="https://localhost:3000" npm run dev
+
 reflex:
 	reflex -R '\.git' -r '\.go' -s -- make build run
 
