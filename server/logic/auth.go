@@ -3,8 +3,8 @@ package logic
 import (
 	"github.com/asapgiri/golib/session"
 	"github.com/asapgiri/golib/logger"
-	"nyaccabulary/config"
-	"nyaccabulary/dbase"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/dbase"
 	"errors"
 	"net/mail"
 	"slices"

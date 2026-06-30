@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"nyaccabulary/config"
-	"nyaccabulary/logic"
-	"nyaccabulary/pages"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/logic"
+	"nyaccabulary/server/pages"
 	"strings"
 )
 

@@ -1,10 +1,10 @@
 name=nyaccabulary
 
 build:
-	go build -buildvcs=false -o ${name}
+	go build -buildvcs=false -o ${name} ./server
 
 build-release:
-	go build -o ${name} -ldflags "-s -w"
+	go build -o ${name} -ldflags "-s -w" ./server
 
 run:
 	./${name}

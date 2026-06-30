@@ -2,8 +2,8 @@ package pages
 
 import (
 	"github.com/asapgiri/golib/renderer"
-	"nyaccabulary/config"
-	"nyaccabulary/logic"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/logic"
 	"net/http"
 )
 

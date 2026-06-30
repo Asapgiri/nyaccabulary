@@ -1,7 +1,7 @@
 package api
 
 import (
-	"nyaccabulary/config"
+	"nyaccabulary/server/config"
 	"time"
 )
 

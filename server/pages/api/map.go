@@ -1,7 +1,7 @@
 package api
 
 import (
-	"nyaccabulary/logic"
+	"nyaccabulary/server/logic"
 )
 
 func (w *Word) Map(lw logic.Word) {

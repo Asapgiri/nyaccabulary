@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"nyaccabulary/config"
-	"nyaccabulary/logic"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/logic"
 	"strconv"
 
 	"github.com/asapgiri/golib/logger"

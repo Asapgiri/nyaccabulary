@@ -1,8 +1,8 @@
 package logic
 
 import (
-	"nyaccabulary/config"
-	"nyaccabulary/dbase"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/dbase"
 	"time"
 	"unicode"
 

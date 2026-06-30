@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"nyaccabulary/logic"
+	"nyaccabulary/server/logic"
 	"slices"
 	"strings"
 

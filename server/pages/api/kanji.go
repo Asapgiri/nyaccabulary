@@ -2,8 +2,8 @@ package api
 
 import (
 	"net/http"
-	"nyaccabulary/logic"
-	"nyaccabulary/pages"
+	"nyaccabulary/server/logic"
+	"nyaccabulary/server/pages"
 )
 
 func KanjiList(w http.ResponseWriter, r *http.Request) {

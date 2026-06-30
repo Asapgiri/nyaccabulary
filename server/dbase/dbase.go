@@ -3,7 +3,7 @@ package dbase
 import (
 	"github.com/asapgiri/golib/logger"
 	"context"
-	"nyaccabulary/config"
+	"nyaccabulary/server/config"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

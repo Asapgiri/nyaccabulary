@@ -1,8 +1,8 @@
 package main
 
 import (
-	"nyaccabulary/config"
-	"nyaccabulary/dbase"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/dbase"
 	"net/http"
 	"os"
 	"strings"

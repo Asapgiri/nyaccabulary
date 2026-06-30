@@ -2,8 +2,8 @@ package main
 
 import (
 	"net/http"
-	"nyaccabulary/pages"
-	"nyaccabulary/pages/api"
+	"nyaccabulary/server/pages"
+	"nyaccabulary/server/pages/api"
 )
 
 func setup_routes() {

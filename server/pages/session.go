@@ -2,8 +2,8 @@ package pages
 
 import (
 	"net/http"
-	"nyaccabulary/config"
-	"nyaccabulary/logic"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/logic"
 
 	"github.com/asapgiri/golib/session"
 )

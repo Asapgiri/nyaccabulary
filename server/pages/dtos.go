@@ -1,8 +1,8 @@
 package pages
 
 import (
-	"nyaccabulary/config"
-	"nyaccabulary/logic"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/logic"
 )
 
 type Pages struct {

@@ -4,8 +4,8 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"net/http"
-	"nyaccabulary/logic"
-	"nyaccabulary/pages"
+	"nyaccabulary/server/logic"
+	"nyaccabulary/server/pages"
 
 	"github.com/asapgiri/golib/logger"
 )

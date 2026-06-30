@@ -2,7 +2,7 @@ package logic
 
 import (
 	"errors"
-	"nyaccabulary/dbase"
+	"nyaccabulary/server/dbase"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

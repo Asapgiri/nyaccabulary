@@ -1,7 +1,7 @@
 package dbase
 
 import (
-	"nyaccabulary/config"
+	"nyaccabulary/server/config"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"

@@ -3,8 +3,8 @@ package pages
 import (
 	"github.com/asapgiri/golib/renderer"
 	"github.com/asapgiri/golib/session"
-	"nyaccabulary/config"
-	"nyaccabulary/logic"
+	"nyaccabulary/server/config"
+	"nyaccabulary/server/logic"
 	"net/http"
 	"slices"
 )

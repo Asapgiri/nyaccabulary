@@ -1,7 +1,7 @@
 package logic
 
 import (
-	"nyaccabulary/dbase"
+	"nyaccabulary/server/dbase"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
