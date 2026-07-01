@@ -1,0 +1,19 @@
+.kanji-hero {
+    font-size: 160px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1;
+    margin: 10px 0 20px 0;
+
+    letter-spacing: 2px;
+
+    /* subtle ink-like feel */
+    color: #111;
+}
+
+.kanji-readings {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 16px;
+}

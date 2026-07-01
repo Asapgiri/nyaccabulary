@@ -1,0 +1,85 @@
+/* ===== Topbar ===== */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* ===== Add form ===== */
+.add-form {
+    margin-bottom: 18px;
+}
+
+.clean-input {
+    border: none;
+    border-bottom: 1px solid #ddd;
+    background: transparent;
+    font-size: 15px;
+    padding: 6px 2px;
+    transition: border-color 0.15s;
+}
+
+.clean-input:focus {
+    outline: none;
+    border-bottom: 1px solid #000;
+}
+
+/* ===== Planner table ===== */
+.planner-header,
+.planner-row {
+    padding: 8px 4px;
+}
+
+.planner-header {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: #777;
+    border-bottom: 1px solid #e6e6e6;
+    margin-top: 10px;
+}
+
+.planner-row {
+    font-size: 15px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.15s;
+}
+
+.planner-row:hover {
+    background: #f5f5f5;
+}
+
+.planner-row.mastered .meaning {
+    color: #666;
+}
+
+/* Muted text */
+.kana { color: #666; }
+.meaning { color: #222; }
+
+/* ===== Mini progress bar ===== */
+.mini-bar {
+    display: flex;
+    height: 6px;
+    width: 100%;
+    background: #eee;
+    margin-top: 4px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.mini-bar .bad { background: #bbb; }
+.mini-bar .good { background: #666; }
+
+/* ===== Actions ===== */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    align-items: center;
+}

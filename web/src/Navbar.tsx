@@ -77,16 +77,6 @@ export default function Navbar() {
                             Kanji
                         </a>
 
-                        <a href="/learn"
-                           className={"btn btn-sm " + (currentPath === "/learn" ? "btn-light" : "btn-outline-light")}>
-                            Learn
-                        </a>
-
-                        <a href="/kana"
-                           className={"btn btn-sm " + (currentPath === "/kana" ? "btn-light" : "btn-outline-light")}>
-                            Kana
-                        </a>
-
                         <div className="dropdown ms-auto d-md-none">
 
                         {user ? (
