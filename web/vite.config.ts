@@ -8,9 +8,9 @@ export default defineConfig({
     port: 4000,
     proxy: {
       "/api": {
-        target: "https://localhost:3000",
+        target: "https://nyantan.net:8443",
         changeOrigin: true,
-        secure: false, // Ignore self-signed certs in development
+        secure: true,
       },
     },
   },
