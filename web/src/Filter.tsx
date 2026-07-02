@@ -9,7 +9,7 @@ export var filter = {
 };
 
 export function pdf() {
-    const url = `${window.location.pathname}/pdf/${JSON.stringify(filter)}`;
+    const url = `/api${window.location.pathname}/pdf/${JSON.stringify(filter)}`;
     window.open(url, "_blank", "noopener,noreferrer");
 }
 

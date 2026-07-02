@@ -55,6 +55,9 @@ func setup_routes() {
     http.HandleFunc("POST   /api/word/{id}/{func}",     api.WordPatch)
     http.HandleFunc("POST   /api/word/{id}/delete",     api.WordDelete)
 
+    http.HandleFunc("GET /api/word/pdf/{filter}",       pages.WordsPdf)
+    http.HandleFunc("GET /api/kanji/pdf/{filter}",      pages.KanjisPdf)
+
     // api kanjis
     //http.HandleFunc("POST   /api/kanji",                api.KanjiAdd)
     http.HandleFunc("GET    /api/kanji",                api.KanjiList)
