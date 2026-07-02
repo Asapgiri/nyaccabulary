@@ -6,6 +6,13 @@ import (
 	"nyaccabulary/server/pages/api"
 )
 
+func cors_ok(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Access-Control-Allow-Origin", "https://localhost")
+    w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+    w.WriteHeader(http.StatusNoContent)
+}
+
 func setup_routes() {
     http.HandleFunc("GET /",                    pages.Root)
     http.HandleFunc("GET /index",               pages.Root)
@@ -45,6 +52,9 @@ func setup_routes() {
     http.HandleFunc("GET    /api/user",                 api.UserAuth)
     http.HandleFunc("POST   /api/login",                api.Login)
     http.HandleFunc("POST   /api/logout",               api.Logout)
+
+    http.HandleFunc("OPTIONS /api/login", cors_ok)
+    http.HandleFunc("OPTIONS /api/logout", cors_ok)
 
     http.HandleFunc("POST   /api/word",                 api.WordAdd)
     http.HandleFunc("POST   /api/word/{entseq}",        api.WordAdd)
