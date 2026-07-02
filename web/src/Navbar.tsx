@@ -1,6 +1,5 @@
 import UserMenu from "./user/UserMenu.tsx"
 import LoginButton from "./user/LoginButton.tsx"
-import MobileUserMenu from "./user/MobileUserMenu.tsx"
 import { useLocation } from "react-router-dom"
 
 import { useAuth } from "./AuthContext"
@@ -80,9 +79,9 @@ export default function Navbar() {
                         <div className="dropdown ms-auto d-md-none">
 
                         {user ? (
-                            <MobileUserMenu />
+                            <UserMenu mobile />
                         ) : (
-                        <LoginButton />
+                        <LoginButton mobile />
                         )}
 
                         </div>

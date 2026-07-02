@@ -1,6 +1,6 @@
-export default function LoginButton() {
+export default function LoginButton({ mobile }: { mobile: boolean }) {
     return (
-        <div className="d-none d-md-block">
+        <div className={mobile ? "" : "d-none d-md-block"}>
             <a href="/login" className="btn btn-outline-light">
                 Login
             </a>
