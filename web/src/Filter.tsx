@@ -1,10 +1,19 @@
-
-import { useEffect, useState } from "react";
-import WordRow from "./components/WordRow"
 import "./index.css"
-import { WordDB } from "./db/words";
 
-export default function Filter() {
+export var filter = {
+    status: [],
+    sort: {
+        field: "date",
+        order: -1,
+    }
+};
+
+export function pdf() {
+    const url = `${window.location.pathname}/pdf/${JSON.stringify(filter)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+}
+
+export function Filter() {
     return (
         <>
             <div id="filterBar" className="d-flex flex-wrap align-items-center gap-2 p-2 border">

@@ -56,8 +56,8 @@ export default function KanjiModal({ kanji }) {
 
                         <h6>Readings &amp; Meanings</h6>
                         <div className="modal-readings">
-                            {kanji.DictForm.ReadingMeaning?.RMGroups?.map(group => (
-                                <>
+                            {kanji.DictForm.ReadingMeaning?.RMGroups?.map((group, gi) => (
+                                <div key={gi}>
                                 {group.Readings && (
                                     <div className="mb-2">
                                         <strong>Readings:</strong>
@@ -68,16 +68,16 @@ export default function KanjiModal({ kanji }) {
                                     </div>
                                 )}
                                 {group.Meanings && (
-                                <div className="mb-2">
-                                    <strong>Meanings:</strong>
-                                    <ul className="mb-1">
-                                        {group.Meanings.map(m => (
-                                            <li key={m.Value}>{m.Value}</li>
-                                        ))}
-                                    </ul>
-                                </div>
+                                    <div className="mb-2">
+                                        <strong>Meanings:</strong>
+                                        <ul className="mb-1">
+                                            {group.Meanings.map((m, i) => (
+                                                <li key={i}>{m.Value}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 )}
-                                </>
+                                </div>
                             ))}
                         </div>
 

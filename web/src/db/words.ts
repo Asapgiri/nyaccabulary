@@ -1,15 +1,22 @@
+export interface Stats {
+    Mastered:   number
+    Learning:   number
+    Count:      number
+    Order:      string
+}
+
 export interface Word {
-    Id:              string
-    Date:            string
-    Kanji:           string
-    Kana:            string
-    Meaning:         string
-    Knows:           number
-    DontKnows:       number
-    Status:          string
-    LastShown:       string
-    DictForm:        any
-    Kanjis:          string[]
+    Id:         string
+    Date:       string
+    Kanji:      string
+    Kana:       string
+    Meaning:    string
+    Knows:      number
+    DontKnows:  number
+    Status:     string
+    LastShown:  string
+    DictForm:   any
+    Kanjis:     string[]
 }
 
 async function post(id: string, action: string, body?: unknown): Promise<Word> {
@@ -77,6 +84,11 @@ export const WordAPI = {
 import { dbPromise } from "./database";
 
 export const WordDB = {
+    async getStats(): Promise<Stats> {
+        const db = await dbPromise;
+        return db.get("metadata", "wordsStats");
+    },
+
     async getAll(): Promise<Word[]> {
         const db = await dbPromise;
         return db.getAll("words");

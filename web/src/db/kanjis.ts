@@ -1,3 +1,10 @@
+export interface Stats {
+    Mastered:   number
+    Learning:   number
+    Count:      number
+    Order:      string
+}
+
 export interface Kanji {
     Id:              string
     Date:            string
@@ -78,6 +85,11 @@ export const KanjiAPI = {
 import { dbPromise } from "./database";
 
 export const KanjiDB = {
+    async getStats(): Promise<Stats> {
+        const db = await dbPromise;
+        return db.get("metadata", "kanjisStats");
+    },
+
     async getAll(): Promise<Kanji[]> {
         const db = await dbPromise;
         return db.getAll("kanjis");

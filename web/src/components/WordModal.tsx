@@ -1,4 +1,6 @@
-export default function WordModal({ word }) {
+import { raw_word_update } from "./update";
+
+export default function WordModal({ word, setSelectedWord, onUpdate, onDelete }) {
 
     if (!word) {
         return (
@@ -9,6 +11,10 @@ export default function WordModal({ word }) {
             </div>
         </div>
         )
+    }
+
+    async function update(t_body) {
+        raw_word_update(word, 'update', t_body, onUpdate, setSelectedWord)
     }
 
     return (
@@ -57,7 +63,7 @@ export default function WordModal({ word }) {
                                     ) : (
                                         <>
                                         <span>{kele.KEB} </span>
-                                        <button className="icon-btn">set</button>
+                                        <button className="icon-btn" onClick={() => update({kanji: kele.KEB})}>set</button>
                                         </>
                                     )}
                                 </li>
@@ -73,7 +79,7 @@ export default function WordModal({ word }) {
                                     ) : (
                                         <>
                                         <span>{rele.REB} </span>
-                                        <button className="icon-btn">set</button>
+                                        <button className="icon-btn" onClick={() => update({kana: rele.REB})}>set</button>
                                         </>
                                     )}
                                 </li>
@@ -122,7 +128,7 @@ export default function WordModal({ word }) {
                                                 ) : (
                                                     <>
                                                     <span>{gloss.Value} </span>
-                                                    <button className="icon-btn">set</button>
+                                                    <button className="icon-btn" onClick={() => update({meaning: gloss.Value})}>set</button>
                                                     </>
                                                 )}
                                             </li>

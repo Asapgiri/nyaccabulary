@@ -3,8 +3,7 @@ import { dbPromise } from "./database";
 export async function sync() {
     const db = await dbPromise;
 
-    const lastSync =
-        (await db.get("metadata", "lastTimeSync")) ?? null;
+    const lastSync = (await db.get("metadata", "lastTimeSync")) ?? null;
 
     const currentSyncTime = new Date().toISOString();
 
@@ -25,6 +24,10 @@ export async function sync() {
         ["words", "kanjis", "metadata"],
         "readwrite"
     );
+
+    const md = tx.objectStore("metadata")
+    md.put(data.WordStats, "wordsStats")
+    md.put(data.KanjiStats, "kanjisStats")
 
     for (const word of data.Words) {
         tx.objectStore("words").put(word);
