@@ -7,6 +7,7 @@ import (
 func (w *Word) Map(lw logic.Word) {
     w.Id            = lw.Id
     w.Date          = lw.Date
+    w.LastUpdated   = lw.LastUpdated
     // w.User          = lw.User
     w.Kanji         = lw.Kanji
     w.Kana          = lw.Kana
@@ -23,6 +24,7 @@ func (w *Word) Map(lw logic.Word) {
 func (k *Kanji) Map(lk logic.Kanji) {
     k.Id            = lk.Id
     k.Date          = lk.Date
+    k.LastUpdated   = lk.LastUpdated
     // k.User          = lk.User
     k.Kanji         = lk.Kanji
     k.On            = lk.On

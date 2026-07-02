@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import WordChip from "./components/WordChip"
 import KanjiModal from "./components/KanjiModal";
 import "./index.css"
 import "./kanji.css"
 import { KanjiDB } from "./db/kanjis";
-import { Filter, pdf } from "./Filter";
+import { Filter, FilterApply, pdf, raw_filter } from "./Filter";
 
 export default function Kanji() {
     const [kanjis, setKanjis] = useState<Kanji[]>([]);
     const [selectedKanji, setSelectedKanji] = useState<Kanji | null>(null);
     const [stats, setStats] = useState<Stats | null>(null);
+    const [filter, setFilter] = useState<TFilter>(raw_filter);
 
     useEffect(() => {
         loadKanjis();
@@ -20,13 +21,15 @@ export default function Kanji() {
         setStats(stats);
 
         const kanjis = await KanjiDB.getAll();
-        kanjis.sort((a, b) => new Date(a.Date) - new Date(b.Date));
         setKanjis(kanjis);
     }
 
     async function update(updated) {
         setKanjis(kanjis => kanjis.map(w => w.Id === updated.Id ? updated : w))
     }
+
+    const filtered = useMemo(() => FilterApply(filter, kanjis), [kanjis, filter]);
+
 
     return (
         <div className="container-fluid py-4 px-3 px-md-4" style={{ maxWidth: "1000px" }}>
@@ -41,15 +44,15 @@ export default function Kanji() {
                 <div className="study-controls">
                     <div className="study-actions">
                         <button type="button" className="btn btn-outline-primary btn-mini" id="copy-btn">Copy</button>
-                        <button className="btn btn-outline-success btn-mini" onClick={pdf}>PDF</button>
+                        <button className="btn btn-outline-success btn-mini" onClick={() => pdf(filter)}>PDF</button>
                     </div>
                 </div>
             </div>
 
-            <Filter />
+            <Filter filter={filter} setFilter={setFilter} />
 
             <div className="word-grid" id="word-grid">
-            {kanjis.map(kanji => (
+            {filtered.map(kanji => (
                 <WordChip key={kanji.Id} word={kanji} wordIsKanji={true}
                     setSelectedWord={setSelectedKanji}
                     onUpdate={update} />

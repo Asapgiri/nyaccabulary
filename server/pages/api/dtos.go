@@ -63,6 +63,7 @@ type User struct {
 type Word struct {
     Id              string
     Date            time.Time
+    LastUpdated     time.Time
     // User            User
     Kanji           string
     Kana            string
@@ -78,6 +79,7 @@ type Word struct {
 type Kanji struct {
     Id              string
     Date            time.Time
+    LastUpdated     time.Time
     // User            User
     Kanji           string
     On              []string
