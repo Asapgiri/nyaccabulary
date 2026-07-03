@@ -283,13 +283,11 @@ func WordDelete(w http.ResponseWriter, r *http.Request) {
 func WordSearch(w http.ResponseWriter, r *http.Request) {
     session := pages.GetCurrentSession(w, r)
 
-    if "" == session.Auth.Username {
-        http.Redirect(w, r, "/", http.StatusSeeOther)
-        return
-    }
-
     user := logic.User{}
-    user.Find(session.Auth.Id)
+
+    if "" != session.Auth.Username {
+        user.Find(session.Auth.Id)
+    }
 
     m := r.URL.Query().Get("exactmatch")
 
