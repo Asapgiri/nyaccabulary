@@ -1,4 +1,4 @@
-import { openDB } from "idb";
+import { deleteDB, openDB } from "idb";
 
 export const dbPromise = openDB("NyanTanDB", 1, {
     upgrade(db) {
@@ -19,3 +19,11 @@ export const dbPromise = openDB("NyanTanDB", 1, {
         }
     },
 });
+
+export async function dbDrop() {
+    if (dbPromise) {
+        const db = await dbPromise;
+        db.close();
+    }
+    return await deleteDB("NyanTanDB");
+}

@@ -1,3 +1,5 @@
+import { apiFetch } from "../api.ts";
+
 export interface Stats {
     Mastered:   number
     Learning:   number
@@ -20,7 +22,7 @@ export interface Word {
 }
 
 async function post(id: string, action: string, body?: unknown): Promise<Word> {
-    const response = await fetch(`/api/word/${id}/${action}`, {
+    const response = await apiFetch(`/api/word/${id}/${action}`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -43,7 +45,7 @@ export const WordAPI = {
         kana: string;
         meaning: string;
     }) {
-        return fetch("/api/word", {
+        return apiFetch("/api/word", {
             method: "POST",
             credentials: "include",
             headers: {
@@ -74,7 +76,7 @@ export const WordAPI = {
     },
 
     async delete(id: string) {
-        await fetch(`/api/word/${id}/delete`, {
+        await apiFetch(`/api/word/${id}/delete`, {
             method: "POST",
             credentials: "include",
         });

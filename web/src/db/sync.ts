@@ -1,4 +1,11 @@
 import { dbPromise } from "./database";
+import { apiFetch } from "../api.ts";
+
+let syncResolve!: () => void;
+
+export const syncFinished = new Promise<void>(resolve => {
+    syncResolve = resolve;
+});
 
 export async function sync() {
     const db = await dbPromise;
@@ -7,7 +14,7 @@ export async function sync() {
 
     const currentSyncTime = new Date().toISOString();
 
-    const response = await fetch("/api/sync", {
+    const response = await apiFetch("/api/sync", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -19,6 +26,10 @@ export async function sync() {
     });
 
     const data = await response.json();
+    if (data.Status && data.Status == "ERROR") {
+        console.log(data)
+        return
+    }
 
     const tx = db.transaction(
         ["words", "kanjis", "metadata"],
@@ -43,4 +54,5 @@ export async function sync() {
     );
 
     await tx.done;
+    syncResolve();
 }

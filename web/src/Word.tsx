@@ -4,6 +4,7 @@ import WordModal from "./components/WordModal";
 import "./index.css"
 import { WordDB } from "./db/words";
 import { Filter, FilterApply, pdf, raw_filter } from "./Filter";
+import { syncFinished } from "./db/sync";
 
 export default function Word() {
     const [words, setWords] = useState<Word[]>([]);
@@ -12,7 +13,7 @@ export default function Word() {
     const [filter, setFilter] = useState<TFilter>(raw_filter);
 
     useEffect(() => {
-        loadWords();
+        loadWords().then(async() => await syncFinished).then(() => loadWords());
     }, []);
 
     async function loadWords() {

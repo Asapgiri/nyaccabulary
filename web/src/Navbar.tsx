@@ -52,7 +52,7 @@ export default function Navbar() {
                     {user ? (
                         <UserMenu />
                     ) : (
-                    <LoginButton />
+                        <LoginButton />
                     )}
 
                 </div>
@@ -81,7 +81,7 @@ export default function Navbar() {
                         {user ? (
                             <UserMenu mobile />
                         ) : (
-                        <LoginButton mobile />
+                            <LoginButton mobile />
                         )}
 
                         </div>

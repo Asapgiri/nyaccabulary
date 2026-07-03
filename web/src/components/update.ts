@@ -1,8 +1,9 @@
 import { WordDB } from "../db/words";
 import { KanjiDB } from "../db/kanjis";
+import { apiFetch } from "../api.ts";
 
 async function raw_update(type, word, fun, t_body, onUpdate, select) {
-    const response = await fetch(`/api/${type}/${word.Id}/${fun}`, {method: "POST", body: JSON.stringify(t_body)})
+    const response = await apiFetch(`/api/${type}/${word.Id}/${fun}`, {method: "POST", body: JSON.stringify(t_body)})
     const data = await response.json()
     console.log(data)
     if (onUpdate) onUpdate(data)

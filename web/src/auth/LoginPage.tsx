@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useAuth } from "../AuthContext.tsx";
+import { apiFetch } from "../api.ts";
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
@@ -12,7 +13,7 @@ export default function LoginPage() {
 
         setError("");
 
-        const response = await fetch("/api/login", {
+        const response = await apiFetch("/api/login", {
             method: "POST",
             credentials: "include",
             headers: {
@@ -26,10 +27,8 @@ export default function LoginPage() {
 
         if (response.ok) {
             const user = await response.json();
-            console.log(user)
             setUser(user);
-
-            //window.location.href = "/";
+            window.location.href = "/";
             return;
         }
 

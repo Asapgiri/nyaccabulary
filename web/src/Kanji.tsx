@@ -5,6 +5,7 @@ import "./index.css"
 import "./kanji.css"
 import { KanjiDB } from "./db/kanjis";
 import { Filter, FilterApply, pdf, raw_filter } from "./Filter";
+import { syncFinished } from "./db/sync";
 
 export default function Kanji() {
     const [kanjis, setKanjis] = useState<Kanji[]>([]);
@@ -14,6 +15,7 @@ export default function Kanji() {
 
     useEffect(() => {
         loadKanjis();
+        loadKanjis().then(async() => await syncFinished).then(() => loadKanjis());
     }, []);
 
     async function loadKanjis() {

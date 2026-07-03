@@ -1,4 +1,5 @@
 // src/auth/AuthContext.tsx
+import { apiFetch } from "./api.ts";
 
 import {
     createContext,
@@ -7,6 +8,7 @@ import {
     ReactNode,
     useEffect,
 } from "react";
+import { dbDrop, dbPromise } from "./db/database.ts";
 
 export interface User {
     Id:              string
@@ -33,12 +35,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         async function loadUser() {
-            const response = await fetch("/api/user", {
+            const db = await dbPromise;
+            const existing_user = await db.get("metadata", "user");
+            setUser(existing_user)
+
+            const response = await apiFetch("/api/user", {
                 credentials: "include",
             });
 
             if (response.ok) {
-                setUser(await response.json());
+                const new_user = await response.json()
+                if (new_user.Username) {
+                    setUser(new_user);
+                    db.put("metadata", new_user, "user")
+                }
+                else {
+                    setUser(null);
+                    db.delete("metadata", "user")
+                }
             }
         }
 
@@ -50,6 +64,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             {children}
         </AuthContext.Provider>
     );
+}
+
+export async function AuthLogout(context: AuthContextType) {
+    console.log('logout')
+    context.setUser(null);
+    dbDrop();
 }
 
 export function useAuth() {

@@ -1,3 +1,5 @@
+import { apiFetch } from "../api.ts";
+
 export interface Stats {
     Mastered:   number
     Learning:   number
@@ -21,7 +23,7 @@ export interface Kanji {
 }
 
 async function post(id: string, action: string, body?: unknown): Promise<Kanji> {
-    const response = await fetch(`/api/kanji/${id}/${action}`, {
+    const response = await apiFetch(`/api/kanji/${id}/${action}`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -44,7 +46,7 @@ export const KanjiAPI = {
         kana: string;
         meaning: string;
     }) {
-        return fetch("/api/kanji", {
+        return apiFetch("/api/kanji", {
             method: "POST",
             credentials: "include",
             headers: {
@@ -75,7 +77,7 @@ export const KanjiAPI = {
     },
 
     async delete(id: string) {
-        await fetch(`/api/kanji/${id}/delete`, {
+        await apiFetch(`/api/kanji/${id}/delete`, {
             method: "POST",
             credentials: "include",
         });
