@@ -13,6 +13,7 @@ export default function Word() {
     const [filter, setFilter] = useState<TFilter>(raw_filter);
 
     useEffect(() => {
+        console.log('sync')
         loadWords().then(async() => await syncFinished).then(() => loadWords());
     }, []);
 

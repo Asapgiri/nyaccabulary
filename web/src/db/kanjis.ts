@@ -25,7 +25,6 @@ export interface Kanji {
 async function post(id: string, action: string, body?: unknown): Promise<Kanji> {
     const response = await apiFetch(`/api/kanji/${id}/${action}`, {
         method: "POST",
-        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -48,7 +47,6 @@ export const KanjiAPI = {
     }) {
         return apiFetch("/api/kanji", {
             method: "POST",
-            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -79,7 +77,6 @@ export const KanjiAPI = {
     async delete(id: string) {
         await apiFetch(`/api/kanji/${id}/delete`, {
             method: "POST",
-            credentials: "include",
         });
     }
 };

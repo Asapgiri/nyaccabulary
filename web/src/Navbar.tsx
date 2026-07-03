@@ -1,6 +1,7 @@
 import UserMenu from "./user/UserMenu.tsx"
 import LoginButton from "./user/LoginButton.tsx"
 import { useLocation } from "react-router-dom"
+import { useSearchParams } from "react-router-dom";
 
 import { useAuth } from "./AuthContext"
 
@@ -9,8 +10,12 @@ const Config = {
 }
 
 export default function Navbar() {
+    const [searchParams] = useSearchParams();
     const { user } = useAuth();
     const currentPath = useLocation().pathname
+
+    const exactmatch = searchParams.get("exactmatch")
+    const query = searchParams.get("query")
 
     return (
         <nav className="bg-black border-bottom border-secondary shadow-sm">
@@ -32,14 +37,15 @@ export default function Navbar() {
                                 <input className="form-check-input"
                                        type="checkbox"
                                        name="exactmatch"
-                                       id="exactmatch" />
+                                       id="exactmatch"
+                                       defaultChecked={exactmatch}/>
                             </span>
 
                             <input
                                     name="query"
                                     className="form-control border-start-0"
                                     placeholder="Search words, kanji, readings..."
-                                    />
+                                    defaultValue={query}/>
 
                             <button className="btn btn-light px-4" type="submit">
                                 Search

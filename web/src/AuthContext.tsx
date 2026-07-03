@@ -39,9 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const existing_user = await db.get("metadata", "user");
             setUser(existing_user)
 
-            const response = await apiFetch("/api/user", {
-                credentials: "include",
-            });
+            const response = await apiFetch("/api/user");
 
             if (response.ok) {
                 const new_user = await response.json()

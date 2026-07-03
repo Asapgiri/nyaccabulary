@@ -15,7 +15,6 @@ export default function LoginPage() {
 
         const response = await apiFetch("/api/login", {
             method: "POST",
-            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

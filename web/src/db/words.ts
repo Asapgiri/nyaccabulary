@@ -24,7 +24,6 @@ export interface Word {
 async function post(id: string, action: string, body?: unknown): Promise<Word> {
     const response = await apiFetch(`/api/word/${id}/${action}`, {
         method: "POST",
-        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -47,7 +46,6 @@ export const WordAPI = {
     }) {
         return apiFetch("/api/word", {
             method: "POST",
-            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -78,7 +76,6 @@ export const WordAPI = {
     async delete(id: string) {
         await apiFetch(`/api/word/${id}/delete`, {
             method: "POST",
-            credentials: "include",
         });
     }
 };

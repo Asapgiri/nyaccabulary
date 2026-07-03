@@ -1,4 +1,133 @@
+import { useEffect, useState } from "react";
+import { apiFetch } from "./api";
+import { sync } from "./db/sync";
 
 export default function Search() {
-    return null
+    const query = window.location.search
+    const [swords, setSwords] = useState<SWord[]>([]);
+
+    async function add(entseq) {
+        const response = await apiFetch(`/api/word/${entseq}`, {method: "POST"})
+        const result = await response.json()
+        setSwords(sw => sw.map(s => s.Result.EntSeq == entseq ? {...s, Word: result } : s))
+        sync();
+    }
+
+    async function search() {
+        const response = await apiFetch(`/api/search?${query.substring(1)}`)
+        const result = (await response.json()).Results
+        setSwords(result)
+    }
+
+    useEffect(() => {
+        search();
+    }, [query])
+
+    return (
+        <div className="container-fluid py-4 px-3 px-md-4" style={{ maxWidth: 1200 }}>
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                {swords.map(({ Result, Word }) => (
+                    <div className="col word-card" key={Result.EntSeq}>
+                        <div
+                            id={`div-${Result.EntSeq}`}
+                            className={[
+                                "card",
+                                "h-100",
+                                "shadow-sm",
+                                Word?.Status === "MASTERED" && "border-success",
+                                Word?.Status === "LEARNING" && "border-warning",
+                                Word?.Status === "NEW" && "border-primary",
+                            ]
+                                .filter(Boolean)
+                                .join(" ")}
+                        >
+                            <div className="card-body d-flex flex-column">
+
+                                <div className="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <div className="fw-bold fs-5">
+                                            {Result.KEle?.map(k => k.KEB).join(", ")}
+                                        </div>
+
+                                        <div className="text-muted small">
+                                            {Result.REle?.map(r => r.REB).join(", ")}
+                                        </div>
+                                    </div>
+
+                                    {Word?.Id ? (
+                                        <span className="badge bg-success">
+                                            Added
+                                        </span>
+                                    ) : (
+                                        <button
+                                            className="btn btn-sm btn-outline-primary"
+                                            title="Add to deck"
+                                            onClick={() => add(Result.EntSeq)}
+                                        >
+                                            Add
+                                        </button>
+                                    )}
+                                </div>
+
+                                <hr className="my-2" />
+
+                                <div className="flex-grow-1 overflow-auto">
+                                    {Result.Sense?.map((sense, index) => (
+                                        <div key={index} className="mb-3">
+
+                                            {sense.Pos?.length > 0 && (
+                                                <div className="mb-1">
+                                                    {sense.Pos.map(pos => (
+                                                        <span
+                                                            key={pos}
+                                                            className="badge bg-secondary me-1"
+                                                        >
+                                                            {pos}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {sense.Gloss?.length > 0 && (
+                                                <ul className="mb-1 small">
+                                                    {sense.Gloss.map((gloss, i) => (
+                                                        <li key={i}>
+                                                            {gloss.Value}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
+
+                                            {sense.Example?.length > 0 && (
+                                                <div className="small text-muted mb-2">
+                                                    {sense.Example.map((example, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className="example-block"
+                                                        >
+                                                            <div>
+                                                                <strong>{example.ExText}</strong>
+                                                            </div>
+
+                                                            {example.ExSent?.map((sent, j) => (
+                                                                <div key={j}>
+                                                                    {sent.Value}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                        </div>
+                                    ))}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    )
 }

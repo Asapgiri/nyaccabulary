@@ -7,7 +7,7 @@ export default function WordRow({ word, setSelectedWord, onUpdate, onDelete }) {
     }
 
     async function row_delete() {
-        raw_word_update(word, 'delete', null, onUpdate, setSelectedWord)
+        raw_word_update(word, 'delete', null, onDelete, null, true)
     }
 
     async function remove_new() {

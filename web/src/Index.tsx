@@ -28,6 +28,10 @@ export default function Index() {
         setWords(words => words.map(w => w.Id === updated.Id ? updated : w))
     }
 
+    async function ddelete(data, id) {
+        setWords(words => words.filter(w => w.Id !== id))
+    }
+
     const filteredWords = useMemo(() => FilterApply(filter, words), [words, filter]);
 
     return (
@@ -73,7 +77,8 @@ export default function Index() {
             {filteredWords.map(word => (
                 <WordRow key={word.Id} word={word}
                     setSelectedWord={setSelectedWord}
-                    onUpdate={update} />
+                    onUpdate={update}
+                    onDelete={ddelete} />
             ))}
             </div>
 

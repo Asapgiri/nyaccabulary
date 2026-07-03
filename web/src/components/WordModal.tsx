@@ -45,7 +45,7 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
                         <p>
                             <strong>Kanjis:</strong>
                             <span className="modal-kanjis">
-                                {word.Kanjis.map(kanji => (
+                                {word.Kanjis?.map(kanji => (
                                     <a key={kanji} href={`/kanji/${kanji}`} className="icon-btn me-2 mb-2 p-1 kanji-btn">
                                         {kanji}
                                     </a>
@@ -56,7 +56,7 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
 
                         <h6>Kanji</h6>
                         <ul className="modal-kanji">
-                            {word.DictForm.KEle?.map(kele => (
+                            {word.DictForm?.KEle?.map(kele => (
                                 <li key={kele.KEB}>
                                     {word.Kanji == kele.KEB ? (
                                         <mark>{kele.KEB} </mark>
@@ -72,7 +72,7 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
 
                         <h6>Readings</h6>
                         <ul className="modal-readings">
-                            {word.DictForm.REle?.map(rele => (
+                            {word.DictForm?.REle?.map(rele => (
                                 <li key={rele.REB}>
                                     {word.Kana == rele.REB ? (
                                         <mark>{rele.REB} </mark>
@@ -88,7 +88,7 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
 
                         <h6>Senses</h6>
                         <div className="modal-senses">
-                            {word.DictForm.Sense?.map((sense, senseIndex) => (
+                            {word.DictForm?.Sense?.map((sense, senseIndex) => (
                             <div key={senseIndex} className="card mb-2">
                                 <div className="card-body mb-2">
 

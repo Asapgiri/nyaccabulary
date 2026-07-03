@@ -7,7 +7,6 @@ export default function LogoutPage() {
     async function logout() {
         await apiFetch("/api/logout", {
             method: "POST",
-            credentials: "include",
         });
         AuthLogout(context);
         window.location.href = "/login";
