@@ -67,7 +67,7 @@ func createResult(dictf config.Entry, words []logic.Word) SearchResult {
     return res
 }
 
-func lookUpAllWordMatches(user logic.User, query string, em bool) []SearchResult {
+func LookUpAllWordMatches(user logic.User, query string, em bool) []SearchResult {
     var retlist []SearchResult
 
     word := logic.Word{}
@@ -679,7 +679,7 @@ func WordSearch(w http.ResponseWriter, r *http.Request) {
     }
 
     if "" != dto.Query {
-        dto.Results = lookUpAllWordMatches(user, dto.Query, dto.ExactMatch)
+        dto.Results = LookUpAllWordMatches(user, dto.Query, dto.ExactMatch)
     }
 
     fil, _ := renderer.ReadArtifact("search.html", w.Header())

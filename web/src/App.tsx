@@ -8,6 +8,7 @@ import Navbar from "./Navbar.tsx"
 import Footer from "./Footer.tsx"
 import LoginPage from "./auth/LoginPage.tsx"
 import LogoutPage from "./auth/LogoutPage.tsx"
+import Search from "./Search.tsx"
 
 import { sync } from "./db/sync.ts"
 
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/" element={<Index />} />
                     <Route path="/word" element={<Word />} />
                     <Route path="/kanji" element={<Kanji />} />
+                    <Route path="/search" element={<Search />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/logout" element={<LogoutPage />} />
                 </Routes>

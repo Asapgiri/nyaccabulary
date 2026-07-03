@@ -274,3 +274,28 @@ func WordDelete(w http.ResponseWriter, r *http.Request) {
 
     write_json(w, Response{Status: "DONE"})
 }
+
+func WordSearch(w http.ResponseWriter, r *http.Request) {
+    session := pages.GetCurrentSession(w, r)
+
+    if "" == session.Auth.Username {
+        http.Redirect(w, r, "/", http.StatusSeeOther)
+        return
+    }
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+
+    m := r.URL.Query().Get("exactmatch")
+
+    dto := pages.DtoSearch{
+        Query: r.URL.Query().Get("query"),
+        ExactMatch: (m == "on" || m == "true"),
+    }
+
+    if "" != dto.Query {
+        dto.Results = pages.LookUpAllWordMatches(user, dto.Query, dto.ExactMatch)
+    }
+
+    write_json_gz(w, dto)
+}
