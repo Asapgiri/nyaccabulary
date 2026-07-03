@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiFetch } from "./api";
 import { sync } from "./db/sync";
+import WordModal from "./components/WordModal";
 
 import './assets/search.css'
 
@@ -8,6 +9,7 @@ export default function Search() {
     const query = window.location.search
     const [swords, setSwords] = useState<SWord[] | null>(null);
     const [loading, setLoading] = useState<bool>(true);
+    const [selectedWord, setSelectedWord] = useState<Word | null>(null);
 
     async function add(entseq) {
         const response = await apiFetch(`/api/word/${entseq}`, {method: "POST"})
@@ -21,6 +23,10 @@ export default function Search() {
         const result = (await response.json()).Results
         setSwords(result)
         setLoading(false) // loading finished
+    }
+
+    async function update(updated) {
+        setSwords(sw => sw.map(w => w.Word.Id == updated.Id ? ({...w, Word: updated }) : w))
     }
 
     useEffect(() => {
@@ -79,7 +85,15 @@ export default function Search() {
                             <div className="card-body d-flex flex-column">
 
                                 <div className="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
+                                    <div style={{ cursor: Word.Id ? "pointer" : "default" }}
+                                         role={Word.Id ? "button" : undefined}
+                                         tabIndex={Word.Id ? 0 : undefined}
+                                         onKeyDown={(e) => { if (Word.Id && e.key === "Enter") setSelectedWord(Word); }}
+                                         {...(Word.Id && {
+                                            "data-bs-toggle": "modal",
+                                            "data-bs-target": "#word-modal",
+                                            onClick: () => setSelectedWord(Word),
+                                         })}>
                                         <div className="fw-bold fs-5">
                                             {Result.KEle?.map(k => k.KEB).join(", ")}
                                         </div>
@@ -163,6 +177,9 @@ export default function Search() {
                     </div>
                 ))}
             </div>
+
+            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} />
+
         </div>
     )
 }

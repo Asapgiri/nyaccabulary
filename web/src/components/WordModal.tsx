@@ -17,6 +17,8 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
         raw_word_update(word, 'update', t_body, onUpdate, setSelectedWord)
     }
 
+    console.log(word)
+
     return (
         <div className="modal fade" tabIndex="-1" id='word-modal'>
             <div className="modal-dialog modal-lg modal-dialog-scrollable">
@@ -45,11 +47,13 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
                         <p>
                             <strong>Kanjis:</strong>
                             <span className="modal-kanjis">
-                                {word.Kanjis?.map(kanji => (
+                                {word.Kanjis?.map(kanji => {
+                                    if (kanji.Kanji) kanji = kanji.Kanji;
+                                    return (
                                     <a key={kanji} href={`/kanji/${kanji}`} className="icon-btn me-2 mb-2 p-1 kanji-btn">
                                         {kanji}
                                     </a>
-                                ))}
+                                )})}
                             </span>
                         </p>
                         <hr/>
