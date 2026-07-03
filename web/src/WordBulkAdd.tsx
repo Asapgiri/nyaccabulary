@@ -4,19 +4,73 @@ import { apiFetch } from "./api";
 export default function WordBulkAdd() {
     const [bulkwords, setBulkwords] = useState<string>("");
     const [progress, setProgress] = useState<{percent: number; max: number} | null>(null);
+    const [notices, setNotices] = useState<{Added: string[], Exists: string[], Failed: string[]} | null>(null);
 
     async function add() {
-        const response = await apiFetch('/api/word/bulk', {
+        const response = await apiFetch("/api/word/bulk", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
             body: bulkwords,
-        })
+        });
 
-        console.log(await response.text())
+        setBulkwords("")
+
+        const reader = response.body!.getReader();
+        const decoder = new TextDecoder();
+
+        let buffer = "";
+
+        while (true) {
+            const { done, value } = await reader.read();
+
+            buffer += decoder.decode(value, { stream: true });
+
+            if (done) break;
+
+            const lines = buffer.split("\n");
+            buffer = lines.pop()!;
+
+            for (const line of lines) {
+                if (!line.trim()) continue;
+
+                const msg = JSON.parse(line);
+
+                setProgress({
+                    percent: msg.index,
+                    max: msg.count,
+                });
+            }
+        }
+
+        setNotices(JSON.parse(buffer))
+        setProgress(null)
     }
 
     return (
         <div className="container">
+
+            {notices && (
+                <div>
+                {notices.Added && (
+                    <div className="alert alert-success alert-dismissible fade show m-2" role="alert">
+                        Added: '{notices.Added.join(", ")}'
+                        <button onClick={() => setNotices(n => ({...n, Added: null }))} type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                )}
+                {notices.Exists && (
+                    <div className="alert alert-info alert-dismissible fade show m-2" role="alert">
+                        Already exists: '{notices.Exists.join(", ")}'
+                        <button onClick={() => setNotices(n => ({...n, Exists: null }))} type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                )}
+                {notices.Failed && (
+                    <div className="alert alert-warning alert-dismissible fade show m-2" role="alert">
+                        Failed to add: '{notices.Failed.join(", ")}'
+                        <button onClick={() => setNotices(n => ({...n, Failed: null }))} type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                )}
+                </div>
+            )}
+
             <div className="row justify-content-center">
 
                 <div className="card shadow-sm border-0">
@@ -30,8 +84,10 @@ export default function WordBulkAdd() {
                         </p>
 
                         {progress && (
-                        <div>
-                            <div id="progress-bar" style={{width: "55%", background: "#666", height: "10px", display: "none"}}></div>
+                        <div className="progress">
+                            <div className="progress-bar" style={{ width: `${100 * progress.percent / progress.max}%`, }} >
+                                {progress.percent}/{progress.max}
+                            </div>
                         </div>
                         )}
 
