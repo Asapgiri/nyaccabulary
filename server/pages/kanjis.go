@@ -230,21 +230,31 @@ func AdminKanjisSyncAllWords(w http.ResponseWriter, r *http.Request) {
 
     user := logic.User{}
     word := logic.Word{}
+    kanji := logic.Kanji{}
 
     users := user.List()
 
+    var kanji_refresh_list []logic.Kanji
 
     for i, u := range(users) {
         words := word.List(u, logic.Filter{Mastered: true})
+        kanji_list := kanji.List(word.User, logic.Filter{Mastered: true})
 
         for j, wd := range(words) {
-            wd.Kanjis = logic.FetchAndAddKanjisFromWord(wd)
+            var kanjis_to_add []logic.Kanji
+            wd.Kanjis, kanjis_to_add = logic.FetchAndAddKanjisFromWord(wd, kanji_list)
             wd.Update()
+
+            for _, k := range kanjis_to_add {
+                kanji_refresh_list = append(kanji_refresh_list, k)
+            }
 
             fmt.Fprintf(w, "User: %d/%d; Word: %d/%d done\n", i+1, len(users), j+1, len(words))
             flusher.Flush()
         }
     }
+
+    kanji.BulkAdd(kanji_refresh_list)
 
     fmt.Fprintf(w, "Done")
     flusher.Flush()

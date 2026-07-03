@@ -57,6 +57,11 @@ func (kanji *Kanji) Add() error {
     return err
 }
 
+func (kanji *Kanji) BulkAdd(kanjis []interface{}) error {
+    _, err := dbKANJI.InsertMany(context.Background(), kanjis)
+    return err
+}
+
 func (kanji *Kanji) Update() error {
     _, err := dbKANJI.ReplaceOne(context.Background(), bson.D{{"_id", kanji.Id}}, kanji)
     return err

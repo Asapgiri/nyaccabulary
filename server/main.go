@@ -17,7 +17,7 @@ var log = logger.Logger {
 
 func cors(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        log.Printf("%s %s", r.Method, r.URL.Path)
+        //log.Printf("%s %s\n", r.Method, r.URL.Path)
         origin := r.Header.Get("Origin")
 
         switch origin {

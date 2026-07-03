@@ -55,12 +55,17 @@ func kanji_generate_new(s string, user User) Kanji {
     return kanji
 }
 
-func FetchAndAddKanjisFromWord(word Word) []Kanji {
+func FetchAndAddKanjisFromWord(word Word, kanji_present_list []Kanji) ([]Kanji, []Kanji) {
 	var kanjis_to_return []Kanji
     var kanjis_already_present []Kanji
+    var kanjis_to_add []Kanji
 
     kanji := Kanji{}
-    kanjis_already_present = kanji.List(word.User, Filter{Mastered: true})
+    if len(kanji_present_list) > 0 {
+        kanjis_already_present = kanji_present_list
+    } else {
+        kanjis_already_present = kanji.List(word.User, Filter{Mastered: true})
+    }
 
 	for _, r := range(word.Kanji) {
 		if unicode.Is(unicode.Han, r) {
@@ -78,13 +83,13 @@ func FetchAndAddKanjisFromWord(word Word) []Kanji {
             }
 
             kanji = kanji_generate_new(string(r), word.User)
-            kanji.Add()
+            kanjis_to_add = append(kanjis_to_add, kanji)
 
             kanjis_to_return = append(kanjis_to_return, kanji)
 		}
 	}
 
-	return kanjis_to_return
+	return kanjis_to_return, kanjis_to_add
 }
 
 func (kanji *Kanji) GetMeta(user User, filter Filter) dbase.Meta {
@@ -162,13 +167,30 @@ func (kanji *Kanji) Find(id string) {
     kanji.Map(dkanji)
 }
 
-func (kanji *Kanji) Add() error {
+func (kanji *Kanji) raw_add_init() dbase.Kanji {
     kanji.Date = time.Now()
     kanji.LastUpdated = time.Now()
     dkanji := kanji.UnMap()
     dkanji.Id = primitive.NewObjectID()
     kanji.Id = dkanji.Id.Hex()
+    return dkanji
+}
+
+func (kanji *Kanji) Add() error {
+    dkanji := kanji.raw_add_init()
     return dkanji.Add()
+}
+
+func (kanji *Kanji) BulkAdd(kanjis []Kanji) error {
+    var dkanji dbase.Kanji
+
+    dkanji_list := make([]interface{}, len(kanjis))
+
+    for i, k := range kanjis {
+        dkanji_list[i] = k.raw_add_init()
+    }
+
+    return dkanji.BulkAdd(dkanji_list)
 }
 
 func (kanji *Kanji) Update() error {

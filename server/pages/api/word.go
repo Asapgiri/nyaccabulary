@@ -224,8 +224,11 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
         var update WordAddRequest
         json.NewDecoder(r.Body).Decode(&update)
         if "" != update.Kanji {
+            var kanjis_to_add []logic.Kanji
             word.Kanji = strings.TrimSpace(update.Kanji)
-            word.Kanjis = logic.FetchAndAddKanjisFromWord(word)
+            word.Kanjis, kanjis_to_add = logic.FetchAndAddKanjisFromWord(word, []logic.Kanji{})
+            kanji := logic.Kanji{}
+            kanji.BulkAdd(kanjis_to_add)
         }
         if "" != update.Kana {
             word.Kana = strings.TrimSpace(update.Kana)

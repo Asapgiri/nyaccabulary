@@ -38,6 +38,11 @@ func (word *Word) Add() error {
     return err
 }
 
+func (word *Word) BulkAdd(words []interface{}) error {
+    _, err := dbWORDS.InsertMany(context.Background(), words)
+    return err
+}
+
 func (word *Word) Update() error {
     _, err := dbWORDS.ReplaceOne(context.Background(), bson.D{{"_id", word.Id}}, word)
     return err

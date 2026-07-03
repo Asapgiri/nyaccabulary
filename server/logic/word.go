@@ -121,14 +121,44 @@ func (word *Word) Find(id string) {
     word.Map(dword)
 }
 
-func (word *Word) Add() error {
+func (word *Word) raw_add_init(kanji_list []Kanji) (dbase.Word, []Kanji) {
+    var kanjis_to_add []Kanji
     word.Date = time.Now()
     word.LastUpdated = time.Now()
     // map the kanjis before anything else.. for unmap to work properly
-    word.Kanjis = FetchAndAddKanjisFromWord(*word)
+    word.Kanjis, kanjis_to_add = FetchAndAddKanjisFromWord(*word, kanji_list)
     dword := word.UnMap()
     dword.Id = primitive.NewObjectID()
     word.Id = dword.Id.Hex()
+    return dword, kanjis_to_add
+}
+
+func (word *Word) Add() error {
+    var kanji Kanji
+    dword, kanjis_to_add := word.raw_add_init([]Kanji{})
+    kanji.BulkAdd(kanjis_to_add)
+    return dword.Add()
+}
+
+func (word *Word) BulkAdd(words []Word) error {
+    var kanji Kanji
+    var dword dbase.Word
+    var kanji_list_to_add []Kanji
+
+    kanji_list := kanji.List(word.User, Filter{Mastered: true})
+    dword_list := make([]interface{}, len(words))
+
+    for i, w := range words {
+        var kanjis_to_add []Kanji
+        dword_list[i], kanjis_to_add = w.raw_add_init(kanji_list)
+        for _, k := range kanjis_to_add {
+            kanji_list_to_add = append(kanji_list_to_add, k)
+            kanji_list = append(kanji_list, k)
+        }
+    }
+
+    kanji.BulkAdd(kanji_list_to_add)
+
     return dword.Add()
 }
 
