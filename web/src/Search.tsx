@@ -4,9 +4,11 @@ import { sync } from "./db/sync";
 import WordModal from "./components/WordModal";
 
 import './assets/search.css'
+import { useAuth } from "./AuthContext";
 
 export default function Search() {
     const query = window.location.search
+    const { user } = useAuth();
     const [swords, setSwords] = useState<SWord[] | null>(null);
     const [loading, setLoading] = useState<bool>(true);
     const [selectedWord, setSelectedWord] = useState<Word | null>(null);
@@ -107,7 +109,7 @@ export default function Search() {
                                         <span className="badge bg-success">
                                             Added
                                         </span>
-                                    ) : (
+                                    ) : user && (
                                         <button
                                             className="btn btn-sm btn-outline-primary"
                                             title="Add to deck"

@@ -36,8 +36,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
     var req LoginRequest
     json.NewDecoder(r.Body).Decode(&req)
 
-    log.Println(req)
-
     if "" != req.Username {
         err := user.Login(req.Username, req.Password)
         if nil != err {
