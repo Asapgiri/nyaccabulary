@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { dbPromise } from "./db/database";
 
 import "./index.css"
@@ -11,8 +11,9 @@ export const raw_filter = {
     }
 }
 
+export const API_BASE = import.meta.env.VITE_API_BASE;
 export function pdf(filter) {
-    const url = `/api${window.location.pathname}/pdf/${JSON.stringify(filter)}`;
+    const url = `${API_BASE ? API_BASE : ""}/api${window.location.pathname}/pdf/${JSON.stringify(filter)}`;
     window.open(url, "_blank", "noopener,noreferrer");
 }
 
