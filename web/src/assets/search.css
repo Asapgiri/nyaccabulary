@@ -1,0 +1,43 @@
+.paw-loader {
+    font-size: 2rem;
+    letter-spacing: .4rem;
+}
+
+.paw-loader span {
+    display: inline-block;
+    animation: hop 1.2s infinite;
+}
+
+.paw-loader span:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.paw-loader span:nth-child(3) {
+    animation-delay: .4s;
+}
+
+@keyframes hop {
+    0%,80%,100% {
+        transform: translateY(0);
+        opacity: .3;
+    }
+    40% {
+        transform: translateY(-8px);
+        opacity: 1;
+    }
+}
+
+.loading-cat {
+    font-size: 4rem;
+    display: inline-block;
+    animation: bounce 1s infinite ease-in-out;
+}
+
+@keyframes bounce {
+    0%,100% {
+        transform: translateY(0) rotate(-8deg);
+    }
+    50% {
+        transform: translateY(-12px) rotate(8deg);
+    }
+}

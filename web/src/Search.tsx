@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "./api";
 import { sync } from "./db/sync";
 
+import './assets/search.css'
+
 export default function Search() {
     const query = window.location.search
-    const [swords, setSwords] = useState<SWord[]>([]);
+    const [swords, setSwords] = useState<SWord[] | null>(null);
+    const [loading, setLoading] = useState<bool>(true);
 
     async function add(entseq) {
         const response = await apiFetch(`/api/word/${entseq}`, {method: "POST"})
@@ -17,6 +20,7 @@ export default function Search() {
         const response = await apiFetch(`/api/search?${query.substring(1)}`)
         const result = (await response.json()).Results
         setSwords(result)
+        setLoading(false) // loading finished
     }
 
     useEffect(() => {
@@ -25,8 +29,39 @@ export default function Search() {
 
     return (
         <div className="container-fluid py-4 px-3 px-md-4" style={{ maxWidth: 1200 }}>
+
+            {loading && (
+                <div className="text-center py-5">
+
+                    <div className="paw-loader">
+                        <span>🐾</span>
+                        <span>🐾</span>
+                        <span>🐾</span>
+                    </div>
+
+                    <h4>Looking through the dictionary…</h4>
+
+                    <p className="text-muted mb-3">
+                        NyanTan is sniffing out the perfect words!
+                    </p>
+
+                </div>
+            )}
+
+            {!loading && !swords && (
+                <div className="text-center py-5">
+                    <div style={{ fontSize: "5rem" }}>📚</div>
+
+                    <h3 className="mt-3">Nothing found</h3>
+
+                    <p className="text-muted">
+                        No dictionary entries matched your search.
+                    </p>
+                </div>
+            )}
+
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-                {swords.map(({ Result, Word }) => (
+                {swords && swords.map(({ Result, Word }) => (
                     <div className="col word-card" key={Result.EntSeq}>
                         <div
                             id={`div-${Result.EntSeq}`}
