@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom"
 
 import Index from "./Index.tsx"
 import Word from "./Word.tsx"
+import WordBulkAdd from "./WordBulkAdd.tsx"
 import Kanji from "./Kanji.tsx"
 import Navbar from "./Navbar.tsx"
 import Footer from "./Footer.tsx"
@@ -22,12 +23,13 @@ function App() {
             <Navbar />
             <main className="flex-fill">
                 <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/word" element={<Word />} />
-                    <Route path="/kanji" element={<Kanji />} />
-                    <Route path="/search" element={<Search />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/logout" element={<LogoutPage />} />
+                    <Route path="/"             element={<Index />} />
+                    <Route path="/word"         element={<Word />} />
+                    <Route path="/word/bulkadd" element={<WordBulkAdd />} />
+                    <Route path="/kanji"        element={<Kanji />} />
+                    <Route path="/search"       element={<Search />} />
+                    <Route path="/login"        element={<LoginPage />} />
+                    <Route path="/logout"       element={<LogoutPage />} />
                 </Routes>
             </main>
             <Footer />

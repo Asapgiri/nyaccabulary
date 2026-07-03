@@ -161,11 +161,13 @@ func WordBulkAdd(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    enc := json.NewEncoder(w)
+
     write_json(w, pages.BulkAdd(user, lines, func(i, count int) {
-        write_json(w, struct{
-            Index int
-            Count int
-        }{Index: i, Count: count})
+        enc.Encode(struct {
+            Index int `json:"index"`
+            Count int `json:"count"`
+        }{ Index: i, Count: count, })
         flusher.Flush()
     }))
     flusher.Flush()
