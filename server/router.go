@@ -52,6 +52,7 @@ func setup_routes() {
     http.HandleFunc("GET    /api/search",               api.WordSearch)
     http.HandleFunc("GET    /api/user",                 api.UserAuth)
     http.HandleFunc("POST   /api/login",                api.Login)
+    http.HandleFunc("POST   /api/register",             api.Register)
     http.HandleFunc("POST   /api/logout",               api.Logout)
 
     http.HandleFunc("OPTIONS /api/login", cors_ok)

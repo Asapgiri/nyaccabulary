@@ -54,6 +54,41 @@ func Login(w http.ResponseWriter, r *http.Request) {
     write_json(w, user)
 }
 
+func Register(w http.ResponseWriter, r *http.Request) {
+    session := pages.GetCurrentSession(w, r)
+
+    if "" != session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    var resp RegisterResponse
+    var req RegisterRequest
+    json.NewDecoder(r.Body).Decode(&req)
+
+    // FIXME: Check for other form values...
+    if "" != req.Username {
+        user := logic.User{
+            Username: req.Username,
+            Email: req.Email,
+            Name: req.Name,
+            Phone: req.Phone,
+        }
+        err := user.Register(req.PasswordA, req.PasswordB)
+        if nil != err {
+            resp = RegisterResponse{Status: "FAILURE", Error: err.Error()}
+        } else {
+            resp = RegisterResponse{Status: "SUCCESS", User: user}
+            session.Delete(w, r)
+            session.New(w, r, user.Username)
+        }
+    } else {
+        resp = RegisterResponse{Status: "FAILURE", Error: "Invalid request!"}
+    }
+
+    write_json(w, resp)
+}
+
 func Logout(w http.ResponseWriter, r *http.Request) {
     session := pages.GetCurrentSession(w, r)
 

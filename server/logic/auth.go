@@ -54,7 +54,7 @@ func (user *User) Register(password_clear_a string, password_clear_b string) err
     }
 
     if len(user.Username) < config.Config.User.MinUsernameLen {
-        return errors.New("Username must be minimum " + strconv.FormatInt(int64(config.Config.User.MinUsernameLen), 10) + " characters long!")
+        return errors.New("Username must be a minimum of " + strconv.FormatInt(int64(config.Config.User.MinUsernameLen), 10) + " characters long!")
     }
     for _, bword := range(config.Config.User.NameCantContain) {
         if strings.Contains(user.Username, bword) {
@@ -69,10 +69,10 @@ func (user *User) Register(password_clear_a string, password_clear_b string) err
         }
     }
     if len(password_clear_a) < config.Config.User.MinPasswordLen {
-        return errors.New("Password validation error!")
+        return errors.New("Password must be a minimum of " + strconv.FormatInt(int64(config.Config.User.MinPasswordLen), 10) + " characters long!")
     }
     if password_clear_a != password_clear_b {
-        return errors.New("Double password doesnt match!")
+        return errors.New("Passwords doesnt match!")
     }
 
     pwh, _ := bcrypt.GenerateFromPassword([]byte(password_clear_a), 0)

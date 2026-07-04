@@ -2,17 +2,33 @@ package api
 
 import (
 	"nyaccabulary/server/config"
+	"nyaccabulary/server/logic"
 	"time"
 )
 
+type RegisterRequest struct {
+    Username    string `json:"username"`
+    Email       string `json:"email"`
+    Phone       string `json:"phone"`
+    Name        string `json:"name"`
+    PasswordA   string `json:"passworda"`
+    PasswordB   string `json:"passwordb"`
+}
+
 type LoginRequest struct {
-    Username    string `json:"Username"`
+    Username    string `json:"username"`
     Password    string `json:"password"`
 }
 
 type Response struct {
     Status  string
     Errors  any
+}
+
+type RegisterResponse struct {
+    Status  string
+    Error   string
+    User    logic.User
 }
 
 type Page struct {

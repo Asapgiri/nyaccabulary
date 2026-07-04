@@ -9,6 +9,7 @@ import Navbar from "./Navbar.tsx"
 import Footer from "./Footer.tsx"
 import LoginPage from "./auth/LoginPage.tsx"
 import LogoutPage from "./auth/LogoutPage.tsx"
+import RegisterPage from "./auth/RegisterPage.tsx"
 import Search from "./Search.tsx"
 
 import { sync } from "./db/sync.ts"
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/search"       element={<Search />} />
                     <Route path="/login"        element={<LoginPage />} />
                     <Route path="/logout"       element={<LogoutPage />} />
+                    <Route path="/register"     element={<RegisterPage />} />
                 </Routes>
             </main>
             <Footer />
