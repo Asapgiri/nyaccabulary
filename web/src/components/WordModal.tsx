@@ -17,7 +17,22 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
         raw_word_update(word, 'update', t_body, onUpdate, setSelectedWord)
     }
 
-    console.log(word)
+    async function word_mark() {
+        raw_word_update(word, 'set', null, onUpdate, setSelectedWord)
+    }
+
+    async function word_master() {
+        raw_word_update(word, 'force', null, onUpdate, setSelectedWord)
+    }
+
+    async function word_unmark() {
+        raw_word_update(word, 'unset', null, onUpdate, setSelectedWord)
+    }
+
+    async function word_delete() {
+        raw_word_update(word, 'delete', null, onDelete, null, true)
+        setSelectedWord(null)
+    }
 
     return (
         <div className="modal fade" tabIndex="-1" id='word-modal'>
@@ -32,9 +47,11 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
                         </div>
 
                         <div className="study-actions">
-                            <button type="button" className="icon-btn btn-master">Master</button>
-                            <button type="button" className="icon-btn btn-mark">Mark</button>
-                            <button type="button" className="icon-btn btn-delete">Delete</button>
+                            {word.Status == "MASTERED" ? (<button type="button" className="icon-btn btn-mastered" onClick={word_unmark}>Unmaster</button>)
+                            :                            (<button type="button" className="icon-btn btn-master" onClick={word_master}>Master</button>)}
+                            {word.Status != "MASTERED" && word.Status != "LEARNING"
+                                                      && (<button type="button" className="icon-btn btn-mark" onClick={word_mark}>Mark</button>)}
+                            <button type="button" className="icon-btn btn-delete" onClick={word_delete} data-bs-dismiss="modal">Delete</button>
                             <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 

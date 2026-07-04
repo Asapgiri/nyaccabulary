@@ -6,6 +6,10 @@ export default function WordRow({ word, setSelectedWord, onUpdate, onDelete }) {
         raw_word_update(word, 'set', null, onUpdate, setSelectedWord)
     }
 
+    async function row_unmark() {
+        raw_word_update(word, 'unset', null, onUpdate, setSelectedWord)
+    }
+
     async function row_delete() {
         raw_word_update(word, 'delete', null, onDelete, null, true)
     }
@@ -29,15 +33,19 @@ export default function WordRow({ word, setSelectedWord, onUpdate, onDelete }) {
             <div className="col-4 col-md-3 col-sm-4 meaning">{word.Meaning}</div>
 
             <div className="col-md-2 d-none d-md-block">
+                {word.Status != "MASTERED" && (
                 <div className="mini-bar">
                     <div className="bad" style={{width: `${(word.DontKnows / total) * 100}%`}}></div>
                     <div className="good" style={{width: `${(word.Knows / total) * 100}%`}}></div>
                 </div>
+                )}
             </div>
 
             <div className="col-2 col-md-1 col-sm-2 actions">
-                <button className="icon-btn icon-btn-master" type="button" title="Mark mastered" onClick={row_mark}>＋</button>
-                <button className="icon-btn icon-btn-delete" type="button" title="Delete" onClick={row_delete}>×</button>
+                {word.Status == "MASTERED" ? (<button className="icon-btn icon-btn-unmaster"  type="button" title="Unmaster"      onClick={row_unmark}>⟲</button>)
+                :word.Status == "LEARNING" ? (<button className="icon-btn icon-btn-master"    type="button" title="Mark mastered" onClick={row_mark}>✓</button>)
+                :                            (<button className="icon-btn icon-btn-master"    type="button" title="Mark learning" onClick={row_mark}>＋</button>)}
+                <button className="icon-btn icon-btn-delete"    type="button" title="Delete"        onClick={row_delete}>×</button>
             </div>
 
         </div>

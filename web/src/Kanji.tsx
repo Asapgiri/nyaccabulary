@@ -30,6 +30,10 @@ export default function Kanji() {
         setKanjis(kanjis => kanjis.map(w => w.Id === updated.Id ? updated : w))
     }
 
+    async function ddelete(data, id) {
+        setKanjis(kanjis => kanjis.filter(w => w.Id !== id))
+    }
+
     const filtered = useMemo(() => FilterApply(filter, kanjis), [kanjis, filter]);
 
 
@@ -61,7 +65,7 @@ export default function Kanji() {
             ))}
             </div>
 
-            <KanjiModal kanji={selectedKanji} />
+            <KanjiModal kanji={selectedKanji}  setSelectedKanji={setSelectedKanji} onUpdate={update} onDelete={ddelete} />
 
         </div>
     )

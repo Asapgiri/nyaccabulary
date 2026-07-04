@@ -29,6 +29,10 @@ export default function Word() {
         setWords(words => words.map(w => w.Id === updated.Id ? updated : w))
     }
 
+    async function ddelete(data, id) {
+        setWords(words => words.filter(w => w.Id !== id))
+    }
+
     const filteredWords = useMemo(() => FilterApply(filter, words), [words, filter]);
 
     return (
@@ -60,7 +64,7 @@ export default function Word() {
                     ))}
             </div>
 
-            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} />
+            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} onDelete={ddelete}/>
 
         </div>
     )

@@ -110,7 +110,7 @@ export default function Index() {
             ))}
             </div>
 
-            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} />
+            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} onDelete={ddelete} />
 
         </div>
     )

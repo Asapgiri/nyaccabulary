@@ -1,4 +1,6 @@
-export default function KanjiModal({ kanji }) {
+import { raw_kanji_update } from "./update";
+
+export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete }) {
 
     if (!kanji) {
         return (
@@ -9,6 +11,23 @@ export default function KanjiModal({ kanji }) {
             </div>
         </div>
         )
+    }
+
+    async function kanji_mark() {
+        raw_kanji_update(kanji, 'set', null, onUpdate, setSelectedKanji)
+    }
+
+    async function kanji_master() {
+        raw_kanji_update(kanji, 'force', null, onUpdate, setSelectedKanji)
+    }
+
+    async function kanji_unmark() {
+        raw_kanji_update(kanji, 'unset', null, onUpdate, setSelectedKanji)
+    }
+
+    async function kanji_delete() {
+        raw_kanji_update(kanji, 'delete', null, onDelete, null, true)
+        setSelectedKanji(null)
     }
 
     return (
@@ -24,12 +43,11 @@ export default function KanjiModal({ kanji }) {
                         </div>
 
                         <div className="study-actions">
-
-                            <button type="button" className="icon-btn btn-master">Master
-                            </button><button type="button" className="icon-btn btn-mark">Mark
-
-                            </button><button type="button" className="icon-btn btn-delete">Delete</button>
-
+                            {kanji.Status == "MASTERED" ? (<button type="button" className="icon-btn btn-mastered" onClick={kanji_unmark}>Unmaster</button>)
+                            :                            (<button type="button" className="icon-btn btn-master" onClick={kanji_master}>Master</button>)}
+                            {kanji.Status != "MASTERED" && kanji.Status != "LEARNING"
+                                                      && (<button type="button" className="icon-btn btn-mark" onClick={kanji_mark}>Mark</button>)}
+                            <button type="button" className="icon-btn btn-delete" onClick={kanji_delete} data-bs-dismiss="modal">Delete</button>
                             <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
