@@ -38,7 +38,7 @@ export default function Kanji() {
 
 
     return (
-        <div className="container-fluid py-4 px-3 px-md-4" style={{ maxWidth: "1000px" }}>
+        <div className="container-fluid py-4 px-3 px-md-4">
 
             <div className="topbar">
                 <div className="page-title">Kanjis</div>

@@ -63,7 +63,7 @@ export default function Index() {
     const filteredWords = useMemo(() => FilterApply(filter, words), [words, filter]);
 
     return (
-        <div className="container-fluid py-4 px-3 px-md-4" style={{ maxWidth: "1000px" }}>
+        <div className="container-fluid py-4 px-3 px-md-4">
 
             <div className="topbar">
                 <div className="page-title">Words</div>

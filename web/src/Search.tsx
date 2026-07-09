@@ -36,7 +36,7 @@ export default function Search() {
     }, [query])
 
     return (
-        <div className="container-fluid py-4 px-3 px-md-4" style={{ maxWidth: 1200 }}>
+        <div className="container-fluid py-4 px-3 px-md-4">
 
             {loading && (
                 <div className="text-center py-5">

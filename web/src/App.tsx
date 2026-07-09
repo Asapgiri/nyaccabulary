@@ -22,7 +22,7 @@ function App() {
     return (
         <div className="d-flex flex-column min-vh-100">
             <Navbar />
-            <main className="flex-fill">
+            <main className="flex-fill pt-0">
                 <Routes>
                     <Route path="/"             element={<Index />} />
                     <Route path="/word"         element={<Word />} />
