@@ -5,10 +5,6 @@ import { useSearchParams } from "react-router-dom";
 
 import { useAuth } from "./AuthContext"
 
-const Config = {
-    SiteTitle: "Nyaccab"
-}
-
 export default function Navbar() {
     const [searchParams] = useSearchParams();
     const { user } = useAuth();
@@ -26,7 +22,7 @@ export default function Navbar() {
 
                     <a href="/"
                        className="navbar-brand text-white mb-0 d-none d-md-block">
-                        {Config.SiteTitle}
+                       NyanTan
                     </a>
 
                     <form action="/search" method="GET" className="flex-grow-1">

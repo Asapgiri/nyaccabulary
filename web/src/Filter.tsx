@@ -17,9 +17,17 @@ export function pdf(filter) {
     window.open(url, "_blank", "noopener,noreferrer");
 }
 
+export function copy(words: any, full: boolean) {
+    let text: string = ""
+    words.forEach(w => {
+        text += full ? `${w.Kanji},${w.Kana},${w.Meaning}\n` : `${w.Kanji}\n`;
+    })
+    navigator.clipboard.writeText(text);
+}
+
 export function FilterApply(filter, words) {
     const result = words.filter(w => {
-        if (filter.search && !JSON.stringify(w).includes(filter.search)) {
+        if (filter.search && !JSON.stringify(w).toLowerCase().includes(filter.search.toLowerCase())) {
             return false
         }
         const flen = filter.status.includes(w.Status)
@@ -178,7 +186,7 @@ export function Filter({ filter, setFilter }) {
 
             </div>
 
-            <input id="wordSearch" className="form-control form-control-sm mb-2" placeholder="Search..." onInput={e => search(e.target.value)}/>
+            <input id="wordSearch" className="form-control form-control-sm mb-2" placeholder="Search..." value={filter.search ? filter.search : ""} onInput={e => search(e.target.value)}/>
         </>
     )
 }

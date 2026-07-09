@@ -4,7 +4,7 @@ import KanjiModal from "./components/KanjiModal";
 import "./index.css"
 import "./kanji.css"
 import { KanjiDB } from "./db/kanjis";
-import { Filter, FilterApply, pdf, raw_filter } from "./Filter";
+import { copy, Filter, FilterApply, pdf, raw_filter } from "./Filter";
 import { syncFinished } from "./db/sync";
 
 export default function Kanji() {
@@ -49,7 +49,7 @@ export default function Kanji() {
                 )}
                 <div className="study-controls">
                     <div className="study-actions">
-                        <button type="button" className="btn btn-outline-primary btn-mini" id="copy-btn">Copy</button>
+                        <button type="button" className="btn btn-outline-primary btn-mini" id="copy-btn" onClick={() => copy(filtered)}>Copy</button>
                         <button className="btn btn-outline-success btn-mini" onClick={() => pdf(filter)}>PDF</button>
                     </div>
                 </div>

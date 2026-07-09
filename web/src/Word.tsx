@@ -3,7 +3,7 @@ import WordChip from "./components/WordChip"
 import WordModal from "./components/WordModal";
 import "./index.css"
 import { WordDB } from "./db/words";
-import { Filter, FilterApply, pdf, raw_filter } from "./Filter";
+import { copy, Filter, FilterApply, pdf, raw_filter } from "./Filter";
 import { syncFinished } from "./db/sync";
 
 export default function Word() {
@@ -47,7 +47,7 @@ export default function Word() {
                 )}
                 <div className="study-controls">
                     <div className="study-actions">
-                        <button type="button" className="btn btn-outline-primary btn-mini" id="copy-btn">Copy</button>
+                        <button type="button" className="btn btn-outline-primary btn-mini" id="copy-btn" onClick={() => copy(filteredWords, true)}>Copy</button>
                         <a href="/word/bulkadd" className="btn btn-outline-secondary btn-mini">Bulk</a>
                         <button className="btn btn-outline-success btn-mini" onClick={() => pdf(filter)}>PDF</button>
                     </div>
