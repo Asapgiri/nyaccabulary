@@ -5,6 +5,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // =====================================================================================================================
@@ -45,6 +46,17 @@ func (word *Word) BulkAdd(words []interface{}) error {
 
 func (word *Word) Update() error {
     _, err := dbWORDS.ReplaceOne(context.Background(), bson.D{{"_id", word.Id}}, word)
+    return err
+}
+
+func (word *Word) BulkUpdate(words []Word) error {
+    models := make([]mongo.WriteModel, len(words))
+
+    for i, w := range words {
+        models[i] = mongo.NewReplaceOneModel().SetFilter(bson.D{{"_id", word.Id}}).SetReplacement(w)
+    }
+
+    _, err := dbWORDS.BulkWrite(context.Background(), models)
     return err
 }
 

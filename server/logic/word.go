@@ -159,13 +159,27 @@ func (word *Word) BulkAdd(words []Word) error {
 
     kanji.BulkAdd(kanji_list_to_add)
 
-    return dword.Add()
+    return dword.BulkAdd(dword_list)
 }
 
 func (word *Word) Update() error {
     word.LastUpdated = time.Now()
     dw := word.UnMap()
     return dw.Update()
+}
+
+func (word *Word) BulkUpdate(words []Word) error {
+    var dword dbase.Word
+    var luTime time.Time = time.Now()
+
+    dword_list := make([]dbase.Word, len(words))
+
+    for i, w := range words {
+        w.LastUpdated = luTime
+        dword_list[i] = w.UnMap()
+    }
+
+    return dword.BulkUpdate(dword_list)
 }
 
 func (word *Word) Delete() error {
