@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -314,14 +315,16 @@ func parseBulkLine(line string) logic.Word {
         ret.Status = logic.MASTERY.NEW
     }
 
-    parts := strings.Split(line, ",")
+    reader := csv.NewReader(strings.NewReader(line))
+    parts, _ := reader.Read()
+
     if len(parts) >= 3 {
-        ret.Kana = parts[1]
-        ret.Meaning = parts[2]
+        ret.Kana = strings.TrimSpace(parts[1])
+        ret.Meaning = strings.TrimSpace(parts[2])
     } else if len(parts) == 2 {
-        ret.Meaning = parts[1]
+        ret.Meaning = strings.TrimSpace(parts[1])
     }
-    ret.Kanji = parts[0]
+    ret.Kanji = strings.TrimSpace(parts[0])
 
     return ret
 }
