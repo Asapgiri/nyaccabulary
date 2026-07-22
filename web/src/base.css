@@ -247,6 +247,19 @@ span.learning {
     transition: all .15s ease;
 }
 
+.jlpt-n5 { background: #4caf50; color: white; }
+.jlpt-n4 { background: #8bc34a; color: white; }
+.jlpt-n3 { background: #ffb300; color: white; }
+.jlpt-n2 { background: #ff7043; color: white; }
+.jlpt-n1 { background: #e53935; color: white; }
+
+.jlpt-badge {
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: .7rem;
+    font-weight: 600;
+}
+
 .chip .word-chip {
     font-size: 1.22rem;
 }

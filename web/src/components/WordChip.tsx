@@ -16,9 +16,13 @@ export default function WordChip({ word, setSelectedWord, onUpdate, onDelete, wo
                     data-bs-toggle="modal"
                     data-bs-target={`#word-modal`}
                     onClick={() => {setSelectedWord(word); if ("NEW" == word.Status) remove_new();}}>
-                {word.Kanji}
+                <div>{word.Kanji}</div>
+                {word.DictForm.Misc?.JLPT > 0 ? (
+                    <div className={`jlpt-badge jlpt-n${word.DictForm.Misc?.JLPT}`}></div>
+                ) : wordIsKanji && (
+                    <div className={`jlpt-badge jlpt-n5`}></div>
+                )}
             </button>
-
         </span>
     );
 }

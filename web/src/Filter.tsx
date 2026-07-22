@@ -211,7 +211,15 @@ export function Filter({ filter, setFilter }) {
 
             </div>
 
-            <input id="wordSearch" className="form-control form-control-sm mb-2" placeholder="Search..." value={filter.search ? filter.search : ""} onInput={e => search(e.target.value)}/>
+            <input id="wordSearch" className="form-control form-control-sm" placeholder="Search..." value={filter.search ? filter.search : ""} onInput={e => search(e.target.value)}/>
+
+            <div className="d-flex flex-wrap align-items-center gap-2 p-2 border">
+                <span className="jlpt-badge jlpt-n5">N5</span>
+                <span className="jlpt-badge jlpt-n4">N4</span>
+                <span className="jlpt-badge jlpt-n3">N3</span>
+                <span className="jlpt-badge jlpt-n2">N2</span>
+                <span className="jlpt-badge jlpt-n1">N1</span>
+            </div>
         </>
     )
 }
