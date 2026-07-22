@@ -1,6 +1,6 @@
 import { raw_word_update, raw_kanji_update } from "./update";
 
-export default function WordChip({ word, setSelectedWord, onUpdate, onDelete, wordIsKanji }) {
+export default function WordChip({ word, setSelectedWord, onUpdate, onDelete, wordIsKanji, filter }) {
     async function remove_new() {
         if (wordIsKanji) {
             raw_kanji_update(word, 'new', null, onUpdate, setSelectedWord)
@@ -15,6 +15,7 @@ export default function WordChip({ word, setSelectedWord, onUpdate, onDelete, wo
             <button className={`word-chip ${word.Status.toLowerCase()}`}
                     data-bs-toggle="modal"
                     data-bs-target={`#word-modal`}
+                    style={{ fontSize: `${filter.wordSize}px` }}
                     onClick={() => {setSelectedWord(word); if ("NEW" == word.Status) remove_new();}}>
                 <div>{word.Kanji}</div>
                 {word.DictForm.Misc?.JLPT > 0 ? (

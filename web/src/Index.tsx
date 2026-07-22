@@ -103,7 +103,7 @@ export default function Index() {
 
             <div id="planner-box">
             {filteredWords.map(word => (
-                <WordRow key={word.Id} word={word}
+                <WordRow key={word.Id} word={word} filter={filter}
                     setSelectedWord={setSelectedWord}
                     onUpdate={update}
                     onDelete={ddelete} />

@@ -1,6 +1,6 @@
 import { raw_word_update } from "./update";
 
-export default function WordRow({ word, setSelectedWord, onUpdate, onDelete }) {
+export default function WordRow({ word, setSelectedWord, onUpdate, onDelete, filter }) {
 
     async function row_mark() {
         raw_word_update(word, 'set', null, onUpdate, setSelectedWord)
@@ -21,10 +21,11 @@ export default function WordRow({ word, setSelectedWord, onUpdate, onDelete }) {
     const total = word.DontKnows + word.Knows
 
     return (
-        <div className={`searchable row planner-row ${word.Status.toLowerCase()}`}>
+        <div className={`searchable row planner-row ${word.Status.toLowerCase()}`} style={{ fontSize: `${filter.wordSize}px` }}>
             <button className={`col-3 col-md-3 col-sm-3 word-chip ${word.Status.toLowerCase()}`}
                     data-bs-toggle="modal"
                     data-bs-target={`#word-modal`}
+                    style={{ fontSize: `${filter.wordSize}px` }}
                     onClick={() => {setSelectedWord(word); if ("NEW" == word.Status) remove_new();}}>
                 {word.Kanji}
             </button>
@@ -42,10 +43,10 @@ export default function WordRow({ word, setSelectedWord, onUpdate, onDelete }) {
             </div>
 
             <div className="col-2 col-md-1 col-sm-2 actions">
-                {word.Status == "MASTERED" ? (<button className="icon-btn icon-btn-unmaster"  type="button" title="Unmaster"      onClick={row_unmark}>⟲</button>)
-                :word.Status == "LEARNING" ? (<button className="icon-btn icon-btn-master"    type="button" title="Mark mastered" onClick={row_mark}>✓</button>)
-                :                            (<button className="icon-btn icon-btn-master"    type="button" title="Mark learning" onClick={row_mark}>＋</button>)}
-                <button className="icon-btn icon-btn-delete"    type="button" title="Delete"        onClick={row_delete}>×</button>
+                {word.Status == "MASTERED" ? (<button className="icon-btn icon-btn-unmaster" style={{ fontSize: `${filter.wordSize-10}px` }} type="button" title="Unmaster"      onClick={row_unmark}>⟲</button>)
+                :word.Status == "LEARNING" ? (<button className="icon-btn icon-btn-master"   style={{ fontSize: `${filter.wordSize-10}px` }} type="button" title="Mark mastered" onClick={row_mark}>✓</button>)
+                :                            (<button className="icon-btn icon-btn-master"   style={{ fontSize: `${filter.wordSize-10}px` }} type="button" title="Mark learning" onClick={row_mark}>＋</button>)}
+                <button className="icon-btn icon-btn-delete"    type="button" title="Delete" style={{ fontSize: `${filter.wordSize-10}px` }} onClick={row_delete}>×</button>
             </div>
 
         </div>

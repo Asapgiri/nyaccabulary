@@ -58,10 +58,10 @@ export default function Word() {
 
             <div className="word-grid" id="word-grid">
             {filteredWords.map(word => (
-                        <WordChip key={word.Id} word={word}
-                            setSelectedWord={setSelectedWord}
-                            onUpdate={update} />
-                    ))}
+                <WordChip key={word.Id} word={word} filter={filter}
+                    setSelectedWord={setSelectedWord}
+                    onUpdate={update} />
+                ))}
             </div>
 
             <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} onDelete={ddelete}/>

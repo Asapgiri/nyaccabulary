@@ -59,7 +59,7 @@ export default function Kanji() {
 
             <div className="word-grid" id="word-grid">
             {filtered.map(kanji => (
-                <WordChip key={kanji.Id} word={kanji} wordIsKanji={true}
+                <WordChip key={kanji.Id} word={kanji} filter={filter} wordIsKanji={true}
                     setSelectedWord={setSelectedKanji}
                     onUpdate={update} />
             ))}

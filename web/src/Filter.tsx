@@ -101,7 +101,7 @@ export function Filter({ filter, setFilter }) {
 
         const tx = db.transaction(["metadata"], "readwrite");
         const metaStore = tx.objectStore("metadata");
-        metaStore.put({status: f.status, sort: f.sort, jlpt: f.jlpt}, "filter")
+        metaStore.put({status: f.status, sort: f.sort, jlpt: f.jlpt, wordSize: f.wordSize}, "filter")
     }
 
     function update(f) {
@@ -134,6 +134,13 @@ export function Filter({ filter, setFilter }) {
         setFilter(f => update({
             ...f,
             jlpt: new_val,
+        }))
+    }
+
+    function updateWordSize(new_val: number) {
+        setFilter(f => update({
+            ...f,
+            wordSize: new_val,
         }))
     }
 
@@ -214,6 +221,8 @@ export function Filter({ filter, setFilter }) {
             <input id="wordSearch" className="form-control form-control-sm" placeholder="Search..." value={filter.search ? filter.search : ""} onInput={e => search(e.target.value)}/>
 
             <div className="d-flex flex-wrap align-items-center gap-2 p-2 border">
+                <input style={{width: '100%'}} className="form-range mx-2" id="wordSize" type="range" min="12" max="56" step="1" value={filter.wordSize ?? 16} onChange={e => updateWordSize(e.target.value)} />
+
                 <span className="jlpt-badge jlpt-n5">N5</span>
                 <span className="jlpt-badge jlpt-n4">N4</span>
                 <span className="jlpt-badge jlpt-n3">N3</span>
