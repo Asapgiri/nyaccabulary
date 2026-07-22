@@ -147,6 +147,12 @@ span.learning {
     margin-top: 2px;
 }
 
+.study-grade {
+    font-size: 16px;
+    color: #666;
+    margin-top: 2px;
+}
+
 /* Right side actions */
 .study-actions {
     display: flex;

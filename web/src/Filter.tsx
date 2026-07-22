@@ -30,9 +30,17 @@ export function FilterApply(filter, words) {
         if (filter.search && !JSON.stringify(w).toLowerCase().includes(filter.search.toLowerCase())) {
             return false
         }
+
         const flen = filter.status.includes(w.Status)
         const ulen = ['MASTERED', 'LEARNING', 'NEW'].includes(w.Status)
-        return (0 == filter.status.length || flen || (filter.status.includes('UNKNOWN') && !ulen))
+
+        const jlpt = !filter.jlpt
+                        || filter.jlpt == ""
+                        || !w.DictForm.Misc
+                        || w.DictForm.Misc.JLPT == filter.jlpt
+                        || (!w.DictForm.Misc.JLPT && 5 == filter.jlpt)
+
+        return jlpt && (0 == filter.status.length || flen || (filter.status.includes('UNKNOWN') && !ulen))
     });
 
     result.sort((a, b) => {
@@ -93,7 +101,7 @@ export function Filter({ filter, setFilter }) {
 
         const tx = db.transaction(["metadata"], "readwrite");
         const metaStore = tx.objectStore("metadata");
-        metaStore.put({status: f.status, sort: f.sort}, "filter")
+        metaStore.put({status: f.status, sort: f.sort, jlpt: f.jlpt}, "filter")
     }
 
     function update(f) {
@@ -119,6 +127,13 @@ export function Filter({ filter, setFilter }) {
                 ...f.sort,
                 field: new_val,
             },
+        }))
+    }
+
+    function updateJLPT(new_val: string) {
+        setFilter(f => update({
+            ...f,
+            jlpt: new_val,
         }))
     }
 
@@ -179,6 +194,16 @@ export function Filter({ filter, setFilter }) {
                         ↓
                     </button>
                 </div>
+
+                <select id="jlptField" className="form-select form-select-sm" style={{width: "auto"}} value={filter.jlpt ? filter.jlpt : ""}
+                        onChange={(e) => updateJLPT(e.target.value) }>
+                    <option value="">N?</option>
+                    <option value="5">N5</option>
+                    <option value="4">N4</option>
+                    <option value="3">N3</option>
+                    <option value="2">N2</option>
+                    <option value="1">N1</option>
+                </select>
 
                 <button id="resetFilter" className="btn btn-outline-secondary btn-mini" onClick={filterReset}>
                     Reset

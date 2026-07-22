@@ -35,11 +35,16 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
             <div className="modal-dialog modal-lg modal-dialog-scrollable">
                 <div className="modal-content">
 
-                    <div className="modal-header study-modal-header">
+                    <div className="modal-header study-modal-header align-items-start">
 
                         <div className="study-title">
                             <div className="study-kanji">{kanji.Kanji}</div>
                             <div className="study-kana">{`On: ${kanji.On ? kanji.On.join(", ") : "-"} | Kun: ${kanji.Kun ? kanji.Kun.join(", ") : "-"}`}</div>
+                            <div className="study-grade">
+                                {kanji.DictForm.Misc?.JLPT > 0      && (<span className="badge bg-success">N{kanji.DictForm.Misc.JLPT}</span>)}
+                                {kanji.DictForm.Misc?.Grade != ""   && (<span className="badge bg-info ms-2">G{kanji.DictForm.Misc.Grade}</span>)}
+                                {kanji.DictForm.Misc?.Freq > 0      && (<span className="badge bg-secondary ms-2">F{kanji.DictForm.Misc.Freq}</span>)}
+                            </div>
                         </div>
 
                         <div className="study-actions">
