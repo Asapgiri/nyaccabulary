@@ -33,10 +33,21 @@ type SearchResult struct {
     Result  config.Entry
 }
 
+type KanjiSearchResult struct {
+    Kanji   logic.Kanji
+    Result  config.Character
+}
+
 type DtoSearch struct {
     Query       string
     ExactMatch  bool
     Results     []SearchResult
+}
+
+type DtoKanjiSearch struct {
+    Query       string
+    JLPT        string
+    Results     []KanjiSearchResult
 }
 
 type DtoAdminUsers struct {

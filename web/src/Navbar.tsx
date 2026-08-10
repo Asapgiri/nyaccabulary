@@ -4,14 +4,17 @@ import { useLocation } from "react-router-dom"
 import { useSearchParams } from "react-router-dom";
 
 import { useAuth } from "./AuthContext"
+import { useState } from "react";
 
 export default function Navbar() {
     const [searchParams] = useSearchParams();
     const { user } = useAuth();
     const currentPath = useLocation().pathname
+    const [searchType, setSearchType] = useState(currentPath === "/kanjisearch" ? "kanji" : "words");
 
     const exactmatch = searchParams.get("exactmatch")
     const query = searchParams.get("query")
+    const jlpt = searchParams.get("jlpt")
 
     return (
         <nav className="bg-black border-bottom border-secondary shadow-sm">
@@ -25,30 +28,44 @@ export default function Navbar() {
                        NyanTan
                     </a>
 
-                    <form action="/search" method="GET" className="flex-grow-1">
-
+                    <form action={searchType === "kanji" ? "/kanjisearch" : "/search"} method="GET" className="flex-grow-1">
                         <div className="input-group">
 
-                            <span className="input-group-text bg-body border-end-0">
-                                <input className="form-check-input"
-                                       type="checkbox"
-                                       name="exactmatch"
-                                       id="exactmatch"
-                                       defaultChecked={exactmatch}/>
-                            </span>
+                        <select className="form-select flex-grow-0" style={{ width: "110px" }}
+                            value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+                            <option value="words">Words</option>
+                            <option value="kanji">Kanji</option>
+                        </select>
 
-                            <input
-                                    name="query"
-                                    className="form-control border-start-0"
-                                    placeholder="Search words, kanji, readings..."
-                                    defaultValue={query}/>
+                        {searchType === "words" ? (
+                        <span className="input-group-text bg-body border-end-0">
+                            <input className="form-check-input" type="checkbox" name="exactmatch" id="exactmatch" defaultChecked={exactmatch}/>
+                        </span>
+                        ) : (
+                        <select id="jlptField" name="jlpt" className="form-select" style={{ width: "50px" }}
+                            defaultValue={jlpt}>
+                            <option value="">N?</option>
+                            <option value="N5">N5</option>
+                            <option value="N4">N4</option>
+                            <option value="N3">N3</option>
+                            <option value="N2">N2</option>
+                            <option value="N1">N1</option>
+                        </select>
+                        )}
 
-                            <button className="btn btn-light px-4" type="submit">
-                                Search
-                            </button>
+                        <input name="query" className="form-control border-start-0" placeholder={
+                            searchType === "kanji"
+                                ? "Search kanji..."
+                                : "Search words, kanji, readings..."
+                        }
+                        defaultValue={query}
+                        />
+
+                        <button className="btn btn-light px-4" type="submit">
+                            Search
+                        </button>
 
                         </div>
-
                     </form>
 
                     {user ? (

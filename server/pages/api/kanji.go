@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"nyaccabulary/server/logic"
 	"nyaccabulary/server/pages"
+	"strconv"
+	"strings"
 )
 
 func KanjiList(w http.ResponseWriter, r *http.Request) {
@@ -118,4 +120,34 @@ func KanjiDelete(w http.ResponseWriter, r *http.Request) {
     kanji.Delete()
 
     write_json(w, Response{Status: "DONE"})
+}
+
+func KanjiSearch(w http.ResponseWriter, r *http.Request) {
+    session := pages.GetCurrentSession(w, r)
+
+    user := logic.User{}
+
+    if "" != session.Auth.Username {
+        user.Find(session.Auth.Id)
+    }
+
+    dto := pages.DtoKanjiSearch{
+        Query: r.URL.Query().Get("query"),
+        JLPT: r.URL.Query().Get("jlpt"),
+    }
+
+    jlpt := 0
+    if "" != dto.JLPT {
+        s := strings.TrimPrefix(dto.JLPT, "N")
+        n, err := strconv.Atoi(s)
+        if nil == err {
+            jlpt = n
+        }
+    }
+
+    if "" != dto.Query || jlpt > 0 {
+        dto.Results = pages.LookUpAllKanjiMatches(user, dto.Query, jlpt)
+    }
+
+    write_json_gz(w, dto)
 }

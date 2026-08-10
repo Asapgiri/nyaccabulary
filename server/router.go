@@ -50,6 +50,8 @@ func setup_routes() {
 
     // api pages
     http.HandleFunc("GET    /api/search",               api.WordSearch)
+    http.HandleFunc("GET    /api/kanjisearch",          api.KanjiSearch)
+
     http.HandleFunc("GET    /api/user",                 api.UserAuth)
     http.HandleFunc("POST   /api/login",                api.Login)
     http.HandleFunc("POST   /api/register",             api.Register)

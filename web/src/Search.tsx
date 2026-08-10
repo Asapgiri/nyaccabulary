@@ -38,6 +38,10 @@ export default function Search() {
     return (
         <div className="container-fluid py-4 px-3 px-md-4">
 
+            <div className="text-muted mb-2">
+                results: {swords && swords.length}
+            </div>
+
             {loading && (
                 <div className="text-center py-5">
 

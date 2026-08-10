@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"nyaccabulary/server/config"
 	"nyaccabulary/server/logic"
 	"slices"
 	"strings"
@@ -53,6 +54,77 @@ func statusColor(status string) (r, g, b int) {
 	default:
 		return 255, 255, 255
 	}
+}
+
+func checkJLPT(dictf config.Character, jlpt int) bool {
+    // ignore if empty
+    if 0 == jlpt {
+        return true
+    }
+
+    if nil == dictf.Misc.JLPT {
+        // FIXME: N5 dosn't exists in the dictionary, therefore it is unsearchable
+        return false
+    }
+
+    return *dictf.Misc.JLPT == jlpt
+}
+
+func checkKanji(dictf config.Character, query string) bool {
+    if "" == query || query == dictf.Literal {
+        return true
+    }
+
+    if nil != dictf.ReadingMeaning {
+        for _, rmg := range dictf.ReadingMeaning.RMGroups {
+            // check readings
+            for _, read := range rmg.Readings {
+                if "ja_on" == read.Type || "ja_kun" == read.Type {
+                    return strings.Contains(read.Value, query)
+                }
+            }
+
+            // check meanings
+            for _, mean := range rmg.Meanings {
+                if "" == mean.Lang || "en" == mean.Lang {
+                    return strings.Contains(mean.Value, query)
+                }
+            }
+        }
+    }
+
+    return false
+}
+
+func createKanjiResult(dictf config.Character, kanjis []logic.Kanji) KanjiSearchResult {
+    res := KanjiSearchResult{
+        Result: dictf,
+    }
+
+    // Look up if user already have the word saved
+    for _, k := range kanjis {
+        if k.DictForm.Literal == dictf.Literal {
+            res.Kanji = k
+            break
+        }
+    }
+
+    return res
+}
+
+func LookUpAllKanjiMatches(user logic.User, query string, jlpt int) []KanjiSearchResult {
+    var retlist []KanjiSearchResult
+
+    kanji := logic.Kanji{}
+    kanjis := kanji.List(user, logic.Filter{Mastered: true})
+
+    for _, dictf := range(config.Config.KanjiDict.Chars) {
+        if checkJLPT(dictf, jlpt) && checkKanji(dictf, query) {
+            retlist = append(retlist, createKanjiResult(dictf, kanjis))
+        }
+    }
+
+    return retlist
 }
 
 func KanjisPdf(w http.ResponseWriter, r *http.Request) {
