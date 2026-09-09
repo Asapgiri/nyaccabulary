@@ -65,10 +65,9 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
                             <strong>Kanjis:</strong>
                             <span className="modal-kanjis">
                                 {word.Kanjis?.map((kanji, index) => {
-                                    if (kanji.Kanji) kanji = kanji.Kanji;
                                     return (
-                                    <a key={index} href={`/kanji/${kanji}`} className="icon-btn me-2 mb-2 p-1 kanji-btn">
-                                        {kanji}
+                                    <a key={index} href={`/kanji/${kanji.Id}`} className="icon-btn me-2 mb-2 p-1 kanji-btn">
+                                        {kanji.Kanji}
                                     </a>
                                 )})}
                             </span>

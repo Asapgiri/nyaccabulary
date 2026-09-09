@@ -76,6 +76,12 @@ type User struct {
     Roles           []string
 }
 
+type WKanji struct {
+    Id              string
+    Kanji           string
+    Status          string
+}
+
 type Word struct {
     Id              string
     Date            time.Time
@@ -89,7 +95,7 @@ type Word struct {
     Status          string
     LastShown       time.Time
     DictForm        config.Entry
-    Kanjis          []string
+    Kanjis          []WKanji
 }
 
 type Kanji struct {
@@ -107,5 +113,5 @@ type Kanji struct {
     Status          string
     DictForm        config.Character
 
-    Words           []string
+    Words           []logic.KWord
 }

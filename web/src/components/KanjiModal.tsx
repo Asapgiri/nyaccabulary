@@ -71,7 +71,7 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                         <strong>Words:</strong>
                         <span className="modal-words">
                         {kanji.Words.map((word, index) => (
-                            <a key={index} href={`/word/${word}`} className="icon-btn me-2 mb-2 p-1 kanji-btn">{word}</a>
+                            <a key={index} href={`/word/${word.Id}`} className="icon-btn me-2 mb-2 p-1 kanji-btn">{word.Word}</a>
                         ))}
                         </span>
                         </p>

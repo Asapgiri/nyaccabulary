@@ -150,9 +150,9 @@ func (kanji *Kanji) Map(dkanji dbase.Kanji) {
     kanji.User = user
 
     dwords := dkanji.ListWords()
-    kanji.Words = make([]string, len(dwords))
+    kanji.Words = make([]KWord, len(dwords))
     for i, w := range dwords {
-        kanji.Words[i] = w.Kanji
+        kanji.Words[i].Map(w)
     }
 }
 
@@ -178,11 +178,16 @@ func (kanji *Kanji) MapList(dkanjis []dbase.Kanji, statuses []string) ([]Kanji, 
         kanjis[i].raw_map(k)
         kanjis[i].User = user
 
-        kanjis[i].Words = []string{}
+        kanjis[i].Words = []KWord{}
         for _, w := range dwords {
             for _, oi := range w.Kanjis {
                 if oi.Hex() == k.Id.Hex() {
-                    kanjis[i].Words = append(kanjis[i].Words, w.Kanji)
+                    kw := KWord{}
+                    kw.Map(w)
+                    kanjis[i].Words = append(
+                        kanjis[i].Words,
+                        kw,
+                    )
                 }
             }
         }
@@ -209,4 +214,10 @@ func (kanji *Kanji) UnMap() dbase.Kanji {
     dkanji.DictForm     = kanji.DictForm
 
     return dkanji
+}
+
+func (kw *KWord) Map(wd dbase.Word) {
+    kw.Id       = wd.Id.Hex()
+    kw.Word     = wd.Kanji
+    kw.Status   = wd.Status
 }

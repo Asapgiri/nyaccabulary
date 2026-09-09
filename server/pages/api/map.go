@@ -55,10 +55,14 @@ func MapKanjiList(lkl []logic.Kanji) []Kanji {
     return kl
 }
 
-func MapKanjiListString(lkl []logic.Kanji) []string {
-    kl := make([]string, len(lkl))
+func MapKanjiListString(lkl []logic.Kanji) []WKanji {
+    kl := make([]WKanji, len(lkl))
     for i, k := range lkl {
-        kl[i] = k.Kanji
+        kl[i] = WKanji{
+            Id: k.Id,
+            Kanji: k.Kanji,
+            Status: k.Status,
+        }
     }
     return kl
 }

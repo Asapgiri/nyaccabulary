@@ -66,8 +66,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export async function AuthLogout(context: AuthContextType) {
     console.log('logout')
+    await dbDrop();
     context.setUser(null);
-    dbDrop();
 }
 
 export function useAuth() {

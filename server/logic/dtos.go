@@ -46,6 +46,12 @@ type Word struct {
     Kanjis          []Kanji
 }
 
+type KWord struct {
+    Id              string
+    Word            string
+    Status          string
+}
+
 type Kanji struct {
     _db             dbase.Kanji
     Id              string
@@ -62,7 +68,7 @@ type Kanji struct {
     Status          string
     DictForm        config.Character
 
-    Words           []string
+    Words           []KWord
 
     OnStr     string
     KunStr    string

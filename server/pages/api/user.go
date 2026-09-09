@@ -40,7 +40,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
         err := user.Login(req.Username, req.Password)
         if nil != err {
             session.SetError(err.Error())
-            log.Println("user not found ", req)
+            log.Println("user not found ", req.Username)
         } else {
             session.Delete(w, r)
             log.Println("logging in " + user.Username)
