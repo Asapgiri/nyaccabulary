@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../AuthContext.tsx";
 import { apiFetch } from "../api.ts";
 
@@ -91,7 +92,7 @@ export default function LoginPage() {
 
                 <div className="text-center mt-3 small text-muted">
                     You Already have an account?
-                    <a href="/login" className="ms-1 text-decoration-none">Login</a>
+                    <Link to="/login" className="ms-1 text-decoration-none">Login</Link>
                 </div>
 
             </div>

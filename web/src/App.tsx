@@ -12,6 +12,8 @@ import LogoutPage from "./auth/LogoutPage.tsx"
 import RegisterPage from "./auth/RegisterPage.tsx"
 import Search from "./Search.tsx"
 import KanjiSearch from "./KanjiSearch.tsx"
+import KanjiShow from "./KanjiShow.tsx"
+import WordShow from "./WordShow.tsx"
 
 import { sync } from "./db/sync.ts"
 
@@ -27,8 +29,10 @@ function App() {
                 <Routes>
                     <Route path="/"             element={<Index />} />
                     <Route path="/word"         element={<Word />} />
+                    <Route path="/word/:id"     element={<WordShow />} />
                     <Route path="/word/bulkadd" element={<WordBulkAdd />} />
                     <Route path="/kanji"        element={<Kanji />} />
+                    <Route path="/kanji/:id"    element={<KanjiShow />} />
                     <Route path="/search"       element={<Search />} />
                     <Route path="/kanjisearch"  element={<KanjiSearch />} />
                     <Route path="/login"        element={<LoginPage />} />

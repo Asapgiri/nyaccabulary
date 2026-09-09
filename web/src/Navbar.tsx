@@ -1,7 +1,7 @@
 import UserMenu from "./user/UserMenu.tsx"
 import LoginButton from "./user/LoginButton.tsx"
 import { useLocation } from "react-router-dom"
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 
 import { useAuth } from "./AuthContext"
 import { useState } from "react";
@@ -23,10 +23,9 @@ export default function Navbar() {
 
                 <div className="d-flex flex-wrap align-items-center gap-2 py-2">
 
-                    <a href="/"
-                       className="navbar-brand text-white mb-0 d-none d-md-block">
+                    <Link to="/" className="navbar-brand text-white mb-0 d-none d-md-block">
                        NyanTan
-                    </a>
+                    </Link>
 
                     <form action={searchType === "kanji" ? "/kanjisearch" : "/search"} method="GET" className="flex-grow-1">
                         <div className="input-group">
@@ -80,20 +79,18 @@ export default function Navbar() {
 
                     <div className="d-flex flex-wrap align-items-center py-2 gap-1">
 
-                        <a href="/"
-                           className={"btn btn-sm " + (currentPath === "/" ? "btn-light" : "btn-outline-light")}>
+                        <Link to="/" className={"btn btn-sm " + (currentPath === "/" ? "btn-light" : "btn-outline-light")}>
                             Home
-                        </a>
+                        </Link>
 
-                        <a href="/word"
-                           className={"btn btn-sm " + (currentPath === "/word" ? "btn-light" : "btn-outline-light")}>
+                        <Link to="/word" className={"btn btn-sm " + (currentPath === "/word" ? "btn-light" : "btn-outline-light")}>
                             Word
-                        </a>
+                        </Link>
 
-                        <a href="/kanji"
+                        <Link to="/kanji"
                            className={"btn btn-sm " + (currentPath === "/kanji" ? "btn-light" : "btn-outline-light")}>
                             Kanji
-                        </a>
+                        </Link>
 
                         <div className="dropdown ms-auto d-md-none">
 

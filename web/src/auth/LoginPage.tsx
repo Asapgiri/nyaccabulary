@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useAuth } from "../AuthContext.tsx";
 import { apiFetch } from "../api.ts";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
@@ -84,13 +85,13 @@ export default function LoginPage() {
                 </form>
 
                 <div className="d-flex justify-content-between mt-3 small">
-                    <a href="/pwr_r" className="text-decoration-none">
+                    <Link to="/pwr_r" className="text-decoration-none">
                         Forgotten password
-                    </a>
+                    </Link>
 
-                    <a href="/register" className="text-decoration-none">
+                    <Link to="/register" className="text-decoration-none">
                         Register
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

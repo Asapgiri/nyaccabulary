@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import WordChip from "./components/WordChip"
 import WordModal from "./components/WordModal";
 import "./index.css"
@@ -48,7 +49,7 @@ export default function Word() {
                 <div className="study-controls">
                     <div className="study-actions">
                         <button type="button" className="btn btn-outline-primary btn-mini" id="copy-btn" onClick={() => copy(filteredWords, true)}>Copy</button>
-                        <a href="/word/bulkadd" className="btn btn-outline-secondary btn-mini">Bulk</a>
+                        <Link to="/word/bulkadd" className="btn btn-outline-secondary btn-mini">Bulk</Link>
                         <button className="btn btn-outline-success btn-mini" onClick={() => pdf(filter)}>PDF</button>
                     </div>
                 </div>

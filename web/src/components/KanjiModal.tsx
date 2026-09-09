@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { raw_kanji_update } from "./update";
 
 export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete }) {
@@ -71,7 +72,11 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                         <strong>Words:</strong>
                         <span className="modal-words">
                         {kanji.Words.map((word, index) => (
-                            <a key={index} href={`/word/${word.Id}`} className="icon-btn me-2 mb-2 p-1 kanji-btn">{word.Word}</a>
+                            <Link key={index} to={`/word/${word.Id}`}
+                                onClick={() => document.getElementsByClassName('btn-close')[0].click()}
+                                className="icon-btn me-2 mb-2 p-1 kanji-btn">
+                                {word.Word}
+                            </Link>
                         ))}
                         </span>
                         </p>
