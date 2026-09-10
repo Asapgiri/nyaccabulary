@@ -32,6 +32,7 @@ func setup_routes() {
     http.HandleFunc("GET /word/bulkadd",                pages.WordsBulkAdd)
     http.HandleFunc("GET /word/add/{entseq}",           pages.WordAdd)
     http.HandleFunc("GET /word/pdf/{filter}",           pages.WordsPdf)
+    http.HandleFunc("GET /word/pdf/cards/{filter}",     pages.WordsPdfCards)
     http.HandleFunc("POST /word/bulkadd",               pages.WordsBulkAdd)
     http.HandleFunc("POST /word/save",                  pages.WordSave)
     http.HandleFunc("GET /word/delete/{id}",            pages.WordDelete)
@@ -70,6 +71,7 @@ func setup_routes() {
     http.HandleFunc("POST   /api/word/{id}/delete",     api.WordDelete)
 
     http.HandleFunc("GET /api/word/pdf/{filter}",       pages.WordsPdf)
+    http.HandleFunc("GET /api/word/pdf/cards/{filter}", pages.WordsPdfCards)
     http.HandleFunc("GET /api/kanji/pdf/{filter}",      pages.KanjisPdf)
 
     // api kanjis

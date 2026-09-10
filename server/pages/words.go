@@ -94,6 +94,18 @@ func LookUpWords(word string) (config.Entry, bool) {
     return config.Entry{}, false
 }
 
+func pdfWordCollector(s session.Sessioner, raw_filter string) []logic.Word {
+    filter := logic.Filter{}
+    json.Unmarshal([]byte(raw_filter), &filter)
+    log.Println(filter)
+
+    user := logic.User{}
+    user.Find(s.Auth.Id)
+
+    word := logic.Word{}
+    return word.List(user, filter)
+}
+
 func WordsPdf(w http.ResponseWriter, r *http.Request) {
     session := GetCurrentSession(w, r)
 
@@ -102,18 +114,7 @@ func WordsPdf(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    f := r.PathValue("filter")
-    log.Println(f)
-
-    filter := logic.Filter{}
-    json.Unmarshal([]byte(f), &filter)
-    log.Println(filter)
-
-    user := logic.User{}
-    user.Find(session.Auth.Id)
-
-    word := logic.Word{}
-    words := word.List(user, filter)
+    words := pdfWordCollector(session, r.PathValue("filter"))
     slices.Reverse(words)
 
     pdf := gofpdf.New("P", "mm", "A4", "")

@@ -16,6 +16,10 @@ export function pdf(filter) {
     const url = `${API_BASE ? API_BASE : ""}/api${window.location.pathname}/pdf/${JSON.stringify(filter)}`;
     window.open(url, "_blank", "noopener,noreferrer");
 }
+export function cards(filter) {
+    const url = `${API_BASE ? API_BASE : ""}/api${window.location.pathname}/pdf/cards/${JSON.stringify(filter)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+}
 
 export function copy(words: any, full: boolean) {
     let text: string = ""
