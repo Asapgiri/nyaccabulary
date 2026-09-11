@@ -95,11 +95,11 @@ func renderJapaneseImage(text string) ([]byte, error) {
 		image.Rect(0, 0, pageWidth, pageHeight),
 	)
 
-	for y := 0; y < pageHeight; y++ {
-		for x := 0; x < pageWidth; x++ {
-			img.Set(x, y, color.White)
-		}
-	}
+	// for y := 0; y < pageHeight; y++ {
+	// 	for x := 0; x < pageWidth; x++ {
+	// 		img.Set(x, y, color.White)
+	// 	}
+	// }
 
 	d := &font.Drawer{
 		Dst:  img,
