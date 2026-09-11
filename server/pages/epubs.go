@@ -5,13 +5,144 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
+	"image"
+	"image/color"
+	"image/png"
 	"io"
 	"math/rand"
 	"net/http"
 	"nyaccabulary/server/logic"
+	"os"
 	"strings"
 	"time"
+
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
+	"golang.org/x/image/math/fixed"
 )
+
+const (
+	pageWidth  = 528
+	pageHeight = 792
+
+	fontSize  = 86
+	cellSize  = 94
+	margin    = 20
+
+	japaneseFontPath = "fonts/UDDigiKyokashoNK-R-03.ttf"
+)
+
+func renderJapaneseImage(text string) ([]byte, error) {
+	fontData, err := os.ReadFile(japaneseFontPath)
+	if err != nil {
+		return nil, err
+	}
+
+	ttf, err := opentype.Parse(fontData)
+	if err != nil {
+		return nil, err
+	}
+
+	face, err := opentype.NewFace(ttf, &opentype.FaceOptions{
+		Size:    fontSize,
+		DPI:     72,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer face.Close()
+
+	runes := []rune(text)
+
+	// How many characters fit in one vertical column.
+	maxChars := (pageHeight - margin*2) / cellSize
+
+	if maxChars <= 0 {
+		return nil, fmt.Errorf("invalid page dimensions")
+	}
+
+	// Split text into vertical columns.
+	var columns [][]rune
+
+	for len(runes) > 0 {
+		n := maxChars
+		if len(runes) < n {
+			n = len(runes)
+		}
+
+		columns = append(columns, runes[:n])
+		runes = runes[n:]
+	}
+
+	// Calculate dimensions of the text block.
+	totalWidth := len(columns) * cellSize
+
+	maxHeight := 0
+	for _, column := range columns {
+		height := len(column) * cellSize
+		if height > maxHeight {
+			maxHeight = height
+		}
+	}
+
+	// Center the entire block.
+	startX := (pageWidth - totalWidth) / 2
+	startY := (pageHeight - maxHeight) / 2
+
+	// Create white background.
+	img := image.NewRGBA(
+		image.Rect(0, 0, pageWidth, pageHeight),
+	)
+
+	for y := 0; y < pageHeight; y++ {
+		for x := 0; x < pageWidth; x++ {
+			img.Set(x, y, color.White)
+		}
+	}
+
+	d := &font.Drawer{
+		Dst:  img,
+		Src:  image.NewUniform(color.Black),
+		Face: face,
+	}
+
+	// Draw columns from RIGHT to LEFT.
+	for columnIndex, column := range columns {
+
+		x := startX + totalWidth -
+			(columnIndex+1)*cellSize
+
+		for charIndex, r := range column {
+
+			y := startY + charIndex*cellSize
+
+			// Get glyph dimensions.
+			bounds, _ := font.BoundString(face, string(r))
+
+			glyphWidth := (bounds.Max.X - bounds.Min.X).Ceil()
+			glyphHeight := (bounds.Max.Y - bounds.Min.Y).Ceil()
+
+			// Center glyph horizontally in its cell.
+			glyphX := x + (cellSize-glyphWidth)/2
+
+			// font.Drawer uses the baseline as Y.
+			glyphY := y + (cellSize+glyphHeight)/2
+
+			d.Dot = fixed.P(glyphX, glyphY)
+			d.DrawString(string(r))
+		}
+	}
+
+	// Encode PNG.
+	var buf bytes.Buffer
+
+	if err := png.Encode(&buf, img); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
 
 func escapeHTML(s string) string {
 	var b bytes.Buffer
@@ -29,7 +160,7 @@ func zipWrite(zw *zip.Writer, name, data string) error {
 	return err
 }
 
-func generateWordXHTML(w logic.Word) string {
+func generateWordXHTML(w logic.Word, imagePath string) string {
     var kanjis strings.Builder
 
 	for _, kanji := range w.Kanjis {
@@ -68,27 +199,26 @@ func generateWordXHTML(w logic.Word) string {
 		))
 	}
 
-    var status = "-"
-    if logic.MASTERY.MASTERED == w.Status {
-        status = "o"
-    } else if logic.MASTERY.LEARNING == w.Status {
-        status = "+"
-    }
-
-
 	return fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>%s</title>
+<style>
+.page {
+	width: 100%%;
+	height: 100%%;
+	display: block;
+}
+</style>
 </head>
 <body>
 
+<img class="page" src="../%s" alt="%s"/>
+
 <div>
-    === %s<br/>
-    <span style="font-size: 52px;">
-        <strong>%s</strong>
-    </span><br/>
+    %s<br/>
+    <strong>%s</strong><br/>
     %s<br/>
     %s<br/>
 </div>
@@ -98,7 +228,9 @@ func generateWordXHTML(w logic.Word) string {
 </body>
 </html>`,
 		escapeHTML(w.Kanji),
-		escapeHTML(status),
+		escapeHTML(imagePath),
+		escapeHTML(w.Kanji),
+		escapeHTML(w.Status),
 		escapeHTML(w.Kanji),
 		escapeHTML(w.Kana),
 		escapeHTML(w.Meaning),
@@ -193,14 +325,35 @@ func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
 		n := i + 1
 		id := fmt.Sprintf("word-%d", n)
 		filename := fmt.Sprintf("pages/%s.xhtml", id)
+        imageFilename := fmt.Sprintf("images/%s.png", id)
+
+        imageData, err := renderJapaneseImage(word.Kanji)
+        if nil != err {
+            return
+        }
+
+        imageFile, err := zw.Create("OEBPS/" + imageFilename)
+        if err != nil {
+            return
+        }
+
+        if _, err := imageFile.Write(imageData); err != nil {
+            return
+        }
 
 		if err = zipWrite(
 			zw,
 			"OEBPS/"+filename,
-			generateWordXHTML(word),
+			generateWordXHTML(word, imageFilename),
 		); err != nil {
 			return
 		}
+
+		manifest.WriteString(fmt.Sprintf(
+			`<item id="%s-img" href="%s" media-type="image/png"/>`,
+			id,
+			imageFilename,
+		))
 
 		manifest.WriteString(fmt.Sprintf(
 			`<item id="%s" href="%s" media-type="application/xhtml+xml"/>`,
