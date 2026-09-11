@@ -14,6 +14,7 @@ import (
 	"nyaccabulary/server/logic"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"golang.org/x/image/font"
@@ -280,20 +281,7 @@ media-type="application/oebps-package+xml"/>
 </container>`
 }
 
-func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
-	session := GetCurrentSession(w, r)
-
-	if session.Auth.Username == "" {
-		AccessViolation(w, r)
-		return
-	}
-
-	words := pdfWordCollector(session, r.PathValue("filter"))
-
-	rand.Shuffle(len(words), func(i, j int) {
-		words[i], words[j] = words[j], words[i]
-	})
-
+func generateEpub(words []logic.Word) bytes.Buffer {
 	var buf bytes.Buffer
 	zw := zip.NewWriter(&buf)
 
@@ -302,11 +290,11 @@ func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
 		Method: zip.Store,
 	})
 	if err != nil {
-		return
+		return bytes.Buffer{}
 	}
 
 	if _, err = f.Write([]byte("application/epub+zip")); err != nil {
-		return
+		return bytes.Buffer{}
 	}
 
 	if err = zipWrite(
@@ -314,7 +302,7 @@ func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
 		"META-INF/container.xml",
 		containerXML(),
 	); err != nil {
-		return
+		return bytes.Buffer{}
 	}
 
 	var manifest, spine, nav strings.Builder
@@ -331,16 +319,16 @@ func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
 
         imageData, err := renderJapaneseImage(word.Kanji)
         if nil != err {
-            return
+		    return bytes.Buffer{}
         }
 
         imageFile, err := zw.Create("OEBPS/" + imageFilename)
         if err != nil {
-            return
+		    return bytes.Buffer{}
         }
 
         if _, err := imageFile.Write(imageData); err != nil {
-            return
+		    return bytes.Buffer{}
         }
 
 		if err = zipWrite(
@@ -348,7 +336,7 @@ func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
 			"OEBPS/"+filename,
 			generateWordXHTML(word, imageFilename),
 		); err != nil {
-			return
+		    return bytes.Buffer{}
 		}
 
 		manifest.WriteString(fmt.Sprintf(
@@ -377,7 +365,6 @@ func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
 
     fmt.Printf("Generate epub time: %v\n", time.Since(start))
 
-
 	nav.WriteString(`</ol>`)
 
 	navXHTML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
@@ -398,7 +385,7 @@ xmlns:epub="http://www.idpf.org/2007/ops">
 	)
 
 	if err = zipWrite(zw, "OEBPS/nav.xhtml", navXHTML); err != nil {
-		return
+		return bytes.Buffer{}
 	}
 
 	manifest.WriteString(
@@ -410,11 +397,94 @@ xmlns:epub="http://www.idpf.org/2007/ops">
 		"OEBPS/content.opf",
 		generateOPF(manifest.String(), spine.String()),
 	); err != nil {
-		return
+		return bytes.Buffer{}
 	}
 
 	if err = zw.Close(); err != nil {
+		return bytes.Buffer{}
+	}
+
+    return buf
+}
+
+const epubCacheDuration = time.Hour
+var epubGenerating sync.Map
+
+func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
+	session := GetCurrentSession(w, r)
+
+	if session.Auth.Username == "" {
+		AccessViolation(w, r)
 		return
+	}
+
+	filter := r.PathValue("filter")
+
+	cachePath := fmt.Sprintf(
+		"cache/words-%s-%s.epub",
+        session.Auth.Username,
+		filter,
+	)
+
+	// Try to mark this file as being generated.
+	//
+	// LoadOrStore returns loaded=true if another request
+	// has already stored this key.
+	_, alreadyGenerating := epubGenerating.LoadOrStore(cachePath, true)
+
+	if alreadyGenerating {
+		http.Error(
+			w,
+			"Please wait, the EPUB is still being generated.",
+			http.StatusTooManyRequests,
+		)
+		return
+	}
+
+	// Make sure we always clear the generating state.
+	defer epubGenerating.Delete(cachePath)
+
+	var buf bytes.Buffer
+
+	// Check cache.
+	info, err := os.Stat(cachePath)
+
+	if err == nil && time.Since(info.ModTime()) < epubCacheDuration {
+		// Cache exists and hasn't expired.
+		data, err := os.ReadFile(cachePath)
+		if err != nil {
+			http.Error(w, "failed to read cache", http.StatusInternalServerError)
+			return
+		}
+
+		buf.Write(data)
+
+	} else {
+		// Cache doesn't exist or has expired.
+		if err == nil {
+			// Delete expired cache.
+			_ = os.Remove(cachePath)
+		}
+
+		words := pdfWordCollector(session, filter)
+
+		rand.Shuffle(len(words), func(i, j int) {
+			words[i], words[j] = words[j], words[i]
+		})
+
+		buf = generateEpub(words)
+
+		// Make sure cache directory exists.
+		if err := os.MkdirAll("cache", 0755); err != nil {
+			http.Error(w, "failed to create cache directory", http.StatusInternalServerError)
+			return
+		}
+
+		// Save EPUB to cache.
+		if err := os.WriteFile(cachePath, buf.Bytes(), 0644); err != nil {
+			http.Error(w, "failed to write cache", http.StatusInternalServerError)
+			return
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/epub+zip")
