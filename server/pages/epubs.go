@@ -33,17 +33,17 @@ func generateWordXHTML(w logic.Word) string {
     var kanjis strings.Builder
 
 	for _, kanji := range w.Kanjis {
-		on := "-"
+		on := ""
 		if len(kanji.On) > 0 {
-			on = strings.Join(kanji.On, ", ")
+			on = "・" + strings.Join(kanji.On, ", ")
 		}
 
-		kun := "-"
+		kun := ""
 		if len(kanji.Kun) > 0 {
-			kun = strings.Join(kanji.Kun, ", ")
+			kun = "・" + strings.Join(kanji.Kun, ", ")
 		}
 
-		meaning := "-"
+		meaning := ""
 		if len(kanji.Meaning) > 0 {
 			meaning = strings.Join(kanji.Meaning, ", ")
 		}
@@ -51,21 +51,19 @@ func generateWordXHTML(w logic.Word) string {
 		jlpt := ""
 
 		if kanji.DictForm.Misc.JLPT != nil {
-			jlpt = fmt.Sprintf(`N%d`, *kanji.DictForm.Misc.JLPT)
+			jlpt = "・" + fmt.Sprintf(`N%d`, *kanji.DictForm.Misc.JLPT)
 		}
 
 		kanjis.WriteString(fmt.Sprintf(`
 <div>
     ---<br/>
-    <strong>%s</strong> %s<br/>
-    <strong>On:</strong> %s<br/>
-    <strong>Kun:</strong> %s<br/>
+    <strong>%s</strong> %s %s %s<br/>
     %s
 </div>`,
 			escapeHTML(kanji.Kanji),
 			jlpt,
-			escapeHTML(on),
 			escapeHTML(kun),
+			escapeHTML(on),
 			escapeHTML(meaning),
 		))
 	}
@@ -88,11 +86,14 @@ func generateWordXHTML(w logic.Word) string {
 
 <div>
     === %s<br/>
-    <strong>%s</strong><br/>
+    <span style="font-size: 52px;">
+        <strong>%s</strong>
+    </span><br/>
     %s<br/>
     %s<br/>
-    %s
 </div>
+
+%s
 
 </body>
 </html>`,
