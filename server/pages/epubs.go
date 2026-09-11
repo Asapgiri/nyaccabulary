@@ -321,6 +321,8 @@ func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
 
 	nav.WriteString(`<ol>`)
 
+    start := time.Now()
+
 	for i, word := range words {
 		n := i + 1
 		id := fmt.Sprintf("word-%d", n)
@@ -372,6 +374,9 @@ func WordsPdfCards(w http.ResponseWriter, r *http.Request) {
 			escapeHTML(word.Kanji),
 		))
 	}
+
+    fmt.Printf("Generate epub time: %v\n", time.Since(start))
+
 
 	nav.WriteString(`</ol>`)
 
