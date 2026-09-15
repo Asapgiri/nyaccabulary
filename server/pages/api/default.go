@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"nyaccabulary/server/logic"
 	"nyaccabulary/server/pages"
+	"time"
 
 	"github.com/asapgiri/golib/logger"
 )
@@ -50,9 +51,15 @@ func Sync(w http.ResponseWriter, r *http.Request) {
 
     word := logic.Word{}
     kanji := logic.Kanji{}
+    tag := logic.Tag{}
 
     wmeta := word.GetMeta(user, filter)
     kmeta := kanji.GetMeta(user, filter)
+
+    var f *time.Time = nil
+    if !filter.LastUpdated.IsZero() {
+        f = &filter.LastUpdated
+    }
 
     to_send := SyncResponse{
         WordStats: Stats{
@@ -67,6 +74,7 @@ func Sync(w http.ResponseWriter, r *http.Request) {
         },
         Words: MapWordList(word.List(user, filter)),
         Kanjis: MapKanjiList(kanji.List(user, filter)),
+        Tags: MapTagList(tag.List(user, f)),
     }
 
     write_json_gz(w, to_send)

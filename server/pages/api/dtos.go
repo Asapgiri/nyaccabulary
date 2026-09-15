@@ -55,6 +55,7 @@ type SyncResponse struct {
     KanjiStats  Stats
     Words       []Word
     Kanjis      []Kanji
+    Tags        []Tag
 }
 
 type WordAddRequest struct {
@@ -114,4 +115,12 @@ type Kanji struct {
     DictForm        config.Character
 
     Words           []logic.KWord
+}
+
+type Tag struct {
+    Id              string
+    Date            time.Time
+    LastUpdated     time.Time
+    Name            string
+    Color           string
 }

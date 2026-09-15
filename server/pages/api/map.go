@@ -39,6 +39,14 @@ func (k *Kanji) Map(lk logic.Kanji) {
     k.Words         = lk.Words
 }
 
+func (t *Tag) Map(lt logic.Tag) {
+    t.Id            = lt.Id
+    t.Date          = lt.Date
+    t.LastUpdated   = lt.LastUpdated
+    t.Name          = lt.Name
+    t.Color         = lt.Color
+}
+
 func MapWordList(lwl []logic.Word) []Word {
     wl := make([]Word, len(lwl))
     for i, w := range lwl {
@@ -53,6 +61,14 @@ func MapKanjiList(lkl []logic.Kanji) []Kanji {
         kl[i].Map(k)
     }
     return kl
+}
+
+func MapTagList(ltl []logic.Tag) []Tag {
+    tl := make([]Tag, len(ltl))
+    for i, t := range ltl {
+        tl[i].Map(t)
+    }
+    return tl
 }
 
 func MapKanjiListString(lkl []logic.Kanji) []WKanji {
