@@ -50,6 +50,7 @@ func (word *Word) raw_map(dword dbase.Word) {
     word.Status         = dword.Status
     word.LastShown      = dword.LastShown
     word.DictForm       = dword.DictForm
+    word.Tags           = dword.Tags
 }
 
 func (word *Word) Map(dword dbase.Word) {
@@ -118,6 +119,7 @@ func (word *Word) UnMap() dbase.Word {
     dword.Status        = word.Status
     dword.LastShown     = word.LastShown
     dword.DictForm      = word.DictForm
+    dword.Tags          = word.Tags
 
     dword.Kanjis = make([]primitive.ObjectID, len(word.Kanjis))
     for i, k := range(word.Kanjis) {
@@ -128,6 +130,7 @@ func (word *Word) UnMap() dbase.Word {
 }
 
 func (kanji *Kanji) raw_map(dkanji dbase.Kanji) {
+    kanji._db           = dkanji
     kanji.Id            = dkanji.Id.Hex()
     kanji.Date          = dkanji.Date
     kanji.LastUpdated   = dkanji.LastUpdated
@@ -140,6 +143,7 @@ func (kanji *Kanji) raw_map(dkanji dbase.Kanji) {
     kanji.LastShown     = dkanji.LastShown
     kanji.Status        = dkanji.Status
     kanji.DictForm      = dkanji.DictForm
+    kanji.Tags          = dkanji.Tags
 }
 
 func (kanji *Kanji) Map(dkanji dbase.Kanji) {
@@ -212,6 +216,7 @@ func (kanji *Kanji) UnMap() dbase.Kanji {
     dkanji.LastShown    = kanji.LastShown
     dkanji.Status       = kanji.Status
     dkanji.DictForm     = kanji.DictForm
+    dkanji.Tags         = kanji.Tags
 
     return dkanji
 }
@@ -220,4 +225,32 @@ func (kw *KWord) Map(wd dbase.Word) {
     kw.Id       = wd.Id.Hex()
     kw.Word     = wd.Kanji
     kw.Status   = wd.Status
+}
+
+func (tag *Tag) Map(td dbase.Tag, user *User) {
+    tag._db         = td
+    tag.Id          = td.Id.Hex()
+    tag.Date        = td.Date
+    tag.LastUpdated = td.LastUpdated
+    tag.Name        = td.Name
+    tag.Color       = td.Color
+
+    if nil == user {
+        user = &User{}
+        user.Find(td.User.Hex())
+    }
+    tag.User = *user
+}
+
+func (tag *Tag) UnMap() dbase.Tag {
+    dt := tag._db
+
+    dt.Id, _        = primitive.ObjectIDFromHex(tag.Id)
+    dt.Date         = tag.Date
+    dt.LastUpdated  = tag.LastUpdated
+    dt.User, _      = primitive.ObjectIDFromHex(tag.User.Id)
+    dt.Name         = tag.Name
+    dt.Color        = tag.Color
+
+    return dt
 }

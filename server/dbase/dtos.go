@@ -17,6 +17,7 @@ type Filter struct {
     Limit       int64
     Sort        Sort
     Status      []string
+    Tags        []string
     LastUpdated time.Time
 }
 
@@ -66,6 +67,7 @@ type Word struct {
     Status          string
     DictForm        config.Entry
     Kanjis          []primitive.ObjectID
+    Tags            []string
 }
 
 type Kanji struct {
@@ -82,4 +84,14 @@ type Kanji struct {
     LastShown       time.Time
     Status          string
     DictForm        config.Character
+    Tags            []string
+}
+
+type Tag struct {
+    Id              primitive.ObjectID `bson:"_id"`
+    Date            time.Time
+    LastUpdated     time.Time
+    User            primitive.ObjectID
+    Name            string
+    Color           string
 }

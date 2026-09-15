@@ -44,6 +44,7 @@ type Word struct {
     LastShown       time.Time
     DictForm        config.Entry
     Kanjis          []Kanji
+    Tags            []string
 }
 
 type KWord struct {
@@ -73,4 +74,16 @@ type Kanji struct {
     OnStr     string
     KunStr    string
     MeaningStr string
+
+    Tags            []string
+}
+
+type Tag struct {
+    _db             dbase.Tag
+    Id              string
+    Date            time.Time
+    LastUpdated     time.Time
+    User            User
+    Name            string
+    Color           string
 }
