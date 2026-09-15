@@ -46,6 +46,10 @@ func list(db *mongo.Collection, user *User, filter Filter, meta Meta, results in
         }})
     }
 
+    if len(filter.Tags) > 0 {
+        query = append(query, bson.E{Key: "tags", Value: bson.D{{"$in", filter.Tags}}})
+    }
+
     if !filter.LastUpdated.IsZero() {
         query = append(query, bson.E{
             Key:   "lastupdated",

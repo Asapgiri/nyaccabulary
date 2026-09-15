@@ -16,6 +16,7 @@ var db *mongo.Database
 var dbUSERS *mongo.Collection
 var dbWORDS *mongo.Collection
 var dbKANJI *mongo.Collection
+var dbTAG   *mongo.Collection
 
 var log = logger.Logger {
     Color: logger.Colors.Purple,
@@ -77,6 +78,7 @@ func Connect() error {
     dbUSERS = db.Collection("users")
     dbWORDS = db.Collection("words")
     dbKANJI = db.Collection("kanji")
+    dbTAG   = db.Collection("tags")
 
     return nil
 }
