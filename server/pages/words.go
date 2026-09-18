@@ -336,7 +336,7 @@ type BulkInfo struct {
     Failed  []string
 }
 
-func BulkAdd(user logic.User, s string, progress func(int, int)) BulkInfo {
+func BulkAdd(user logic.User, s string, tag string, progress func(int, int)) BulkInfo {
     var info BulkInfo
 
     if "" == s {
@@ -385,6 +385,10 @@ func BulkAdd(user logic.User, s string, progress func(int, int)) BulkInfo {
                 bulkline.Status = logic.MASTERY.LOOKUP_FAILED
             }
 
+            if "" != tag {
+                bulkline.Tags = []string{tag}
+            }
+
             bulkline.Date = time.Now()
             bulkline.User = user
             bulkline.Add()
@@ -417,7 +421,7 @@ func WordsBulkAdd(w http.ResponseWriter, r *http.Request) {
     user := logic.User{}
     user.Find(sess.Auth.Id)
 
-    info := BulkAdd(user, lines, nil)
+    info := BulkAdd(user, lines, "", nil)
 
     if len(info.Exists) > 0 {
         sess.Notice.Set(session.NOTICE.INFO, "Words already on list: '" + strings.Join(info.Exists, ", ") + "'")

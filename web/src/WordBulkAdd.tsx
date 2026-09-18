@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { apiFetch } from "./api";
+import TagSelect from "./components/TagSelect";
 
 export default function WordBulkAdd() {
     const [bulkwords, setBulkwords] = useState<string>("");
     const [progress, setProgress] = useState<{percent: number; max: number} | null>(null);
     const [notices, setNotices] = useState<{Added: string[], Exists: string[], Failed: string[]} | null>(null);
+    const [tagId, setTagId] = useState<string | undefined>();
 
     async function add() {
         const response = await apiFetch("/api/word/bulk", {
             method: "POST",
-            body: bulkwords,
+            body: JSON.stringify({
+                tag: tagId,
+                words: bulkwords,
+            }),
         });
 
         setBulkwords("")
@@ -92,6 +97,17 @@ export default function WordBulkAdd() {
                         )}
 
                         <div className="mb-4">
+                            <div className="mb-4">
+                                <label className="form-label fw-semibold">
+                                    Tag
+                                </label>
+
+                                <TagSelect
+                                    value={tagId}
+                                    onChange={setTagId}
+                                />
+                            </div>
+
                             <label htmlFor="words" className="form-label fw-semibold">
                                 Words
                             </label>

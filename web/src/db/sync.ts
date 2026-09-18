@@ -31,8 +31,10 @@ export async function sync() {
         return
     }
 
+    console.log(data)
+
     const tx = db.transaction(
-        ["words", "kanjis", "metadata"],
+        ["words", "kanjis", "tags", "metadata"],
         "readwrite"
     );
 
@@ -46,6 +48,10 @@ export async function sync() {
 
     for (const kanji of data.Kanjis) {
         tx.objectStore("kanjis").put(kanji);
+    }
+
+    for (const tag of data.Tags) {
+        tx.objectStore("tags").put(tag);
     }
 
     tx.objectStore("metadata").put(

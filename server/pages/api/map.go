@@ -19,6 +19,7 @@ func (w *Word) Map(lw logic.Word) {
     w.DictForm      = lw.DictForm
 
     w.Kanjis        = MapKanjiListString(lw.Kanjis)
+    w.Tags          = lw.Tags
 }
 
 func (k *Kanji) Map(lk logic.Kanji) {
@@ -37,6 +38,7 @@ func (k *Kanji) Map(lk logic.Kanji) {
     k.DictForm      = lk.DictForm
 
     k.Words         = lk.Words
+    k.Tags          = lk.Tags
 }
 
 func (t *Tag) Map(lt logic.Tag) {

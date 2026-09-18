@@ -1,6 +1,6 @@
 import { deleteDB, openDB } from "idb";
 
-export const dbPromise = openDB("NyanTanDB", 1, {
+export const dbPromise = openDB("NyanTanDB", 2, {
     upgrade(db) {
         if (!db.objectStoreNames.contains("metadata")) {
             db.createObjectStore("metadata");
@@ -14,6 +14,12 @@ export const dbPromise = openDB("NyanTanDB", 1, {
 
         if (!db.objectStoreNames.contains("kanjis")) {
             db.createObjectStore("kanjis", {
+                keyPath: "Id",
+            });
+        }
+
+        if (!db.objectStoreNames.contains("tags")) {
+            db.createObjectStore("tags", {
                 keyPath: "Id",
             });
         }

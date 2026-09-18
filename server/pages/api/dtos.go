@@ -64,6 +64,11 @@ type WordAddRequest struct {
     Meaning string `json:"meaning"`
 }
 
+type WordBulkAddRequest struct {
+    Tag     string `json:"tag"`
+    Words   string `json:"words"`
+}
+
 type TagAddRequest struct {
     Name    string `json:"name"`
     Color   string `json:"color"`
@@ -102,6 +107,7 @@ type Word struct {
     LastShown       time.Time
     DictForm        config.Entry
     Kanjis          []WKanji
+    Tags            []string
 }
 
 type Kanji struct {
@@ -120,6 +126,7 @@ type Kanji struct {
     DictForm        config.Character
 
     Words           []logic.KWord
+    Tags            []string
 }
 
 type Tag struct {

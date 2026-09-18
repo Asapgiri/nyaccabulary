@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 	"nyaccabulary/server/config"
 	"nyaccabulary/server/logic"
@@ -141,8 +140,10 @@ func WordBulkAdd(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    l, _ := io.ReadAll(r.Body)
-    lines := string(l)
+    var ba_req WordBulkAddRequest
+    json.NewDecoder(r.Body).Decode(&ba_req)
+
+    lines := string(ba_req.Words)
     if "" == lines {
         AccessViolation(w, r)
         return
@@ -163,7 +164,7 @@ func WordBulkAdd(w http.ResponseWriter, r *http.Request) {
 
     enc := json.NewEncoder(w)
 
-    write_json(w, pages.BulkAdd(user, lines, func(i, count int) {
+    write_json(w, pages.BulkAdd(user, lines, ba_req.Tag, func(i, count int) {
         enc.Encode(struct {
             Index int `json:"index"`
             Count int `json:"count"`
