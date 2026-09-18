@@ -173,29 +173,39 @@ span.learning {
     border-color: #000;
 }
 
+.btn-next {
+    width: 100%;
+    padding: 5px;
+}
+
+.btn-next, .btn-random {
+    border-color: #6f42c1;
+    color: #6f42c1;
+}
+
 /* Semantic actions */
-.icon-btn-master {
+.btn-master {
     border-color: #198754;
     color: #198754;
 }
 
-.icon-btn-master:hover {
+.btn-master:hover {
     background: #198754;
     color: #fff;
 }
 
-.icon-btn-unmaster {
+.btn-unmaster {
     border-color: #6c757d;
     color: #6c757d;
     position: relative;
 }
 
-.icon-btn-unmaster:hover {
+.btn-unmaster:hover {
     background: #6c757d;
     color: #fff;
 }
 
-.icon-btn-unmaster::after {
+.btn-unmaster::after {
     content: 'Unmark as mastered';
     position: absolute;
     bottom: 120%;
@@ -212,14 +222,14 @@ span.learning {
     transition: opacity 0.15s;
 }
 
-.icon-btn-unmaster:hover::after { opacity: 1; }
+.btn-unmaster:hover::after { opacity: 1; }
 
-.icon-btn-delete {
+.btn-delete {
     border-color: #dc3545;
     color: #dc3545;
 }
 
-.icon-btn-delete:hover {
+.btn-delete:hover {
     background: #dc3545;
     color: #fff;
 }

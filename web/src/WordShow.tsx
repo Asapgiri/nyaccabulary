@@ -76,11 +76,7 @@ export default function WordShow() {
     return (
         <div className="container-fluid py-4 px-3 px-md-4">
 
-            <Filter filter={filter} setFilter={setFilter} compact={true} extraField={(
-                <button className="icon-btn btn-random" onClick={word_random}>
-                    Random
-                </button>
-            )}/>
+            <Filter filter={filter} setFilter={setFilter} compact={true} />
 
             <div className="topbar">
                 <div className="page-title">
@@ -204,6 +200,10 @@ export default function WordShow() {
                     ))}
                 </ul>
             </section>
+
+            <button className="icon-btn btn-next mb-2" onClick={word_random}>
+                Next
+            </button>
 
             <section>
                 <h6>Senses</h6>
