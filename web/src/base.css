@@ -175,10 +175,7 @@ span.learning {
 
 .btn-next {
     width: 100%;
-    padding: 5px;
-}
-
-.btn-next, .btn-random {
+    padding: 10px;
     border-color: #6f42c1;
     color: #6f42c1;
 }
