@@ -64,6 +64,11 @@ type WordAddRequest struct {
     Meaning string `json:"meaning"`
 }
 
+type TagAddRequest struct {
+    Name    string `json:"name"`
+    Color   string `json:"color"`
+}
+
 type User struct {
     Id              string
     RegDate         time.Time

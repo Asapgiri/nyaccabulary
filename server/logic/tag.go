@@ -48,7 +48,9 @@ func (tag *Tag) Add() error {
     tag.Date = time.Now()
     tag.LastUpdated = time.Now()
     dt := tag.UnMap()
-    return dt.Add()
+    err := dt.Add()
+    tag.Id = dt.Id.Hex()
+    return err
 }
 
 func (tag *Tag) Update() error {
