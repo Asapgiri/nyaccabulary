@@ -82,7 +82,7 @@ export function FilterApply(filter, words) {
     return result;
 }
 
-export function Filter({ filter, setFilter }) {
+export function Filter({ filter, setFilter, compact = false, extraField = null }) {
 
     useEffect(() => {
         init_db();
@@ -220,19 +220,25 @@ export function Filter({ filter, setFilter }) {
                     Reset
                 </button>
 
+                {extraField}
+
             </div>
 
-            <input id="wordSearch" className="form-control form-control-sm" placeholder="Search..." value={filter.search ? filter.search : ""} onInput={e => search(e.target.value)}/>
+            {!compact && (
+                <>
+                    <input id="wordSearch" className="form-control form-control-sm" placeholder="Search..." value={filter.search ? filter.search : ""} onInput={e => search(e.target.value)}/>
 
-            <div className="d-flex flex-wrap align-items-center gap-2 p-2 border">
-                <input style={{width: '100%'}} className="form-range mx-2" id="wordSize" type="range" min="12" max="56" step="1" value={filter.wordSize ?? 16} onChange={e => updateWordSize(e.target.value)} />
+                    <div className="d-flex flex-wrap align-items-center gap-2 p-2 border">
+                        <input style={{width: '100%'}} className="form-range mx-2" id="wordSize" type="range" min="12" max="56" step="1" value={filter.wordSize ?? 16} onChange={e => updateWordSize(e.target.value)} />
 
-                <span className="jlpt-badge jlpt-n5">N5</span>
-                <span className="jlpt-badge jlpt-n4">N4</span>
-                <span className="jlpt-badge jlpt-n3">N3</span>
-                <span className="jlpt-badge jlpt-n2">N2</span>
-                <span className="jlpt-badge jlpt-n1">N1</span>
-            </div>
+                        <span className="jlpt-badge jlpt-n5">N5</span>
+                        <span className="jlpt-badge jlpt-n4">N4</span>
+                        <span className="jlpt-badge jlpt-n3">N3</span>
+                        <span className="jlpt-badge jlpt-n2">N2</span>
+                        <span className="jlpt-badge jlpt-n1">N1</span>
+                    </div>
+                </>
+            )}
         </>
     )
 }

@@ -1,23 +1,42 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { WordDB } from "./db/words";
+import { copy, Filter, FilterApply, pdf, cards, raw_filter } from "./Filter";
 import { raw_word_update } from "./components/update";
 
 export default function WordShow() {
     const { id } = useParams<{ id: string }>();
     const [word, setWord] = useState<Word | null>(null);
+    const [allWords, setAllWords] = useState<Word | null>(null);
+    const [filter, setFilter] = useState<TFilter>(raw_filter);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!id) return;
 
         async function loadWord() {
-            const loadedWord = await WordDB.get(id);
+            let loadedWord
+            let words
+
+            if ("random" === id) {
+                words = await WordDB.getAll();
+                loadedWord = words[Math.floor(Math.random() * words.length)];
+            }
+            else {
+                loadedWord = await WordDB.get(id);
+            }
+
             setWord(loadedWord);
+            setAllWords(words)
         }
 
         loadWord();
     }, [id]);
+
+    async function word_random() {
+        const words = FilterApply(filter, allWords);
+        setWord(words[Math.floor(Math.random() * words.length)]);
+    }
 
     async function update(t_body) {
         if (!word) return;
@@ -56,6 +75,12 @@ export default function WordShow() {
 
     return (
         <div className="container-fluid py-4 px-3 px-md-4">
+
+            <Filter filter={filter} setFilter={setFilter} compact={true} extraField={(
+                <button className="icon-btn btn-random" onClick={word_random}>
+                    Random
+                </button>
+            )}/>
 
             <div className="topbar">
                 <div className="page-title">

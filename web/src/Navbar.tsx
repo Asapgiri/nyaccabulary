@@ -92,6 +92,10 @@ export default function Navbar() {
                             Kanji
                         </Link>
 
+                        <Link to="/word/random" className={"btn btn-sm " + (currentPath === "/word/random" ? "btn-light" : "btn-outline-light")}>
+                            Random
+                        </Link>
+
                         <div className="dropdown ms-auto d-md-none">
 
                         {user ? (
