@@ -2,6 +2,9 @@ import { FormEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "../api.ts";
 import { useAuth } from "../AuthContext.tsx";
+import { sync } from "../db/sync";
+import { TagAPI, TagDB } from "../db/tags";
+import type { Tag } from "../db/tags";
 import "./management.css";
 
 interface Settings { Name: string; Email: string; Phone: string; EmailVisible: boolean; PhoneVisible: boolean }
@@ -19,11 +22,67 @@ export default function SettingsPage() {
     const [busy, setBusy] = useState(false);
     const [saved, setSaved] = useState("");
     const [error, setError] = useState("");
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [tagDrafts, setTagDrafts] = useState<Record<string, { Name: string; Color: string }>>({});
+    const [newTag, setNewTag] = useState({ Name: "", Color: "#7057d9" });
+    const [tagBusy, setTagBusy] = useState("");
+    const [tagMessage, setTagMessage] = useState("");
+    const [tagError, setTagError] = useState("");
+
+    async function loadTags() {
+        const loaded = await TagDB.getAll();
+        setTags(loaded);
+        setTagDrafts(Object.fromEntries(loaded.map(tag => [tag.Id, { Name: tag.Name, Color: tag.Color }])));
+    }
 
     useEffect(() => {
         if (!user) return;
         setSettings({ Name: user.Name ?? "", Email: user.Email ?? "", Phone: user.Phone ?? "", EmailVisible: user.EmailVisible ?? false, PhoneVisible: user.PhoneVisible ?? false });
     }, [user]);
+
+    useEffect(() => {
+        void loadTags();
+        const onTagsChanged = () => { void loadTags(); };
+        window.addEventListener("nyaccabulary:tags", onTagsChanged);
+        return () => window.removeEventListener("nyaccabulary:tags", onTagsChanged);
+    }, []);
+
+    async function createTag(event: FormEvent) {
+        event.preventDefault(); setTagBusy("new"); setTagError(""); setTagMessage("");
+        try {
+            await TagAPI.create(newTag);
+            setNewTag({ Name: "", Color: "#7057d9" });
+            setTagMessage("Tag created.");
+        } catch (err) { setTagError(err instanceof Error ? err.message : "Could not create tag."); }
+        finally { setTagBusy(""); }
+    }
+
+    async function saveTag(tag: Tag) {
+        const draft = tagDrafts[tag.Id];
+        if (!draft?.Name.trim()) { setTagError("Tag names cannot be empty."); return; }
+        setTagBusy(tag.Id); setTagError(""); setTagMessage("");
+        try {
+            await TagAPI.update(tag.Id, { Name: draft.Name.trim(), Color: draft.Color });
+            setTagMessage(`“${draft.Name.trim()}” saved.`);
+        } catch (err) { setTagError(err instanceof Error ? err.message : "Could not update tag."); }
+        finally { setTagBusy(""); }
+    }
+
+    async function deleteTag(tag: Tag) {
+        if (!window.confirm(`Delete “${tag.Name}” from all words and kanji?`)) return;
+        setTagBusy(tag.Id); setTagError(""); setTagMessage("");
+        try {
+            await TagAPI.delete(tag.Id);
+            try {
+                await sync();
+                setTagMessage(`“${tag.Name}” deleted and study data refreshed.`);
+            } catch {
+                setTagMessage(`“${tag.Name}” deleted. Study data will refresh on the next sync.`);
+            }
+            await loadTags();
+        } catch (err) { setTagError(err instanceof Error ? err.message : "Could not delete tag."); }
+        finally { setTagBusy(""); }
+    }
 
     async function saveSettings(event: FormEvent) {
         event.preventDefault(); setBusy(true); setError(""); setSaved("");
@@ -80,5 +139,29 @@ export default function SettingsPage() {
                 <button className="btn btn-outline-dark" disabled={busy}>Update password</button>
             </form>
         </div>
+        <section className="management-card tag-management-card">
+            <div className="tag-management-heading"><div><h2>Manage tags</h2><p>Edit tag names and colors, or remove a tag from all words and kanji.</p></div><span>{tags.length} tags</span></div>
+            {tagError && <div className="alert alert-danger py-2" role="alert">{tagError}</div>}
+            {tagMessage && <div className="alert alert-success py-2" role="status">{tagMessage}</div>}
+            <form className="tag-management-create" onSubmit={createTag}>
+                <strong>New tag</strong>
+                <input className="form-control" aria-label="New tag name" placeholder="Tag name" maxLength={80} value={newTag.Name} onChange={event => setNewTag(current => ({ ...current, Name: event.target.value }))} />
+                <input className="form-control form-control-color" type="color" aria-label="New tag color" value={newTag.Color} onChange={event => setNewTag(current => ({ ...current, Color: event.target.value }))} />
+                <button className="btn btn-dark" disabled={!newTag.Name.trim() || tagBusy === "new"}>{tagBusy === "new" ? "Adding…" : "Add tag"}</button>
+            </form>
+            {tags.length === 0 ? <p className="mb-0 py-3">No tags yet.</p> : <div className="tag-management-list">
+                {tags.map(tag => {
+                    const draft = tagDrafts[tag.Id] ?? { Name: tag.Name, Color: tag.Color };
+                    const changed = draft.Name !== tag.Name || draft.Color !== tag.Color;
+                    return <div className="tag-management-row" key={tag.Id}>
+                        <span className="tag-management-swatch" style={{ backgroundColor: draft.Color }} aria-hidden="true" />
+                        <input className="form-control" aria-label={`${tag.Name} name`} maxLength={80} value={draft.Name} onChange={event => setTagDrafts(current => ({ ...current, [tag.Id]: { ...draft, Name: event.target.value } }))} />
+                        <input className="form-control form-control-color" type="color" aria-label={`${tag.Name} color`} value={draft.Color} onChange={event => setTagDrafts(current => ({ ...current, [tag.Id]: { ...draft, Color: event.target.value } }))} />
+                        <button type="button" className="btn btn-outline-dark" disabled={!changed || tagBusy === tag.Id} onClick={() => void saveTag(tag)}>{tagBusy === tag.Id ? "Saving…" : "Save"}</button>
+                        <button type="button" className="btn btn-outline-danger" disabled={tagBusy === tag.Id} onClick={() => void deleteTag(tag)}>Delete</button>
+                    </div>;
+                })}
+            </div>}
+        </section>
     </main>;
 }

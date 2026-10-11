@@ -31,6 +31,8 @@ export default function TagEditor({ value, onSave, onCatalogChange }: TagEditorP
             if (!active) return;
             const safeTags = Array.isArray(loaded) ? loaded : [];
             setTags(safeTags);
+            const availableIds = new Set(safeTags.map(tag => tag.Id));
+            setSelected(current => current.filter(id => availableIds.has(id)));
             onCatalogChange?.(safeTags);
             setLoading(false);
         };
@@ -40,14 +42,16 @@ export default function TagEditor({ value, onSave, onCatalogChange }: TagEditorP
         return () => { active = false; window.removeEventListener("nyaccabulary:tags", onTagsChanged); };
     }, []);
 
-    function selectTags(next: string[]) {
-        setSelected(next);
+    function selectTags(next: string[], catalog: Tag[] = tags) {
+        const availableIds = new Set(catalog.map(tag => tag.Id));
+        const validSelection = [...new Set(next.filter(id => availableIds.has(id)))];
+        setSelected(validSelection);
         setError("");
         const version = ++saveVersion.current;
         setSaving(true);
         saveQueue.current = saveQueue.current
             .catch(() => undefined)
-            .then(() => onSave(next))
+            .then(() => onSave(validSelection))
             .then(() => undefined)
             .catch(() => {
                 if (version === saveVersion.current) setError("Could not save these tags. Please try again.");
@@ -65,7 +69,7 @@ export default function TagEditor({ value, onSave, onCatalogChange }: TagEditorP
             const next = await TagDB.getAll();
             setTags(next);
             onCatalogChange?.(next);
-            selectTags([...new Set([...selected, tag.Id])]);
+            selectTags([...new Set([...selected, tag.Id])], next);
             setName("");
         } catch {
             setError("Could not create the tag. Please try again.");

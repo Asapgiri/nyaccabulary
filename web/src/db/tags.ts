@@ -54,13 +54,20 @@ export const TagAPI = {
     },
 
     update(id: string, body: TagAddRequest) {
-        return post(id, "update", body);
+        return post(id, "update", body).then(async tag => {
+            await TagDB.put(tag);
+            publishTags(await TagDB.getAll());
+            return tag;
+        });
     },
 
-    delete(id: string) {
-        return apiFetch(`/api/tag/delete/${id}`, {
+    async delete(id: string) {
+        const response = await apiFetch(`/api/tag/${id}/delete`, {
             method: "POST",
         });
+        if (!response.ok) throw new Error(await response.text());
+        await TagDB.delete(id);
+        publishTags(await TagDB.getAll());
     },
 };
 

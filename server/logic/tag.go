@@ -8,59 +8,61 @@ import (
 )
 
 func (tag *Tag) List(user User, lastUpdated *time.Time) []Tag {
-    dt := dbase.Tag{}
+	dt := dbase.Tag{}
 
-    dtags, _ := dt.List(&user._db, lastUpdated)
-    tags := make([]Tag, len(dtags))
-    for i, _ := range dtags {
-        tags[i].Map(dtags[i], &user)
-    }
+	dtags, _ := dt.List(&user._db, lastUpdated)
+	tags := make([]Tag, len(dtags))
+	for i, _ := range dtags {
+		tags[i].Map(dtags[i], &user)
+	}
 
-    return tags
+	return tags
 }
 
 func (tag *Tag) Find(id string) {
-    dt := dbase.Tag{}
-    _id, _ := primitive.ObjectIDFromHex(id)
-    err := dt.Select(_id)
+	dt := dbase.Tag{}
+	_id, _ := primitive.ObjectIDFromHex(id)
+	err := dt.Select(_id)
 
-    if nil != err {
-        tag.Id = ""
-        return
-    }
+	if nil != err {
+		tag.Id = ""
+		return
+	}
 
-    tag.Map(dt, nil)
+	tag.Map(dt, nil)
 }
 
 func (tag *Tag) FindByName(user User, name string) {
-    dt := dbase.Tag{}
+	dt := dbase.Tag{}
 
-    err := dt.FindByName(&user._db, name)
-    if nil != err {
-        tag.Id = ""
-        return
-    }
+	err := dt.FindByName(&user._db, name)
+	if nil != err {
+		tag.Id = ""
+		return
+	}
 
-    tag.Map(dt, &user)
+	tag.Map(dt, &user)
 }
 
 func (tag *Tag) Add() error {
-    tag.Date = time.Now()
-    tag.LastUpdated = time.Now()
-    dt := tag.UnMap()
-    dt.Id = primitive.NewObjectID()
-    tag.Id = dt.Id.Hex()
-    return dt.Add()
+	tag.Date = time.Now()
+	tag.LastUpdated = time.Now()
+	dt := tag.UnMap()
+	dt.Id = primitive.NewObjectID()
+	tag.Id = dt.Id.Hex()
+	return dt.Add()
 }
 
 func (tag *Tag) Update() error {
-    tag.LastUpdated = time.Now()
-    dt := tag.UnMap()
-    return dt.Update()
+	tag.LastUpdated = time.Now()
+	dt := tag.UnMap()
+	return dt.Update()
 }
 
 func (tag *Tag) Delete() error {
-    // FIXME: Tag deletion should delete the tag ID from Words and Kanjis!
-    dt := tag.UnMap()
-    return dt.Delete()
+	dt := tag.UnMap()
+	if err := dt.RemoveReferences(time.Now()); err != nil {
+		return err
+	}
+	return dt.Delete()
 }

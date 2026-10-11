@@ -30,3 +30,21 @@
     .admin-list-tools { flex-direction: column; }
     .admin-list-tools .form-control { max-width: none; }
 }
+.tag-management-card { margin-top: 18px; }
+.tag-management-heading { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.tag-management-heading h2 { margin-bottom: 5px; }
+.tag-management-heading p { margin: 0 0 14px; color: #706c64; }
+.tag-management-heading > span { flex: 0 0 auto; padding: 4px 7px; border: 1px solid var(--ink); font-size: .7rem; font-weight: 800; }
+.tag-management-create, .tag-management-row { display: grid; grid-template-columns: minmax(100px, .65fr) minmax(150px, 1.5fr) 46px auto auto; align-items: center; gap: 8px; }
+.tag-management-create { margin-bottom: 12px; padding: 10px; border: 1px dashed #bcb8ad; background: #f8f6f0; }
+.tag-management-create > strong { font-size: .78rem; }
+.tag-management-row { padding: 8px 0; border-top: 1px solid #d2cec3; }
+.tag-management-swatch { width: 14px; height: 14px; border: 1px solid var(--ink); }
+.tag-management-card .form-control, .tag-management-card .btn { border-radius: 0; }
+.tag-management-card .form-control-color { width: 42px; padding: 4px; }
+@media (max-width: 767.98px) {
+    .tag-management-create { grid-template-columns: minmax(0, 1fr) 42px auto; }
+    .tag-management-create > strong { grid-column: 1 / -1; }
+    .tag-management-row { grid-template-columns: 14px minmax(0, 1fr) 42px auto; }
+    .tag-management-row .btn-outline-danger { grid-column: 2 / -1; justify-self: end; }
+}
