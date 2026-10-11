@@ -24,6 +24,8 @@ The `.config.json` file will be created after the first run with the following d
 
 By default I use pound for reverse proxy, but I don't feel like sharing my config with you...
 
+Set `Giphy.ApiKey` in `.config.json` to enable automatic GIF search in word and kanji modals.
+
 ## TODOs, features to implements
 
 - [x] users

@@ -3,6 +3,7 @@ import { raw_kanji_update } from "./update";
 import TagEditor from "./TagEditor";
 import MemeGifEditor from "./MemeGifEditor";
 import InlineFieldEditor from "./InlineFieldEditor";
+import KanjiWriting from "./KanjiWriting";
 import type { Tag } from "../db/tags";
 
 export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete, onCatalogChange = (_tags: Tag[]) => {} }) {
@@ -90,6 +91,7 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                                 <InlineFieldEditor label="On readings" value={(kanji.On ?? []).join("\n")} onSave={value => saveKanjiListField("on", value)} multiline emptyText="Not set" listDisplay />
                                 <InlineFieldEditor label="Kun readings" value={(kanji.Kun ?? []).join("\n")} onSave={value => saveKanjiListField("kun", value)} multiline emptyText="Not set" listDisplay />
                             </div>
+                            <KanjiWriting character={kanji.Kanji} />
                         </div>
                         <p>
                         <strong>Words:</strong>

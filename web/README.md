@@ -1,5 +1,9 @@
 # React + TypeScript + Vite
 
+## Automatic meme GIFs
+
+Word and kanji modals search GIPHY when no saved GIF is set, then save the selected embed URL to the entry. Use **New GIF** to replace it with another random search result. Set `Giphy.ApiKey` in the server's `.config.json`; the browser reads the client-side key from `/api/config` as required by GIPHY's Search API.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

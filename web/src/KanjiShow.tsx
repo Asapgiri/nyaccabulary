@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { KanjiDB } from "./db/kanjis";
 import { raw_kanji_update } from "./components/update";
 import TagEditor from "./components/TagEditor";
+import KanjiWriting from "./components/KanjiWriting";
 
 export default function KanjiShow() {
     const { id } = useParams<{ id: string }>();
@@ -91,7 +92,7 @@ export default function KanjiShow() {
             <div className="topbar">
                 <div className="page-title">
                     <span className="eyebrow">CHARACTER STUDY</span>
-                    {kanji.Kanji}
+                    <span className="kanji-page-title">{kanji.Kanji}</span>
 
                     {kanji.Status === "MASTERED" && (
                         <span className="badge bg-success ms-2">
@@ -168,6 +169,7 @@ export default function KanjiShow() {
                 {" | "}
                 Kun: {kanji.Kun?.join(", ") || "-"}
                 </div>
+                <KanjiWriting character={kanji.Kanji} />
             </section>
 
             <TagEditor key={kanji.Id} value={kanji.Tags ?? []} onSave={saveTags} />

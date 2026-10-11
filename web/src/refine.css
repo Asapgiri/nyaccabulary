@@ -61,7 +61,7 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .kanji-detail-card { position: relative; max-width: 1000px; margin: 24px auto; padding: clamp(20px, 4vw, 42px); overflow: hidden; border: 2px solid var(--ink); background: #e9e5d9; background-image: radial-gradient(#cbc6b8 .7px, transparent .7px); background-size: 10px 10px; box-shadow: 7px 7px 0 var(--ink); text-align: center; }
 .kanji-detail-card::after { position: absolute; top: 0; right: 0; width: 12px; height: 100%; background: repeating-linear-gradient(180deg, var(--coral) 0 12px, var(--lime) 12px 24px, var(--violet) 24px 36px); content: ""; }
 .kanji-detail-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #6d6961; font-size: .66rem; font-weight: 800; letter-spacing: .12em; text-align: left; }
-.kanji-detail-card .kanji-hero { margin: 20px 0 8px; color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(8rem, 26vw, 13rem); font-weight: 800; letter-spacing: -.04em; }
+.kanji-detail-card .kanji-hero { margin: 20px 0 8px; color: var(--ink); font-size: clamp(8rem, 26vw, 13rem); font-weight: 600; }
 .kanji-detail-card .kanji-readings { margin: 0; color: #666259; font-size: clamp(.9rem, 2vw, 1.2rem); }
 .kanji-grade-badges .badge { border: 1px solid var(--ink); background: var(--paper-light) !important; color: var(--ink) !important; }
 .kanji-grade-badges .badge + .badge { margin-left: 5px !important; }
@@ -73,7 +73,7 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .modal-content { box-shadow: 8px 8px 0 #191b2266; }
 .modal-body .card { border-radius: 0 !important; box-shadow: 2px 2px 0 #d2cec3 !important; }
 .study-modal-header { gap: 16px; padding: 18px 20px; }
-.study-modal-header .study-kanji { color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 800; line-height: 1; }
+.study-modal-header .study-kanji { color: var(--ink); font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 600; line-height: 1; }
 .study-modal-header .study-kana { margin-top: 6px; color: #706c64; }
 .study-modal-header .study-actions { align-items: flex-start; gap: 6px; }
 .study-modal-header .icon-btn { display: inline-flex; min-height: 34px; align-items: center; justify-content: center; padding: 5px 9px; border: 1px solid #aaa69c; background: var(--paper-light); color: var(--ink); font-size: .74rem; font-weight: 750; text-decoration: none; }
@@ -95,7 +95,7 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .modal-body .badge { margin: 2px 4px 2px 0; padding: 4px 6px; border: 1px solid #c4c0b6; border-radius: 0; background: #e9e6dd !important; color: var(--ink) !important; font-size: .68rem; font-weight: 700; }
 .modal-body .modal-senses ul { margin-top: 6px; padding-left: 20px; }
 .modal-body .modal-senses li { margin: 4px 0; line-height: 1.5; }
-.modal-body .kanji-hero { margin: 4px 0 8px; color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(5rem, 18vw, 9rem); font-weight: 850; line-height: 1; text-align: center; }
+.modal-body .kanji-hero { margin: 4px 0 8px; color: var(--ink); font-size: clamp(5rem, 18vw, 9rem); font-weight: 600; line-height: 1; text-align: center; }
 .modal-body .kanji-readings { margin-bottom: 18px; color: #68645c; text-align: center; }
 .modal-body .modal-readings > div { margin-bottom: 12px; padding: 12px; border: 1px solid #d2cec3; background: #f8f6f0; }
 .meme-gif-editor { display: grid; gap: 9px; margin: 14px 0; padding: 12px; border: 1px solid var(--ink); background: #efede5; box-shadow: 2px 2px 0 #d3d0c6; }
@@ -117,7 +117,7 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .inline-field-editor { display: grid; gap: 7px; min-width: 0; }
 .inline-field-editor .form-label { margin: 0; color: #68645c; font-size: .67rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
 .inline-field-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
-.word-modal-kanji-edit > span { color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 800; line-height: 1; }
+.word-modal-kanji-edit > span { color: var(--ink); font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 600; line-height: 1; }
 .word-modal-kana-edit { margin-top: 6px; color: #706c64; font-size: 1rem; }
 .word-modal-meaning-edit { align-items: flex-start; margin: 8px 0 16px; padding: 12px; border: 1px solid #c9c5bb; border-left: 4px solid var(--coral); background: #f8f6f0; box-shadow: 2px 2px 0 #d3d0c6; }
 .word-modal-meaning-edit > span { font-size: 1.05rem; font-weight: 650; line-height: 1.5; }
@@ -130,7 +130,20 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .kanji-modal-meaning-edit .inline-field-value-item { min-height: 38px; padding: 7px 11px; }
 .kanji-modal-reading-editors .inline-field-value-list { display: grid; align-content: start; }
 .kanji-modal-kanji-edit { justify-content: center; margin: 2px 0 8px; }
-.kanji-modal-kanji-edit > span { color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(5rem, 18vw, 9rem); font-weight: 850; line-height: 1; }
+.kanji-modal-kanji-edit > span { color: var(--ink); font-size: clamp(5rem, 18vw, 9rem); font-weight: 600; line-height: 1; }
+.kanji-hero, .study-kanji, .kanji-page-title, .word-chip, .kanji-btn, .dictionary-result-card .fw-bold.fs-5, .kanji-modal-kanji-edit > span, .word-modal-kanji-edit > span, .word-show-title .study-kanji { font-family: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif; font-synthesis: none; }
+.kanji-page-title { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 600; line-height: 1; }
+.kanji-writing { display: grid; gap: 7px; width: min(100%, 390px); margin: 16px auto 4px; padding: 10px; border: 1px solid var(--ink); background: #f8f6f0; box-shadow: 3px 3px 0 #cbc7bb; text-align: left; }
+.kanji-writing-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.kanji-writing-heading > div { display: grid; gap: 2px; }
+.kanji-writing-heading small { color: #706c64; font-size: .68rem; }
+.kanji-writing-canvas { display: grid; width: min(100%, 250px); aspect-ratio: 1; place-items: center; margin: auto; border: 1px dashed #c4c0b6; background-color: #fbfaf6; background-image: linear-gradient(transparent calc(50% - .5px), #d8d3c7 50%, transparent calc(50% + .5px)), linear-gradient(90deg, transparent calc(50% - .5px), #d8d3c7 50%, transparent calc(50% + .5px)); }
+.kanji-writing-svg { display: block; width: 88%; height: 88%; overflow: visible; }
+.kanji-writing-svg path[data-writing-stroke] { fill: none !important; stroke: var(--ink) !important; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; visibility: hidden; animation: kanji-stroke-write .5s ease-out forwards; }
+.kanji-writing-note { color: #706c64; font-size: .75rem; }
+.kanji-writing-credit { justify-self: end; color: #706c64; font-size: .62rem; text-decoration: none; }
+.kanji-writing-credit:hover { text-decoration: underline; }
+@keyframes kanji-stroke-write { from { stroke-dashoffset: 1; visibility: visible; } to { stroke-dashoffset: 0; visibility: visible; } }
 .kanji-modal-reading-editors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .kanji-modal-meaning-edit { margin: 10px 0 14px; }
 @media (max-width: 575.98px) { .kanji-modal-reading-editors { grid-template-columns: 1fr; } }
