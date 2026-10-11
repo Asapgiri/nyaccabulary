@@ -57,9 +57,9 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="container py-5 d-flex justify-content-center">
+        <div className="container py-5 d-flex justify-content-center auth-layout">
             <div
-                className="p-4 bg-white rounded shadow-sm border w-100"
+                className="p-4 bg-white rounded shadow-sm border w-100 auth-card"
                 style={{ maxWidth: 500 }}
             >
                 {error && (
@@ -68,7 +68,9 @@ export default function LoginPage() {
                     </div>
                 )}
 
-                <h4 className="mb-4 text-center">Login</h4>
+                <div className="auth-kicker">NYAA / VOCAB LAB</div>
+                <h1 className="auth-title">Make a study space</h1>
+                <p className="auth-caption">Create an account to save words, kanji, and progress.</p>
 
                 <form onSubmit={register}>
                     <div id="form">
@@ -83,7 +85,7 @@ export default function LoginPage() {
                             <input value={regrequest.passwordb} onChange={e => setRegrequest(r => ({...r, passwordb: e.target.value}))} type="password" id="form_userPassB" name="form[userPassB]" required="required" placeholder="Password Again *" autoComplete="current-password" className="form-control mb-2"/>
                         </div>
                         <div className="form-group">
-                            <button type="submit" id="form_Bejelentkezés" name="form[Register]" className="form-control mb-2 btn-primary btn">Register</button>
+                            <button type="submit" id="form_Bejelentkezés" name="form[Register]" className="form-control mb-2 btn-dark btn">Register</button>
                         </div>
                     </div>
                 </form>

@@ -38,11 +38,9 @@ export default function Search() {
     console.log(skanjis)
 
     return (
-        <div className="container-fluid py-4 px-3 px-md-4">
+        <div className="container-fluid py-4 px-3 px-md-4 dictionary-page">
 
-            <div className="text-muted mb-2">
-                results: {skanjis && skanjis.length}
-            </div>
+            <header className="dictionary-heading"><div><span className="dictionary-eyebrow">DICTIONARY / KANJI</span><h1>Kanji search</h1><p>Explore readings and meanings, then add characters to your study list.</p></div><div className="dictionary-result-count">{skanjis?.length ?? "…"}<small>matches</small></div></header>
 
             {loading && (
                 <div className="text-center py-5">
@@ -62,8 +60,8 @@ export default function Search() {
                 </div>
             )}
 
-            {!loading && !skanjis && (
-                <div className="text-center py-5">
+            {!loading && (!skanjis || skanjis.length === 0) && (
+                <div className="text-center py-5 empty-panel dictionary-empty">
                     <div style={{ fontSize: "5rem" }}>📚</div>
 
                     <h3 className="mt-3">Nothing found</h3>
@@ -74,7 +72,7 @@ export default function Search() {
                 </div>
             )}
 
-            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 dictionary-results">
                 {skanjis && skanjis.map(({ Result, Kanji }) => (
                     <div className="col word-card" key={Result.Literal}>
                         <div
@@ -83,6 +81,7 @@ export default function Search() {
                                 "card",
                                 "h-100",
                                 "shadow-sm",
+                                "dictionary-result-card",
                                 Kanji?.Status === "MASTERED" && "border-success",
                                 Kanji?.Status === "LEARNING" && "border-warning",
                                 Kanji?.Status === "NEW" && "border-primary",

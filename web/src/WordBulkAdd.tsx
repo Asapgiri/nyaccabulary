@@ -51,7 +51,7 @@ export default function WordBulkAdd() {
     }
 
     return (
-        <div className="container">
+        <div className="container py-4 bulk-add-page">
 
             {notices && (
                 <div>
@@ -78,10 +78,11 @@ export default function WordBulkAdd() {
 
             <div className="row justify-content-center">
 
-                <div className="card shadow-sm border-0">
+                <div className="card shadow-sm border-0 bulk-add-card">
                     <div className="card-body">
 
-                        <h1 className="h3 mb-3">Add Words</h1>
+                        <p className="management-eyebrow">VOCABULARY TOOLS</p>
+                        <h1 className="h3 mb-3">Bulk add words</h1>
                         <p className="text-muted mb-4">
                         Enter one or more words. You can paste multiple words, one per line.<br/>
                         kanjis[(,|、)furigana][(,|、)meaning][(+|＋)]<br/>
@@ -129,7 +130,7 @@ export default function WordBulkAdd() {
                         </div>
 
                         <div className="d-grid">
-                            <button onClick={add} type="submit" className="btn btn-primary btn-lg">
+                            <button onClick={add} type="submit" className="btn btn-dark btn-lg">
                                 Submit Words
                             </button>
                         </div>

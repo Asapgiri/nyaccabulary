@@ -21,9 +21,6 @@ type PublicProfile struct {
 }
 
 func UserProfile(w http.ResponseWriter, r *http.Request) {
-
-	log.Println("User profile...")
-
 	user := logic.User{}
 	user.FindByUsername(r.PathValue("username"))
 	if user.Id == "" {

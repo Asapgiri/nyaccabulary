@@ -90,6 +90,7 @@ export default function KanjiShow() {
 
             <div className="topbar">
                 <div className="page-title">
+                    <span className="eyebrow">CHARACTER STUDY</span>
                     {kanji.Kanji}
 
                     {kanji.Status === "MASTERED" && (
@@ -152,55 +153,26 @@ export default function KanjiShow() {
                 </div>
             </div>
 
-            <div className="study-title kanji-show-title">
-                <div className="study-kanji">
-                    {kanji.Kanji}
+            <section className="kanji-detail-card">
+                <div className="kanji-detail-meta">
+                    <span>REFERENCE / {kanji.DictForm.Misc?.JLPT > 0 ? `JLPT N${kanji.DictForm.Misc.JLPT}` : "KANJIDIC"}</span>
+                    <div className="kanji-grade-badges">
+                        {kanji.DictForm.Misc?.JLPT > 0 && <span className="badge bg-success">N{kanji.DictForm.Misc.JLPT}</span>}
+                        {kanji.DictForm.Misc?.Grade && <span className="badge bg-info ms-2">G{kanji.DictForm.Misc.Grade}</span>}
+                        {kanji.DictForm.Misc?.Freq > 0 && <span className="badge bg-secondary ms-2">F{kanji.DictForm.Misc.Freq}</span>}
+                    </div>
                 </div>
-
-                <div className="study-kana">
-                    On: {kanji.On?.join(", ") || "-"}
-                    {" | "}
-                    Kun: {kanji.Kun?.join(", ") || "-"}
-                </div>
-
-                <div className="study-grade">
-                    {kanji.DictForm.Misc?.JLPT > 0 && (
-                        <span className="badge bg-success">
-                            N{kanji.DictForm.Misc.JLPT}
-                        </span>
-                    )}
-
-                    {kanji.DictForm.Misc?.Grade !== "" && (
-                        <span className="badge bg-info ms-2">
-                            G{kanji.DictForm.Misc.Grade}
-                        </span>
-                    )}
-
-                    {kanji.DictForm.Misc?.Freq > 0 && (
-                        <span className="badge bg-secondary ms-2">
-                            F{kanji.DictForm.Misc.Freq}
-                        </span>
-                    )}
-                </div>
-            </div>
-
-            <TagEditor key={kanji.Id} value={kanji.Tags ?? []} onSave={saveTags} />
-
-            <hr />
-
-            <div className="kanji-hero">
-                {kanji.Kanji}
-            </div>
-
-            <div className="kanji-readings">
+                <div className="kanji-hero">{kanji.Kanji}</div>
+                <div className="kanji-readings">
                 On: {kanji.On?.join(", ") || "-"}
                 {" | "}
                 Kun: {kanji.Kun?.join(", ") || "-"}
-            </div>
+                </div>
+            </section>
 
-            <hr />
+            <TagEditor key={kanji.Id} value={kanji.Tags ?? []} onSave={saveTags} />
 
-            <section>
+            <section className="detail-content-section">
                 <h6>Meaning</h6>
 
                 <p className="modal-meaning">
@@ -208,9 +180,7 @@ export default function KanjiShow() {
                 </p>
             </section>
 
-            <hr />
-
-            <section>
+            <section className="detail-content-section">
                 <h6>Words</h6>
 
                 <div className="modal-words">
@@ -226,9 +196,7 @@ export default function KanjiShow() {
                 </div>
             </section>
 
-            <hr />
-
-            <section>
+            <section className="detail-content-section">
                 <h6>Readings &amp; Meanings</h6>
 
                 <div className="modal-readings">

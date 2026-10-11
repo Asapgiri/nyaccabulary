@@ -8,27 +8,32 @@ import TagEditor from "./components/TagEditor";
 export default function WordShow() {
     const { id } = useParams<{ id: string }>();
     const [word, setWord] = useState<Word | null>(null);
-    const [allWords, setAllWords] = useState<Word | null>(null);
+    const [allWords, setAllWords] = useState<Word[]>([]);
     const [filter, setFilter] = useState<TFilter>(raw_filter);
+    const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState("");
     const navigate = useNavigate();
+    const randomMode = id === "random";
 
     useEffect(() => {
         if (!id) return;
 
         async function loadWord() {
-            let loadedWord
-            let words
-
-            if ("random" === id) {
-                words = await WordDB.getAll();
-                loadedWord = words[Math.floor(Math.random() * words.length)];
+            setLoading(true);
+            setLoadError("");
+            try {
+                if ("random" === id) {
+                    const words = await WordDB.getAll();
+                    setAllWords(words);
+                    setWord(words.length ? words[Math.floor(Math.random() * words.length)] : null);
+                } else {
+                    setWord(await WordDB.get(id));
+                }
+            } catch {
+                setLoadError("Could not load this word. Try syncing your vocabulary and opening it again.");
+            } finally {
+                setLoading(false);
             }
-            else {
-                loadedWord = await WordDB.get(id);
-            }
-
-            setWord(loadedWord);
-            setAllWords(words)
         }
 
         loadWord();
@@ -36,7 +41,13 @@ export default function WordShow() {
 
     async function word_random() {
         const words = FilterApply(filter, allWords);
-        setWord(words[Math.floor(Math.random() * words.length)]);
+        if (!words.length) {
+            setLoadError("No words match these filters. Clear or change the filters to draw again.");
+            return;
+        }
+        setLoadError("");
+        const choices = words.length > 1 ? words.filter(candidate => candidate.Id !== word?.Id) : words;
+        setWord(choices[Math.floor(Math.random() * choices.length)]);
     }
 
     async function update(t_body) {
@@ -71,34 +82,37 @@ export default function WordShow() {
         navigate("/word")
     }
 
-    if (!word) {
+    if (loading) {
         return (
             <div className="container-fluid py-4 px-3 px-md-4">
-                Loading...
+                <div className="loading-panel">Opening your word…</div>
             </div>
         );
     }
+
+    if (!word) return <div className="container-fluid py-4 px-3 px-md-4"><div className="empty-panel"><span className="empty-kicker">WORD DRAW</span><h1>{loadError ? "We hit a snag" : "No words to draw yet"}</h1><p>{loadError || "Add or sync some words first, then come back for a random pick."}</p><button className="btn btn-dark" onClick={() => navigate("/word")}>Browse words</button></div></div>;
 
     return (
         <div className="container-fluid py-4 px-3 px-md-4">
 
             <Filter filter={filter} setFilter={setFilter} compact={true} />
 
-            <div className="topbar">
+            <div className={`topbar ${randomMode ? "random-topbar" : ""}`}>
                 <div className="page-title">
-                    {word.Status === "MASTERED" && (
+                    {randomMode && <span className="eyebrow">A LITTLE DAILY DISCOVERY</span>}
+                    {!randomMode && word.Status === "MASTERED" && (
                         <span className="badge bg-success ms-2">
                             Mastered
                         </span>
                     )}
 
-                    {word.Status === "LEARNING" && (
+                    {!randomMode && word.Status === "LEARNING" && (
                         <span className="badge bg-warning text-dark ms-2">
                             Learning
                         </span>
                     )}
 
-                    {word.Status !== "MASTERED" &&
+                    {!randomMode && word.Status !== "MASTERED" &&
                         word.Status !== "LEARNING" && (
                             <span className="badge bg-secondary ms-2">
                                 Unmarked
@@ -129,23 +143,23 @@ export default function WordShow() {
                 </div>
             </div>
 
-            <div className="study-title word-show-title">
-                <div className="study-kanji">{word.Kanji}</div>
-                <div className="study-kana">{word.Kana}</div>
-            </div>
-
-            <hr />
-
-            <section>
-                <h6>Meaning</h6>
-                <p>{word.Meaning}</p>
+            <section className={`word-detail-hero ${randomMode ? "random-word-stage" : ""}`}>
+                <div className="word-detail-hero-meta"><span>{randomMode ? "YOUR RANDOM WORD" : "WORD CARD"}</span><span className={`status-marker ${word.Status.toLowerCase()}`}>{word.Status || "UNMARKED"}</span></div>
+                <div className="study-title word-show-title">
+                    <div className="study-kanji">{word.Kanji}</div>
+                    <div className="study-kana">{word.Kana}</div>
+                </div>
+                <div className="word-detail-meaning"><span>MEANING</span><p>{word.Meaning}</p></div>
+                {randomMode && <div className="random-stage-actions"><button className="btn btn-dark random-next" onClick={word_random}><span className="random-next-icon">↻</span><span><small>DRAW ANOTHER</small><strong>Next random word</strong></span><span className="random-next-arrow">→</span></button><Link to="/word" className="random-browse">Browse all words <span>↗</span></Link></div>}
             </section>
+
+            {loadError && <div className="alert alert-warning mt-3" role="status">{loadError}</div>}
 
             <TagEditor key={word.Id} value={word.Tags ?? []} onSave={saveTags} />
 
             <hr />
 
-            <section>
+            <section className="detail-content-section">
                 <h6>Kanjis</h6>
 
                 {word.Kanjis?.map((kanji, index) => (
@@ -161,7 +175,7 @@ export default function WordShow() {
 
             <hr />
 
-            <section>
+            <section className="detail-content-section">
                 <h6>Kanji</h6>
 
                 <ul className="modal-kanji">
@@ -185,7 +199,7 @@ export default function WordShow() {
                 </ul>
             </section>
 
-            <section>
+            <section className="detail-content-section">
                 <h6>Readings</h6>
 
                 <ul className="modal-readings">
@@ -209,11 +223,7 @@ export default function WordShow() {
                 </ul>
             </section>
 
-            <button className="icon-btn btn-next mb-2" onClick={word_random}>
-                Next
-            </button>
-
-            <section>
+            <section className="detail-content-section">
                 <h6>Senses</h6>
 
                 {word.DictForm?.Sense?.map((sense, index) => (

@@ -1,7 +1,7 @@
 export default function Footer() {
     return (
         <footer
-            className="mt-auto py-3"
+            className="site-footer mt-auto py-3"
             style={{ borderTop: "1px solid #e5e5e5" }}
         >
             <div
@@ -15,7 +15,7 @@ export default function Footer() {
                         color: "#555",
                     }}
                 >
-                    <div>© Words</div>
+                    <div>© Nyaa Vocab Lab</div>
 
                     <div>
                         <a

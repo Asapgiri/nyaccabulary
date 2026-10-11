@@ -7,9 +7,11 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js"
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import './base.css'
+import './design.css'
 
 import App from './App.tsx'
 import { AuthProvider } from "./AuthContext.tsx"
+import './refine.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

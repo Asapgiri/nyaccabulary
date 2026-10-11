@@ -11,20 +11,20 @@ export default function Navbar() {
     const { user } = useAuth();
     const currentPath = useLocation().pathname
     const [searchType, setSearchType] = useState(currentPath === "/kanjisearch" ? "kanji" : "words");
+    const [exactMatch, setExactMatch] = useState(searchParams.has("exactmatch"));
 
-    const exactmatch = searchParams.get("exactmatch")
     const query = searchParams.get("query")
     const jlpt = searchParams.get("jlpt")
 
     return (
-        <nav className="bg-black border-bottom border-secondary shadow-sm">
+        <nav className="site-nav bg-black border-bottom border-secondary shadow-sm">
 
             <div className="container-fluid">
 
                 <div className="d-flex flex-wrap align-items-center gap-2 py-2">
 
                     <Link to="/" className="navbar-brand text-white mb-0 d-none d-md-block">
-                       NyanTan
+                       <span className="brand-mark" aria-hidden="true">N</span><span className="brand-copy"><strong>Nyaa</strong><small>VOCAB LAB</small></span>
                     </Link>
 
                     <form action={searchType === "kanji" ? "/kanjisearch" : "/search"} method="GET" className="flex-grow-1">
@@ -37,11 +37,20 @@ export default function Navbar() {
                         </select>
 
                         {searchType === "words" ? (
-                        <span className="input-group-text bg-body border-end-0">
-                            <input className="form-check-input" type="checkbox" name="exactmatch" id="exactmatch" defaultChecked={exactmatch}/>
-                        </span>
+                        <>
+                            {exactMatch && <input type="hidden" name="exactmatch" value="on" />}
+                            <button
+                                className={`btn search-exact-toggle ${exactMatch ? "is-active" : ""}`}
+                                type="button"
+                                aria-pressed={exactMatch}
+                                title="Toggle exact word matching"
+                                onClick={() => setExactMatch((active) => !active)}
+                            >
+                                Exact
+                            </button>
+                        </>
                         ) : (
-                        <select id="jlptField" name="jlpt" className="form-select" style={{ width: "50px" }}
+                        <select id="jlptField" name="jlpt" className="form-select jlpt-search-select"
                             defaultValue={jlpt}>
                             <option value="">N?</option>
                             <option value="N5">N5</option>
@@ -92,8 +101,8 @@ export default function Navbar() {
                             Kanji
                         </Link>
 
-                        <Link to="/word/random" className={"btn btn-sm " + (currentPath === "/word/random" ? "btn-light" : "btn-outline-light")}>
-                            Random
+                        <Link to="/word/random" className={"btn btn-sm nav-random " + (currentPath === "/word/random" ? "btn-warning" : "btn-outline-light")}>
+                            <span aria-hidden="true">✳</span> Random draw
                         </Link>
 
                         <div className="dropdown ms-auto d-md-none">

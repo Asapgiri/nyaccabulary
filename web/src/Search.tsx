@@ -36,11 +36,9 @@ export default function Search() {
     }, [query])
 
     return (
-        <div className="container-fluid py-4 px-3 px-md-4">
+        <div className="container-fluid py-4 px-3 px-md-4 dictionary-page">
 
-            <div className="text-muted mb-2">
-                results: {swords && swords.length}
-            </div>
+            <header className="dictionary-heading"><div><span className="dictionary-eyebrow">DICTIONARY / WORDS</span><h1>Word search</h1><p>Find a word, check its readings, and add it to your collection.</p></div><div className="dictionary-result-count">{swords?.length ?? "…"}<small>matches</small></div></header>
 
             {loading && (
                 <div className="text-center py-5">
@@ -60,8 +58,8 @@ export default function Search() {
                 </div>
             )}
 
-            {!loading && !swords && (
-                <div className="text-center py-5">
+            {!loading && (!swords || swords.length === 0) && (
+                <div className="text-center py-5 empty-panel dictionary-empty">
                     <div style={{ fontSize: "5rem" }}>📚</div>
 
                     <h3 className="mt-3">Nothing found</h3>
@@ -72,7 +70,7 @@ export default function Search() {
                 </div>
             )}
 
-            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 dictionary-results">
                 {swords && swords.map(({ Result, Word }) => (
                     <div className="col word-card" key={Result.EntSeq}>
                         <div
@@ -81,6 +79,7 @@ export default function Search() {
                                 "card",
                                 "h-100",
                                 "shadow-sm",
+                                "dictionary-result-card",
                                 Word?.Status === "MASTERED" && "border-success",
                                 Word?.Status === "LEARNING" && "border-warning",
                                 Word?.Status === "NEW" && "border-primary",

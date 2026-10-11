@@ -37,9 +37,9 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="container py-5 d-flex justify-content-center">
+        <div className="container py-5 d-flex justify-content-center auth-layout">
             <div
-                className="p-4 bg-white rounded shadow-sm border w-100"
+                className="p-4 bg-white rounded shadow-sm border w-100 auth-card"
                 style={{ maxWidth: 400 }}
             >
                 {error && (
@@ -48,7 +48,9 @@ export default function LoginPage() {
                     </div>
                 )}
 
-                <h4 className="mb-4 text-center">Login</h4>
+                <div className="auth-kicker">NYAA / VOCAB LAB</div>
+                <h1 className="auth-title">Welcome back</h1>
+                <p className="auth-caption">Sign in and pick up where your study session left off.</p>
 
                 <form onSubmit={login}>
                     <div className="mb-2">
@@ -76,7 +78,7 @@ export default function LoginPage() {
 
                     <div className="mb-2">
                         <button
-                            className="btn btn-primary w-100"
+                            className="btn btn-dark w-100"
                             type="submit"
                         >
                             Login

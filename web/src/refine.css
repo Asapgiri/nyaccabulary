@@ -1,0 +1,104 @@
+/* Pull remaining Bootstrap-shaped screens into the shared paper-and-ink system. */
+body .card {
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper-light);
+    box-shadow: 3px 3px 0 #cbc7bb !important;
+}
+body .card-body { padding: 18px; }
+body .badge { border-radius: 0; font-weight: 750; letter-spacing: .02em; }
+body .alert { border: 1px solid var(--ink); border-left-width: 5px; border-radius: 0; box-shadow: 2px 2px 0 #cbc7bb; }
+body .alert-success { border-left-color: #4d9b60; }
+body .alert-danger { border-left-color: var(--coral); }
+body .alert-warning { border-left-color: #d4a92f; }
+body .alert-info { border-left-color: #4f83ad; }
+body .dropdown-menu { border: 1px solid var(--ink); border-radius: 0; box-shadow: 3px 3px 0 var(--ink); }
+body .dropdown-item { padding-top: 8px; padding-bottom: 8px; }
+body .progress { height: 14px; border: 1px solid var(--ink); border-radius: 0; background: #e7e4dc; }
+body .progress-bar { background: var(--violet); }
+body hr { border-top: 1px solid #c8c4b9; opacity: 1; }
+body .table { --bs-table-bg: transparent; --bs-table-border-color: #d9d6ce; color: var(--ink); }
+body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; }
+
+.dictionary-page { max-width: 1560px; margin: 0 auto; }
+.dictionary-heading { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 24px; padding: 7px 0 16px; border-bottom: 2px solid var(--ink); }
+.dictionary-eyebrow { color: var(--coral); font-size: .66rem; font-weight: 800; letter-spacing: .15em; }
+.dictionary-heading h1 { margin: 5px 0 0; font-family: "Montserrat", sans-serif; font-size: clamp(1.6rem, 3vw, 2.25rem); font-weight: 800; letter-spacing: -.04em; }
+.dictionary-heading p { margin: 6px 0 0; color: #747169; }
+.dictionary-result-count { display: grid; min-width: 74px; padding: 7px 10px; border: 1px solid var(--ink); background: var(--lime); text-align: center; font-size: 1.25rem; font-weight: 800; }
+.dictionary-result-count small { color: #55564a; font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.dictionary-result-card { overflow: hidden; transition: transform .14s ease, box-shadow .14s ease; }
+.dictionary-result-card:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink) !important; }
+.dictionary-result-card .card-body { padding: 17px; }
+.dictionary-result-card hr { margin: 13px 0; }
+.dictionary-result-card .fw-bold.fs-5 { color: var(--ink); font-family: "Montserrat", sans-serif; font-size: 1.5rem !important; }
+.dictionary-result-card .badge { border: 1px solid #6e6b64; background: #ebe8df !important; color: var(--ink) !important; }
+.dictionary-result-card .btn-outline-primary { border-color: var(--ink); color: var(--ink); }
+.dictionary-result-card .btn-outline-primary:hover { background: var(--lime); }
+.dictionary-empty { max-width: 760px; margin: 30px auto; }
+.dictionary-page .paw-loader { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; color: var(--violet); }
+.dictionary-page .paw-loader span { font-size: 1.5rem; }
+
+.auth-layout { min-height: min(76vh, 760px); align-items: center; }
+.auth-card { position: relative; overflow: hidden; max-width: 500px !important; padding: clamp(22px, 5vw, 38px) !important; border: 2px solid var(--ink) !important; border-radius: 0 !important; background: var(--paper-light) !important; box-shadow: 7px 7px 0 var(--ink) !important; }
+.auth-card::before { position: absolute; top: 0; right: 0; left: 0; height: 8px; background: linear-gradient(90deg, var(--coral) 0 24%, var(--lime) 24% 40%, var(--violet) 40%); content: ""; }
+.auth-kicker { margin: 4px 0 10px; color: var(--coral); font-size: .65rem; font-weight: 800; letter-spacing: .16em; }
+.auth-title { margin: 0; font-family: "Montserrat", sans-serif; font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight: 800; letter-spacing: -.05em; }
+.auth-caption { margin: 8px 0 22px; color: #747169; }
+.auth-card .form-control { min-height: 44px; border: 1px solid #c9c5bb; border-radius: 0; }
+.auth-card .btn { min-height: 44px; font-weight: 750; }
+.auth-card .text-decoration-none { color: #5d49bb !important; font-weight: 650; }
+.auth-card .alert { text-align: left !important; }
+
+.bulk-add-page { max-width: 980px; }
+.bulk-add-card { margin: 10px auto; border: 2px solid var(--ink) !important; box-shadow: 6px 6px 0 var(--ink) !important; }
+.bulk-add-card .card-body { padding: clamp(18px, 4vw, 36px); }
+.bulk-add-card textarea { min-height: 280px; border: 1px solid #c9c5bb; background: #fbfaf6; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.6; }
+.bulk-add-card .form-label { color: var(--ink); font-size: .78rem; font-weight: 800 !important; letter-spacing: .08em; text-transform: uppercase; }
+.bulk-add-card .form-text { color: #77736b; }
+.bulk-add-card .progress { margin-bottom: 18px; }
+
+.kanji-detail-card { position: relative; max-width: 1000px; margin: 24px auto; padding: clamp(20px, 4vw, 42px); overflow: hidden; border: 2px solid var(--ink); background: #e9e5d9; background-image: radial-gradient(#cbc6b8 .7px, transparent .7px); background-size: 10px 10px; box-shadow: 7px 7px 0 var(--ink); text-align: center; }
+.kanji-detail-card::after { position: absolute; top: 0; right: 0; width: 12px; height: 100%; background: repeating-linear-gradient(180deg, var(--coral) 0 12px, var(--lime) 12px 24px, var(--violet) 24px 36px); content: ""; }
+.kanji-detail-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #6d6961; font-size: .66rem; font-weight: 800; letter-spacing: .12em; text-align: left; }
+.kanji-detail-card .kanji-hero { margin: 20px 0 8px; color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(8rem, 26vw, 13rem); font-weight: 800; letter-spacing: -.04em; }
+.kanji-detail-card .kanji-readings { margin: 0; color: #666259; font-size: clamp(.9rem, 2vw, 1.2rem); }
+.kanji-grade-badges .badge { border: 1px solid var(--ink); background: var(--paper-light) !important; color: var(--ink) !important; }
+.kanji-grade-badges .badge + .badge { margin-left: 5px !important; }
+.kanji-detail-card + .tag-editor { max-width: 1000px; margin-right: auto; margin-left: auto; }
+.detail-content-section { max-width: 1000px; margin: 22px auto; padding: 18px 20px; border: 1px solid var(--line); background: var(--paper-light); }
+.detail-content-section h6 { margin: 0 0 10px; color: #6b675e; font-size: .7rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.detail-content-section p { margin: 0; font-size: 1.1rem; line-height: 1.6; }
+.detail-content-section .badge { margin: 4px 4px 4px 0; border: 1px solid #bdb9af; background: #ece9e1 !important; color: var(--ink) !important; }
+.modal-content { box-shadow: 8px 8px 0 #191b2266; }
+.modal-body .card { border-radius: 0 !important; box-shadow: 2px 2px 0 #d2cec3 !important; }
+.study-modal-header .study-title { min-width: 0; }
+.study-modal-header .study-actions { flex-wrap: wrap; justify-content: flex-end; }
+.study-modal-header .icon-btn { white-space: nowrap; }
+.tag-editor { border: 1px solid var(--ink); background: #efede5; box-shadow: 2px 2px 0 #d3d0c6; }
+.management-card { border-color: var(--ink); box-shadow: 3px 3px 0 #cbc7bb; }
+.profile-progress, .activity-card, .ranking-card { border-color: var(--ink); box-shadow: 3px 3px 0 #cbc7bb; }
+.profile-progress .progress { border-radius: 0; }
+.activity-card h2, .ranking-card h2 { font-family: "Montserrat", sans-serif; font-weight: 800; }
+.profile-avatar { border-color: var(--ink); background: var(--lime); color: var(--ink); }
+.profile-rank { border-color: var(--ink); background: var(--paper-light); }
+.profile-rank strong { color: var(--violet); }
+.ranking-card li.current-user { border-left: 3px solid var(--violet); background: #eeebff; }
+.activity-cell { border-radius: 0; }
+.site-footer { margin-top: 36px; }
+
+@media (max-width: 767.98px) {
+    .dictionary-heading { align-items: flex-start; }
+    .dictionary-result-card .card-body { padding: 14px; }
+    .kanji-detail-card { margin: 18px 3px; }
+}
+@media (max-width: 575.98px) {
+    .dictionary-heading p { max-width: 29ch; font-size: .9rem; }
+    .auth-layout { min-height: auto; padding-top: 28px !important; padding-bottom: 36px !important; }
+    .auth-card { box-shadow: 4px 4px 0 var(--ink) !important; }
+    .bulk-add-card textarea { min-height: 220px; }
+    .kanji-detail-meta { align-items: flex-start; flex-direction: column; }
+    .detail-content-section { padding: 14px; }
+    .study-modal-header { align-items: flex-start; flex-direction: column; gap: 12px; }
+    .study-modal-header .study-actions { justify-content: flex-start; width: 100%; }
+}
