@@ -1,0 +1,38 @@
+.user-profile { max-width: 960px; }
+.profile-header { display: flex; align-items: center; gap: 18px; padding: 22px 0; border-bottom: 1px solid #dedee4; }
+.profile-header h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.3rem); }
+.profile-header p { margin: 2px 0; color: #696979; }
+.profile-header small { color: #777; }
+.profile-avatar { display: grid; flex: 0 0 64px; width: 64px; height: 64px; place-items: center; border: 1px solid #aaa6bd; background: #f0eef8; color: #54449a; font-size: 1.8rem; font-weight: 700; }
+.profile-rank { margin-left: auto; padding: 8px 12px; border: 1px solid #dedee4; text-align: center; text-transform: uppercase; font-size: .75rem; letter-spacing: .06em; }
+.profile-rank strong { display: block; font-size: 1.35rem; letter-spacing: 0; }
+.profile-progress-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 22px 0; }
+.profile-progress, .activity-card, .ranking-card { padding: 16px; border: 1px solid #dedee4; background: #fff; }
+.profile-progress h3 { margin: 0; font-size: 1.1rem; }
+.profile-progress .progress { height: 12px; border: 1px solid #cbc8d6; border-radius: 0; background: #f3f2f6; }
+.profile-progress .progress-bar { background: #7057d9; }
+.profile-progress small { display: block; margin-top: 5px; color: #6b6878; text-align: right; }
+.activity-card, .ranking-card { margin-top: 16px; }
+.activity-card h2, .ranking-card h2 { margin: 0 0 12px; font-size: 1.1rem; }
+.activity-scroll { overflow-x: auto; padding-bottom: 4px; }
+.activity-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 12px); grid-auto-columns: 12px; gap: 3px; width: max-content; min-width: 100%; }
+.activity-cell { display: block; width: 12px; height: 12px; border: 1px solid #e0dfe5; background: #f4f3f6; }
+.activity-cell.level-1 { border-color: #d2c8f4; background: #e5defa; }
+.activity-cell.level-2 { border-color: #b9a9ed; background: #cbbdf5; }
+.activity-cell.level-3 { border-color: #927bdc; background: #a38de8; }
+.activity-cell.level-4 { border-color: #6148c3; background: #7057d9; }
+.activity-legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 9px; color: #777; font-size: .75rem; }
+.activity-legend span:first-child { margin-right: 4px; }
+.activity-legend span:last-child { margin-left: 4px; }
+.ranking-card ol { margin: 0; padding: 0; list-style: none; }
+.ranking-card li { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 4px; border-top: 1px solid #ecebf0; }
+.ranking-card li.current-user { background: #f4f1ff; font-weight: 600; }
+.rank-number { color: #6d57bc; font-variant-numeric: tabular-nums; }
+.ranking-card li > span:last-child { color: #666; font-size: .9rem; }
+@media (max-width: 575.98px) {
+    .profile-header { gap: 12px; align-items: flex-start; }
+    .profile-avatar { flex-basis: 48px; width: 48px; height: 48px; }
+    .profile-rank { padding: 6px; }
+    .profile-progress-grid { grid-template-columns: 1fr; }
+    .profile-progress, .activity-card, .ranking-card { padding: 12px; }
+}

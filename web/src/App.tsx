@@ -14,6 +14,7 @@ import Search from "./Search.tsx"
 import KanjiSearch from "./KanjiSearch.tsx"
 import KanjiShow from "./KanjiShow.tsx"
 import WordShow from "./WordShow.tsx"
+import UserProfile from "./user/UserProfile.tsx"
 
 import { sync } from "./db/sync.ts"
 
@@ -38,6 +39,7 @@ function App() {
                     <Route path="/login"        element={<LoginPage />} />
                     <Route path="/logout"       element={<LogoutPage />} />
                     <Route path="/register"     element={<RegisterPage />} />
+                    <Route path="/user/:username" element={<UserProfile />} />
                 </Routes>
             </main>
             <Footer />
