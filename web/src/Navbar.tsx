@@ -24,7 +24,7 @@ export default function Navbar() {
                 <div className="d-flex flex-wrap align-items-center gap-2 py-2">
 
                     <Link to="/" className="navbar-brand text-white mb-0 d-none d-md-block">
-                       <span className="brand-mark" aria-hidden="true">N</span><span className="brand-copy"><strong>Nyaa</strong><small>VOCAB LAB</small></span>
+                       <img className="brand-mark-icon" src="/favicon.svg" alt="" aria-hidden="true" /><span className="brand-copy"><strong>Nyaa</strong><small>VOCAB LAB</small></span>
                     </Link>
 
                     <form action={searchType === "kanji" ? "/kanjisearch" : "/search"} method="GET" className="flex-grow-1">

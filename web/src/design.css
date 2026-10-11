@@ -29,7 +29,7 @@ a:hover { color: #5035c5; }
 .site-nav::after { position: absolute; right: 0; bottom: -5px; left: 0; height: 4px; background: linear-gradient(90deg, var(--coral) 0 16%, var(--lime) 16% 28%, var(--violet) 28% 100%); content: ""; }
 .site-nav > .container-fluid { max-width: 1540px; padding-right: clamp(12px, 3vw, 36px); padding-left: clamp(12px, 3vw, 36px); }
 .site-nav .navbar-brand { display: inline-flex; align-items: center; gap: 9px; margin-right: 12px; letter-spacing: -.04em; }
-.brand-mark { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--lime); background: var(--lime); color: var(--ink); font-size: 1.1rem; font-weight: 900; }
+.brand-mark-icon { display: block; width: 36px; height: 36px; border: 1px solid var(--lime); object-fit: cover; }
 .brand-copy { display: grid; line-height: 1; }
 .brand-copy strong { font-size: 1.1rem; }
 .brand-copy small { margin-top: 4px; color: #c6c1b5; font-size: .55rem; letter-spacing: .17em; }
