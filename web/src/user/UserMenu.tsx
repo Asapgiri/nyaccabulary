@@ -1,4 +1,5 @@
 import { useAuth } from "../AuthContext"
+import { Link } from "react-router-dom"
 
 export default function UserMenu({ mobile }: { mobile: boolean }) {
     const { user } = useAuth();
@@ -12,10 +13,16 @@ export default function UserMenu({ mobile }: { mobile: boolean }) {
             <ul className="dropdown-menu dropdown-menu-end">
 
                 <li>
-                    <a className="dropdown-item" href={`/user/${user.Username}`}>
+                    <Link className="dropdown-item" to={`/user/${user.Username}`}>
                         Profile
-                    </a>
+                    </Link>
                 </li>
+
+                <li>
+                    <Link className="dropdown-item" to="/settings">Settings</Link>
+                </li>
+
+                {user.Roles?.includes("ADMIN") && <li><Link className="dropdown-item" to="/admin/users">Admin · Users</Link></li>}
 
                 <li><hr className="dropdown-divider"/></li>
 

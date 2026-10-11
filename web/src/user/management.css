@@ -1,0 +1,32 @@
+.management-page { max-width: 1180px; }
+.management-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 22px; padding: 8px 0 18px; border-bottom: 1px solid #dedee4; }
+.management-header h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.5rem); }
+.management-header p:last-child { margin: 6px 0 0; color: #6c6b78; }
+.management-eyebrow { margin: 0 0 5px; color: #7057d9; font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.management-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.management-card { min-width: 0; padding: 20px; border: 1px solid #dedee4; background: #fff; }
+.management-card h2 { margin: 0 0 18px; font-size: 1.15rem; }
+.management-card .form-control, .management-card .btn { border-radius: 0; }
+.management-card .form-control:read-only { background: #f4f3f6; }
+.management-count { display: grid; min-width: 76px; padding: 7px 14px; border: 1px solid #dedee4; text-align: center; font-size: 1.35rem; font-weight: 700; }
+.management-count span { color: #72717b; font-size: .68rem; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; }
+.admin-user-list { padding: 16px; }
+.admin-list-tools { display: flex; gap: 8px; margin-bottom: 12px; }
+.admin-list-tools .form-control { max-width: 420px; }
+.admin-users-table { margin-bottom: 0; }
+.admin-users-table th { color: #73717d; font-size: .73rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+.admin-users-table td small { display: block; margin-top: 3px; color: #777; }
+.admin-role-list { display: flex; flex-wrap: wrap; gap: 4px 10px; min-width: 210px; }
+.admin-role-list .form-check { display: inline-flex; align-items: center; gap: 5px; margin: 0; }
+.admin-role-list .form-check-input { margin: 0; }
+.admin-role-list .form-check-label { color: #595866; font-size: .74rem; }
+@media (max-width: 767.98px) {
+    .management-grid { grid-template-columns: 1fr; }
+    .management-card { padding: 15px; }
+    .admin-user-list { padding: 12px; }
+}
+@media (max-width: 575.98px) {
+    .management-header { align-items: flex-start; }
+    .admin-list-tools { flex-direction: column; }
+    .admin-list-tools .form-control { max-width: none; }
+}

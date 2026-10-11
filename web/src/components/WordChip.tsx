@@ -26,7 +26,6 @@ export default function WordChip({ word, setSelectedWord, onUpdate, onDelete = (
                     <div className={`jlpt-badge jlpt-n5`}></div>
                 )}
             </button>
-            <TagBadges ids={word.Tags} tags={tags} />
         </span>
     );
 }

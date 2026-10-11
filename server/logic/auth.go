@@ -115,6 +115,25 @@ func (user *User) Login(uname_or_email string, password_clear string) error {
     return nil
 }
 
+func (user *User) ChangePassword(current, next, confirm string) error {
+    if len(next) < config.Config.User.MinPasswordLen {
+        return errors.New("New password is too short")
+    }
+    if next != confirm {
+        return errors.New("New passwords do not match")
+    }
+    if err := bcrypt.CompareHashAndPassword([]byte(user._db.PasswordHash), []byte(current)); err != nil {
+        return errors.New("Current password is incorrect")
+    }
+    hash, err := bcrypt.GenerateFromPassword([]byte(next), bcrypt.DefaultCost)
+    if err != nil {
+        return errors.New("Could not update password")
+    }
+    user._db.PasswordHash = string(hash)
+    user.EditDate = time.Now()
+    return user.Update()
+}
+
 func (user *User) Logout() {
     // nothing to do here...
 }

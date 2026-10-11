@@ -10,6 +10,8 @@ interface Profile {
     Username: string;
     Name: string;
     RegDate: string;
+    Email?: string;
+    Phone?: string;
     Words: ProfileStat;
     Kanjis: ProfileStat;
     Activity: ActivityDay[];
@@ -92,6 +94,8 @@ export default function UserProfile() {
             <div className="profile-avatar" aria-hidden="true">{profile.Username.slice(0, 1).toUpperCase()}</div>
             <div><h1>{profile.Name || profile.Username}</h1><p>@{profile.Username}</p>
                 {profile.RegDate && <small>Member since {new Date(profile.RegDate).toLocaleDateString()}</small>}
+                {profile.Email && <div><a href={`mailto:${profile.Email}`}>{profile.Email}</a></div>}
+                {profile.Phone && <div><a href={`tel:${profile.Phone}`}>{profile.Phone}</a></div>}
             </div>
             <div className="profile-rank">Rank <strong>#{profile.Rank || "—"}</strong></div>
         </header>

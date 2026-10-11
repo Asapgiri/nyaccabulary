@@ -54,6 +54,8 @@ func setup_routes() {
     http.HandleFunc("GET    /api/kanjisearch",          api.KanjiSearch)
 
     http.HandleFunc("GET    /api/user",                 api.UserAuth)
+    http.HandleFunc("POST   /api/user/settings",        api.UserSettings)
+    http.HandleFunc("POST   /api/user/password",        api.UserPassword)
     http.HandleFunc("GET    /api/user/{username}",      api.UserProfile)
     http.HandleFunc("POST   /api/login",                api.Login)
     http.HandleFunc("POST   /api/register",             api.Register)
@@ -90,8 +92,10 @@ func setup_routes() {
     http.HandleFunc("POST   /api/sync",                 api.Sync)
 
 
-    http.HandleFunc("GET /admin/kanji/sync-all-words",  pages.AdminKanjisSyncAllWords)
+    http.HandleFunc("GET    /admin/kanji/sync-all-words",  pages.AdminKanjisSyncAllWords)
 
+    http.HandleFunc("GET    /api/admin/users",          api.AdminUsers)
+    http.HandleFunc("POST   /api/admin/users/{id}/roles", api.AdminUserRoles)
 
     http.HandleFunc("GET /access-violation",    pages.AccessViolation)
 }

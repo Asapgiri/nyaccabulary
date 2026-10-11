@@ -119,7 +119,7 @@ func GetProfileActivity(userID string, days int) ([]ProfileActivity, error) {
 	return result, nil
 }
 
-func GetProfileRanking(userID string) ([]ProfileRanking, error) {
+func GetProfileRanking() ([]ProfileRanking, error) {
 	wordStats, err := profileAggregates(dbWORDS)
 	if err != nil {
 		return nil, err
@@ -149,14 +149,8 @@ func GetProfileRanking(userID string) ([]ProfileRanking, error) {
 		}
 		return ranking[i].Mastered > ranking[j].Mastered
 	})
-	target, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
 	for i := range ranking {
-		if ranking[i].Id == target {
-			ranking[i].Rank = i + 1
-		}
+		ranking[i].Rank = i + 1
 	}
 	return ranking, nil
 }
