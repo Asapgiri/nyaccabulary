@@ -141,6 +141,11 @@ span.learning {
     letter-spacing: 0.5px;
 }
 
+.word-show-title .study-kanji {
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 1.05;
+}
+
 .study-kana {
     font-size: 14px;
     color: #666;

@@ -129,7 +129,7 @@ export default function WordShow() {
                 </div>
             </div>
 
-            <div className="study-title">
+            <div className="study-title word-show-title">
                 <div className="study-kanji">{word.Kanji}</div>
                 <div className="study-kana">{word.Kana}</div>
             </div>

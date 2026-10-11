@@ -59,6 +59,7 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, o
                             {word.Status != "MASTERED" && word.Status != "LEARNING"
                                                       && (<button type="button" className="icon-btn btn-mark" onClick={word_mark}>Mark</button>)}
                             <button type="button" className="icon-btn btn-delete" onClick={word_delete} data-bs-dismiss="modal">Delete</button>
+                            <Link to={`/word/${word.Id}`} onClick={() => document.getElementsByClassName('btn-close')[0].click()} className="icon-btn">Open word</Link>
                             <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 

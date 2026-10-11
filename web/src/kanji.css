@@ -1,5 +1,5 @@
 .kanji-hero {
-    font-size: 160px;
+    font-size: clamp(8rem, 24vw, 10rem);
     font-weight: 700;
     text-align: center;
     line-height: 1;
@@ -9,6 +9,17 @@
 
     /* subtle ink-like feel */
     color: #111;
+}
+
+.kanji-show-title .study-kanji {
+    font-size: clamp(6rem, 18vw, 10rem);
+    line-height: 1;
+}
+
+.kanji-show-title {
+    align-items: center;
+    text-align: center;
+    width: 100%;
 }
 
 .kanji-readings {

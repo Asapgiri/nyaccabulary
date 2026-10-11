@@ -152,7 +152,7 @@ export default function KanjiShow() {
                 </div>
             </div>
 
-            <div className="study-title">
+            <div className="study-title kanji-show-title">
                 <div className="study-kanji">
                     {kanji.Kanji}
                 </div>
