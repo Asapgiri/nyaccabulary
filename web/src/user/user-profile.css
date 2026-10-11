@@ -10,7 +10,12 @@
 .profile-progress, .activity-card, .ranking-card { padding: 16px; border: 1px solid #dedee4; background: #fff; }
 .profile-progress h3 { margin: 0; font-size: 1.1rem; }
 .profile-progress .progress { height: 12px; border: 1px solid #cbc8d6; border-radius: 0; background: #f3f2f6; }
-.profile-progress .progress-bar { background: #7057d9; }
+.profile-progress .progress-bar { min-width: 0; }
+.profile-progress .profile-meter-mastered { background: #7057d9; }
+.profile-progress .profile-meter-learning { background: #e99a3d; }
+.profile-progress-counts { text-align: right; }
+.profile-progress-counts strong { color: #282633; }
+.profile-progress-counts i { margin: 0 3px; color: #aaa6b3; font-style: normal; }
 .profile-progress small { display: block; margin-top: 5px; color: #6b6878; text-align: right; }
 .activity-card, .ranking-card { margin-top: 16px; }
 .activity-card h2, .ranking-card h2 { margin: 0 0 12px; font-size: 1.1rem; }

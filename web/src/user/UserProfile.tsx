@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { apiFetch } from "../api.ts";
 import "./user-profile.css";
 
-interface ProfileStat { Count: number; Mastered: number }
+interface ProfileStat { Count: number; Mastered: number; Learning: number }
 interface ActivityDay { Date: string; Count: number }
 interface RankingEntry { Username: string; Name: string; Mastered: number; Rank: number }
 interface Profile {
@@ -20,15 +20,18 @@ interface Profile {
 }
 
 function Progress({ label, stats }: { label: string; stats: ProfileStat }) {
-    const percentage = stats.Count ? Math.round(stats.Mastered / stats.Count * 100) : 0;
+    const masteredPercentage = stats.Count ? stats.Mastered / stats.Count * 100 : 0;
+    const learningPercentage = stats.Count ? stats.Learning / stats.Count * 100 : 0;
+    const percentage = Math.round(masteredPercentage);
     return <section className="profile-progress">
         <div className="d-flex justify-content-between align-items-baseline mb-2">
-            <h3>{label}</h3><span>{stats.Mastered} / {stats.Count} mastered</span>
+            <h3>{label}</h3><span className="profile-progress-counts"><strong>{stats.Mastered}</strong> mastered <i>·</i> <strong>{stats.Learning}</strong> learning <i>·</i> {stats.Count} total</span>
         </div>
-        <div className="progress" role="progressbar" aria-label={`${label} mastery`} aria-valuenow={percentage} aria-valuemin={0} aria-valuemax={100}>
-            <div className="progress-bar" style={{ width: `${percentage}%` }} />
+        <div className="progress profile-progress-meter" role="img" aria-label={`${label}: ${stats.Mastered} mastered, ${stats.Learning} learning, ${stats.Count} total`}>
+            <div className="progress-bar profile-meter-mastered" style={{ width: `${masteredPercentage}%` }} />
+            <div className="progress-bar profile-meter-learning" style={{ width: `${learningPercentage}%` }} />
         </div>
-        <small>{percentage}%</small>
+        <small>{percentage}% mastered</small>
     </section>;
 }
 
@@ -101,8 +104,8 @@ export default function UserProfile() {
         </header>
 
         <div className="profile-progress-grid">
-            <Progress label="Words" stats={profile.Words} />
-            <Progress label="Kanji" stats={profile.Kanjis} />
+            <Progress label="Words" stats={{ Learning: 0, ...profile.Words }} />
+            <Progress label="Kanji" stats={{ Learning: 0, ...profile.Kanjis }} />
         </div>
 
         <section className="activity-card">

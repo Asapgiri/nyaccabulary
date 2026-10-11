@@ -14,6 +14,7 @@ import (
 type ProfileStats struct {
 	Count    int64
 	Mastered int64
+	Learning int64
 }
 
 type ProfileProgress struct {
@@ -49,7 +50,11 @@ func collectionProfileStats(collection *mongo.Collection, userID string) (Profil
 		return ProfileStats{}, err
 	}
 	mastered, err := collection.CountDocuments(context.Background(), bson.D{{Key: "user", Value: userObjectID}, {Key: "status", Value: "MASTERED"}})
-	return ProfileStats{Count: count, Mastered: mastered}, err
+	if err != nil {
+		return ProfileStats{}, err
+	}
+	learning, err := collection.CountDocuments(context.Background(), bson.D{{Key: "user", Value: userObjectID}, {Key: "status", Value: "LEARNING"}})
+	return ProfileStats{Count: count, Mastered: mastered, Learning: learning}, err
 }
 
 func GetProfileProgress(userID string) (ProfileProgress, error) {
