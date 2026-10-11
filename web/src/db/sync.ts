@@ -1,5 +1,6 @@
 import { dbPromise } from "./database";
 import { apiFetch } from "../api.ts";
+import { publishTags, TagDB } from "./tags";
 
 let syncResolve!: () => void;
 
@@ -60,5 +61,6 @@ export async function sync() {
     );
 
     await tx.done;
+    publishTags(await TagDB.getAll());
     syncResolve();
 }

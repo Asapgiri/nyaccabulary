@@ -1,6 +1,8 @@
 import { raw_word_update } from "./update";
+import TagBadges from "./TagBadges";
+import type { Tag } from "../db/tags";
 
-export default function WordRow({ word, setSelectedWord, onUpdate, onDelete, filter }) {
+export default function WordRow({ word, setSelectedWord, onUpdate, onDelete, filter, tags = [] as Tag[] }) {
 
     async function row_mark() {
         raw_word_update(word, 'set', null, onUpdate, setSelectedWord)
@@ -31,7 +33,7 @@ export default function WordRow({ word, setSelectedWord, onUpdate, onDelete, fil
             </button>
 
             <div className="col-3 col-md-3 col-sm-3 kana">{word.Kana}</div>
-            <div className="col-4 col-md-3 col-sm-4 meaning">{word.Meaning}</div>
+            <div className="col-4 col-md-3 col-sm-4 meaning">{word.Meaning}<TagBadges ids={word.Tags} tags={tags} /></div>
 
             <div className="col-md-2 d-none d-md-block">
                 {word.Status != "MASTERED" && (

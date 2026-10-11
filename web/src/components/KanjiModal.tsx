@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { raw_kanji_update } from "./update";
+import TagEditor from "./TagEditor";
+import type { Tag } from "../db/tags";
 
-export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete }) {
+export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete, onCatalogChange = (_tags: Tag[]) => {} }) {
 
     if (!kanji) {
         return (
@@ -24,6 +26,10 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
 
     async function kanji_unmark() {
         raw_kanji_update(kanji, 'unset', null, onUpdate, setSelectedKanji)
+    }
+
+    async function saveTags(tags: string[]) {
+        await raw_kanji_update(kanji, 'update', { tags }, onUpdate, setSelectedKanji, null)
     }
 
     async function kanji_delete() {
@@ -66,6 +72,7 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                         <hr/>
 
                         <p><strong>Meaning:</strong> <span className="modal-meaning">{kanji.Meaning ? kanji.Meaning.join(", ") : "-"}</span></p>
+                        <TagEditor key={kanji.Id} value={kanji.Tags ?? []} onSave={saveTags} onCatalogChange={onCatalogChange} />
                         <hr/>
 
                         <p>

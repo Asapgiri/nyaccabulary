@@ -100,6 +100,7 @@ func (kanji *Kanji) GetMeta(user User, filter Filter) dbase.Meta {
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
         Status: MASTERY.ALL,
+        Tags: filter.Tags,
     }
 
     return dw.GetMeta(&user._db, df)
@@ -137,6 +138,7 @@ func (kanji *Kanji) List(user User, filter Filter) []Kanji {
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
         Sort: filter.Sort,
+        Tags: filter.Tags,
         LastUpdated: filter.LastUpdated,
     })
 

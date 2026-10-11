@@ -38,6 +38,7 @@ func (word *Word) GetMeta(user User, filter Filter) dbase.Meta {
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
         Status: MASTERY.ALL,
+        Tags: filter.Tags,
     }
 
     return dw.GetMeta(&user._db, df)
@@ -75,6 +76,7 @@ func (word *Word) List(user User, filter Filter) []Word {
         Page: int64(filter.Page),
         Limit: int64(filter.Limit),
         Sort: filter.Sort,
+        Tags: filter.Tags,
         LastUpdated: filter.LastUpdated,
     })
 

@@ -19,6 +19,7 @@ export interface Word {
     LastShown:  string
     DictForm:   any
     Kanjis:     string[]
+    Tags:       string[]
 }
 
 async function post(id: string, action: string, body?: unknown): Promise<Word> {

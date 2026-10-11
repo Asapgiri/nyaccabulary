@@ -1,10 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { dbPromise } from "./db/database";
+import { TagDB } from "./db/tags";
+import type { Tag } from "./db/tags";
 
 import "./index.css"
+import "./tags.css"
 
 export const raw_filter = {
     status: [],
+    tags: [],
     sort: {
         field: "date",
         order: -1,
@@ -44,7 +48,10 @@ export function FilterApply(filter, words) {
                         || w.DictForm.Misc.JLPT == filter.jlpt
                         || (!w.DictForm.Misc.JLPT && 5 == filter.jlpt)
 
-        return jlpt && (0 == filter.status.length || flen || (filter.status.includes('UNKNOWN') && !ulen))
+        const tagMatch = !filter.tags?.length
+                        || filter.tags.some(tag => (w.Tags ?? []).includes(tag))
+
+        return jlpt && tagMatch && (0 == filter.status.length || flen || (filter.status.includes('UNKNOWN') && !ulen))
     });
 
     result.sort((a, b) => {
@@ -83,9 +90,16 @@ export function FilterApply(filter, words) {
 }
 
 export function Filter({ filter, setFilter, compact = false, extraField = null }) {
+    const [tags, setTags] = useState<Tag[]>([]);
 
     useEffect(() => {
         init_db();
+        TagDB.getAll().then(loaded => setTags(Array.isArray(loaded) ? loaded : []));
+        const onTagsChanged = (event: Event) => {
+            setTags((event as CustomEvent<Tag[]>).detail);
+        };
+        window.addEventListener("nyaccabulary:tags", onTagsChanged);
+        return () => window.removeEventListener("nyaccabulary:tags", onTagsChanged);
     }, []);
 
     async function init_db() {
@@ -105,7 +119,7 @@ export function Filter({ filter, setFilter, compact = false, extraField = null }
 
         const tx = db.transaction(["metadata"], "readwrite");
         const metaStore = tx.objectStore("metadata");
-        metaStore.put({status: f.status, sort: f.sort, jlpt: f.jlpt, wordSize: f.wordSize}, "filter")
+        metaStore.put({status: f.status, tags: f.tags ?? [], sort: f.sort, jlpt: f.jlpt, wordSize: f.wordSize}, "filter")
     }
 
     function update(f) {
@@ -138,6 +152,15 @@ export function Filter({ filter, setFilter, compact = false, extraField = null }
         setFilter(f => update({
             ...f,
             jlpt: new_val,
+        }))
+    }
+
+    function updateTags(tagId: string, checked: boolean) {
+        setFilter(f => update({
+            ...f,
+            tags: checked
+                ? [...new Set([...(f.tags ?? []), tagId])]
+                : (f.tags ?? []).filter(id => id !== tagId),
         }))
     }
 
@@ -223,6 +246,22 @@ export function Filter({ filter, setFilter, compact = false, extraField = null }
                 {extraField}
 
             </div>
+
+            {tags.length > 0 && (
+                <div className="tag-filter" aria-label="Filter by tags">
+                    <span className="tag-filter-label">Tags</span>
+                    {tags.map(tag => (
+                        <label className={`tag-filter-option ${(filter.tags ?? []).includes(tag.Id) ? "selected" : ""}`} key={tag.Id}>
+                            <input type="checkbox" checked={(filter.tags ?? []).includes(tag.Id)} onChange={event => updateTags(tag.Id, event.target.checked)} />
+                            <span className="tag-color-dot" style={{ backgroundColor: tag.Color }} />
+                            <span>{tag.Name}</span>
+                        </label>
+                    ))}
+                    {(filter.tags ?? []).length > 0 && (
+                        <button className="btn btn-sm btn-link tag-filter-clear" onClick={() => setFilter(f => update({ ...f, tags: [] }))}>Clear</button>
+                    )}
+                </div>
+            )}
 
             {!compact && (
                 <>

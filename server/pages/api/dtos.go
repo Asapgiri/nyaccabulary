@@ -62,6 +62,11 @@ type WordAddRequest struct {
     Kanji   string `json:"kanji"`
     Kana    string `json:"kana"`
     Meaning string `json:"meaning"`
+    Tags    []string `json:"tags"`
+}
+
+type TagsUpdateRequest struct {
+    Tags []string `json:"tags"`
 }
 
 type WordBulkAddRequest struct {

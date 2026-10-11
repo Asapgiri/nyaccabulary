@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { raw_word_update } from "./update";
+import TagEditor from "./TagEditor";
+import type { Tag } from "../db/tags";
 
-export default function WordModal({ word, setSelectedWord, onUpdate, onDelete }) {
+export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, onCatalogChange = (_tags: Tag[]) => {} }) {
 
     if (!word) {
         return (
@@ -16,6 +18,10 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
 
     async function update(t_body) {
         raw_word_update(word, 'update', t_body, onUpdate, setSelectedWord)
+    }
+
+    async function saveTags(tags: string[]) {
+        await raw_word_update(word, 'update', { tags }, onUpdate, setSelectedWord, null)
     }
 
     async function word_mark() {
@@ -60,6 +66,7 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete })
 
                     <div className="modal-body">
                         <p><strong>Meaning:</strong> <span className="modal-meaning">{word.Meaning}</span></p>
+                        <TagEditor key={word.Id} value={word.Tags ?? []} onSave={saveTags} onCatalogChange={onCatalogChange} />
                         <hr/>
 
                         <p>

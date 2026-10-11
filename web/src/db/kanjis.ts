@@ -20,6 +20,7 @@ export interface Kanji {
     Status:          string
     DictForm:        any
     Words:           string[]
+    Tags:            string[]
 }
 
 async function post(id: string, action: string, body?: unknown): Promise<Kanji> {

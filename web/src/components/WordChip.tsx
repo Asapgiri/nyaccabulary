@@ -1,6 +1,8 @@
 import { raw_word_update, raw_kanji_update } from "./update";
+import TagBadges from "./TagBadges";
+import type { Tag } from "../db/tags";
 
-export default function WordChip({ word, setSelectedWord, onUpdate, onDelete, wordIsKanji, filter }) {
+export default function WordChip({ word, setSelectedWord, onUpdate, onDelete = () => {}, wordIsKanji = false, filter, tags = [] as Tag[] }) {
     async function remove_new() {
         if (wordIsKanji) {
             raw_kanji_update(word, 'new', null, onUpdate, setSelectedWord)
@@ -24,6 +26,7 @@ export default function WordChip({ word, setSelectedWord, onUpdate, onDelete, wo
                     <div className={`jlpt-badge jlpt-n5`}></div>
                 )}
             </button>
+            <TagBadges ids={word.Tags} tags={tags} />
         </span>
     );
 }

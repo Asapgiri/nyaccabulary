@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { KanjiDB } from "./db/kanjis";
 import { raw_kanji_update } from "./components/update";
+import TagEditor from "./components/TagEditor";
 
 export default function KanjiShow() {
     const { id } = useParams<{ id: string }>();
@@ -53,6 +54,11 @@ export default function KanjiShow() {
             setKanji,
             null
         );
+    }
+
+    async function saveTags(tags: string[]) {
+        if (!kanji) return;
+        await raw_kanji_update(kanji, "update", { tags }, setKanji, null, null);
     }
 
     async function kanji_delete() {
@@ -177,6 +183,8 @@ export default function KanjiShow() {
                     )}
                 </div>
             </div>
+
+            <TagEditor key={kanji.Id} value={kanji.Tags ?? []} onSave={saveTags} />
 
             <hr />
 

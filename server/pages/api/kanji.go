@@ -1,6 +1,7 @@
 package api
 
 import (
+    "encoding/json"
 	"net/http"
 	"nyaccabulary/server/logic"
 	"nyaccabulary/server/pages"
@@ -74,6 +75,17 @@ func KanjiPatch(w http.ResponseWriter, r *http.Request) {
     }
 
     switch function {
+    case "update":
+        var update TagsUpdateRequest
+        if err := json.NewDecoder(r.Body).Decode(&update); err != nil {
+            write_json(w, Response{Status: "ERROR", Errors: "Invalid request"})
+            return
+        }
+        if !ownsTags(update.Tags, session.Auth.Id) {
+            AccessViolation(w, r)
+            return
+        }
+        kanji.Tags = update.Tags
     case "new":
         kanji.Status = logic.MASTERY.UNKNOWN
     case "force":

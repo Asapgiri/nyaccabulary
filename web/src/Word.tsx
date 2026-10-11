@@ -6,11 +6,14 @@ import "./index.css"
 import { WordDB } from "./db/words";
 import { copy, Filter, FilterApply, pdf, cards, raw_filter } from "./Filter";
 import { syncFinished } from "./db/sync";
+import { TagDB } from "./db/tags";
+import type { Tag } from "./db/tags";
 
 export default function Word() {
     const [words, setWords] = useState<Word[]>([]);
     const [selectedWord, setSelectedWord] = useState<Word | null>(null);
     const [stats, setStats] = useState<Stats | null>(null);
+    const [tags, setTags] = useState<Tag[]>([]);
     const [filter, setFilter] = useState<TFilter>(raw_filter);
 
     useEffect(() => {
@@ -19,11 +22,10 @@ export default function Word() {
     }, []);
 
     async function loadWords() {
-        const stats = await WordDB.getStats();
+        const [stats, words, tags] = await Promise.all([WordDB.getStats(), WordDB.getAll(), TagDB.getAll()]);
         setStats(stats);
-
-        const words = await WordDB.getAll();
         setWords(words);
+        setTags(tags);
     }
 
     async function update(updated) {
@@ -61,12 +63,13 @@ export default function Word() {
             <div className="word-grid" id="word-grid">
             {filteredWords.map(word => (
                 <WordChip key={word.Id} word={word} filter={filter}
+                    tags={tags}
                     setSelectedWord={setSelectedWord}
                     onUpdate={update} />
                 ))}
             </div>
 
-            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} onDelete={ddelete}/>
+            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} onDelete={ddelete} onCatalogChange={setTags}/>
 
         </div>
     )

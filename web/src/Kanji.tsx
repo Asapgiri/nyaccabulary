@@ -6,24 +6,25 @@ import "./kanji.css"
 import { KanjiDB } from "./db/kanjis";
 import { copy, Filter, FilterApply, pdf, cards, raw_filter } from "./Filter";
 import { syncFinished } from "./db/sync";
+import { TagDB } from "./db/tags";
+import type { Tag } from "./db/tags";
 
 export default function Kanji() {
     const [kanjis, setKanjis] = useState<Kanji[]>([]);
     const [selectedKanji, setSelectedKanji] = useState<Kanji | null>(null);
     const [stats, setStats] = useState<Stats | null>(null);
+    const [tags, setTags] = useState<Tag[]>([]);
     const [filter, setFilter] = useState<TFilter>(raw_filter);
 
     useEffect(() => {
-        loadKanjis();
         loadKanjis().then(async() => await syncFinished).then(() => loadKanjis());
     }, []);
 
     async function loadKanjis() {
-        const stats = await KanjiDB.getStats();
+        const [stats, kanjis, tags] = await Promise.all([KanjiDB.getStats(), KanjiDB.getAll(), TagDB.getAll()]);
         setStats(stats);
-
-        const kanjis = await KanjiDB.getAll();
         setKanjis(kanjis);
+        setTags(tags);
     }
 
     async function update(updated) {
@@ -61,12 +62,13 @@ export default function Kanji() {
             <div className="word-grid" id="word-grid">
             {filtered.map(kanji => (
                 <WordChip key={kanji.Id} word={kanji} filter={filter} wordIsKanji={true}
+                    tags={tags}
                     setSelectedWord={setSelectedKanji}
                     onUpdate={update} />
             ))}
             </div>
 
-            <KanjiModal kanji={selectedKanji}  setSelectedKanji={setSelectedKanji} onUpdate={update} onDelete={ddelete} />
+            <KanjiModal kanji={selectedKanji}  setSelectedKanji={setSelectedKanji} onUpdate={update} onDelete={ddelete} onCatalogChange={setTags} />
 
         </div>
     )

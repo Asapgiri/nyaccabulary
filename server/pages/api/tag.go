@@ -7,6 +7,30 @@ import (
 	"nyaccabulary/server/pages"
 )
 
+func TagList(w http.ResponseWriter, r *http.Request) {
+    session := pages.GetCurrentSession(w, r)
+    if "" == session.Auth.Username {
+        AccessViolation(w, r)
+        return
+    }
+
+    user := logic.User{}
+    user.Find(session.Auth.Id)
+    tag := logic.Tag{}
+    write_json(w, MapTagList(tag.List(user, nil)))
+}
+
+func ownsTags(ids []string, userID string) bool {
+    for _, id := range ids {
+        tag := logic.Tag{}
+        tag.Find(id)
+        if "" == tag.Id || tag.User.Id != userID {
+            return false
+        }
+    }
+    return true
+}
+
 func TagAdd(w http.ResponseWriter, r *http.Request) {
     session := pages.GetCurrentSession(w, r)
 

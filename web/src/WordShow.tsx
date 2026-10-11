@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { WordDB } from "./db/words";
 import { copy, Filter, FilterApply, pdf, cards, raw_filter } from "./Filter";
 import { raw_word_update } from "./components/update";
+import TagEditor from "./components/TagEditor";
 
 export default function WordShow() {
     const { id } = useParams<{ id: string }>();
@@ -41,6 +42,11 @@ export default function WordShow() {
     async function update(t_body) {
         if (!word) return;
         raw_word_update(word, "update", t_body, setWord, null);
+    }
+
+    async function saveTags(tags: string[]) {
+        if (!word) return;
+        await raw_word_update(word, "update", { tags }, setWord, null, null);
     }
 
     async function word_mark() {
@@ -134,6 +140,8 @@ export default function WordShow() {
                 <h6>Meaning</h6>
                 <p>{word.Meaning}</p>
             </section>
+
+            <TagEditor key={word.Id} value={word.Tags ?? []} onSave={saveTags} />
 
             <hr />
 

@@ -1,0 +1,62 @@
+.tag-editor {
+    margin: 1rem 0;
+    padding: 14px;
+    border: 1px solid #e8e7ef;
+    border-radius: 12px;
+    background: #faf9fd;
+}
+
+.tag-editor-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.tag-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 100%;
+    padding: 6px 9px;
+    border: 1px solid #e8e7ef;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.tag-option .form-check-input { flex: 0 0 auto; }
+.tag-color-dot { display: inline-block; flex: 0 0 9px; width: 9px; height: 9px; border-radius: 50%; }
+.tag-editor-create { display: flex; align-items: center; gap: 8px; }
+.tag-editor-create .form-control-color { flex: 0 0 42px; width: 42px; }
+
+.tag-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    margin: 0 0 12px;
+    padding: 8px 10px;
+    border: 1px solid #e8e7ef;
+    border-radius: 0;
+    background: #fff;
+}
+
+.tag-filter-label { margin-right: 3px; color: #777687; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.tag-filter-option { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border: 1px solid #e2e0e9; border-radius: 0; background: #fff; color: #59576b; cursor: pointer; font-size: 12px; }
+.tag-filter-option.selected { border-color: #8a77d7; background: #f1efff; color: #5140a4; box-shadow: inset 3px 0 #7057d9; }
+.tag-filter-option input { position: absolute; opacity: 0; pointer-events: none; }
+.tag-filter-option:focus-within { outline: 2px solid #7057d9; outline-offset: 2px; }
+.tag-filter-clear { padding: 3px 6px; font-size: 12px; }
+
+.tag-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.tag-badge { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding: 2px 7px; border: 1px solid #e8e7ef; border-radius: 4px; background: #faf9fd; color: #59576b; font-size: 10px; line-height: 1.5; }
+.tag-badge > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 575.98px) {
+    .tag-editor { padding: 10px; }
+    .tag-editor-create { flex-wrap: wrap; }
+    .tag-editor-create .form-control:first-child { flex: 1 1 130px; }
+}

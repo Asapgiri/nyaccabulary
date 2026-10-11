@@ -72,6 +72,10 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
     if "" == entseq {
         var word_req WordAddRequest
         json.NewDecoder(r.Body).Decode(&word_req)
+        if !ownsTags(word_req.Tags, session.Auth.Id) {
+            AccessViolation(w, r)
+            return
+        }
 
         dictf, ok := pages.LookUpWords(word_req.Kanji)
 
@@ -89,6 +93,7 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
                 Kanji: word_req.Kanji,
                 Kana: word_req.Kana,
                 Meaning: word_req.Meaning,
+                Tags: word_req.Tags,
                 Status: logic.MASTERY.NEW,
                 DictForm: dictf,
             }
@@ -226,6 +231,13 @@ func WordPatch(w http.ResponseWriter, r *http.Request) {
     case "update":
         var update WordAddRequest
         json.NewDecoder(r.Body).Decode(&update)
+        if update.Tags != nil {
+            if !ownsTags(update.Tags, session.Auth.Id) {
+                AccessViolation(w, r)
+                return
+            }
+            word.Tags = update.Tags
+        }
         if "" != update.Kanji {
             var kanjis_to_add []logic.Kanji
             word.Kanji = strings.TrimSpace(update.Kanji)

@@ -30,16 +30,27 @@ async function post(id: string, action: string, body?: unknown): Promise<Tag> {
     return response.json();
 }
 
+export function publishTags(tags: Tag[]) {
+    if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent<Tag[]>("nyaccabulary:tags", { detail: tags }));
+    }
+}
+
 export const TagAPI = {
 
-    create(body: TagAddRequest) {
-        return apiFetch("/api/tag/add", {
+    async create(body: TagAddRequest): Promise<Tag> {
+        const response = await apiFetch("/api/tag/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(body),
-        }).then(r => r.json());
+        });
+        if (!response.ok) throw new Error(await response.text());
+        const tag: Tag = await response.json();
+        await TagDB.put(tag);
+        publishTags(await TagDB.getAll());
+        return tag;
     },
 
     update(id: string, body: TagAddRequest) {

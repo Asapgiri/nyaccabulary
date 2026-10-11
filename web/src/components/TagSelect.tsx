@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { TagAPI, TagDB } from "../db/tags";
+import type { Tag } from "../db/tags";
 
 interface TagSelectProps {
     value?: string;
     onChange: (tagId: string | undefined) => void;
+    onTagsChange?: (tags: Tag[]) => void;
 }
 
-export default function TagSelect({ value, onChange }: TagSelectProps) {
+export default function TagSelect({ value, onChange, onTagsChange = () => {} }: TagSelectProps) {
     const [tags, setTags] = useState<Tag[]>([]);
     const [open, setOpen] = useState(false);
     const [adding, setAdding] = useState(false);
@@ -16,7 +18,18 @@ export default function TagSelect({ value, onChange }: TagSelectProps) {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        loadTags();
+        let active = true;
+        const refresh = async (event?: Event) => {
+            const loaded = event ? (event as CustomEvent<Tag[]>).detail : await TagDB.getAll();
+            if (!active) return;
+            const safeTags = Array.isArray(loaded) ? loaded : [];
+            setTags(safeTags);
+            onTagsChange(safeTags);
+        };
+        const onTagsChanged = (event: Event) => { void refresh(event); };
+        window.addEventListener("nyaccabulary:tags", onTagsChanged);
+        void refresh();
+        return () => { active = false; window.removeEventListener("nyaccabulary:tags", onTagsChanged); };
     }, []);
 
     useEffect(() => {
@@ -30,10 +43,6 @@ export default function TagSelect({ value, onChange }: TagSelectProps) {
         return () => document.removeEventListener("mousedown", handleClick);
     }, []);
 
-    async function loadTags() {
-        setTags(await TagDB.getAll());
-    }
-
     const selectedTag = tags.find(tag => tag.Id === value);
 
     async function createTag() {
@@ -44,8 +53,9 @@ export default function TagSelect({ value, onChange }: TagSelectProps) {
             Color: color,
         });
 
-        await TagDB.put(tag);
-        setTags(tags => [...tags, tag]);
+        const next = await TagDB.getAll();
+        setTags(next);
+        onTagsChange(next);
 
         onChange(tag.Id);
 

@@ -6,21 +6,27 @@ import { WordDB } from "./db/words";
 import { Filter, FilterApply, raw_filter } from "./Filter";
 import { syncFinished } from "./db/sync";
 import { apiFetch } from "./api";
+import { TagDB } from "./db/tags";
+import type { Tag } from "./db/tags";
+import TagSelect from "./components/TagSelect";
 
 export default function Index() {
     const [words, setWords] = useState<Word[]>([]);
     const [selectedWord, setSelectedWord] = useState<Word | null>(null);
     const [stats, setStats] = useState<Stats | null>(null);
+    const [tags, setTags] = useState<Tag[]>([]);
     const [filter, setFilter] = useState<TFilter>(raw_filter);
     const [addKanji, setAddKanji] = useState<string>("")
     const [addKana, setAddKana] = useState<string>("")
     const [addMeaning, setAddMeaning] = useState<string>("")
+    const [addTagId, setAddTagId] = useState<string | undefined>()
 
     async function new_word() {
         const sbody = {
             kanji: addKanji,
             kana: addKana,
             meaning: addMeaning,
+            tags: addTagId ? [addTagId] : [],
         }
 
         const response = await apiFetch(`/api/word`, {
@@ -34,10 +40,12 @@ export default function Index() {
         const data = await response.json()
         console.log(data)
         setWords(words => [data, ...words])
+        await WordDB.put(data)
 
         setAddKanji("")
         setAddKana("")
         setAddMeaning("")
+        setAddTagId(undefined)
     }
 
     useEffect(() => {
@@ -45,11 +53,10 @@ export default function Index() {
     }, []);
 
     async function loadWords() {
-        const stats = await WordDB.getStats();
+        const [stats, words, tags] = await Promise.all([WordDB.getStats(), WordDB.getAll(), TagDB.getAll()]);
         setStats(stats);
-
-        const words = await WordDB.getAll();
         setWords(words);
+        setTags(tags);
     }
 
     async function update(updated) {
@@ -78,14 +85,17 @@ export default function Index() {
 
             <div className="add-form">
                 <div className="row g-2">
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <input value={addKanji} onChange={e => setAddKanji(e.target.value)} id="form[kanji]" name="form[kanji]" className="form-control clean-input" placeholder="Word (with kanjis)" lang="ja"/>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <input value={addKana} onChange={e => setAddKana(e.target.value)} id="form[kana]" name="form[kana]" className="form-control clean-input" placeholder="Kana" lang="ja"/>
                     </div>
                     <div className="col-md-4">
                         <input value={addMeaning} onChange={e => setAddMeaning(e.target.value)} id="form[meaning]" name="form[meaning]" className="form-control clean-input" placeholder="Meaning"/>
+                    </div>
+                    <div className="col-md-2">
+                        <TagSelect value={addTagId} onChange={setAddTagId} onTagsChange={setTags} />
                     </div>
                     <div className="col-md-2">
                         <button className="btn btn-dark w-100" onClick={new_word}>Add</button>
@@ -104,13 +114,14 @@ export default function Index() {
             <div id="planner-box">
             {filteredWords.map(word => (
                 <WordRow key={word.Id} word={word} filter={filter}
+                    tags={tags}
                     setSelectedWord={setSelectedWord}
                     onUpdate={update}
                     onDelete={ddelete} />
             ))}
             </div>
 
-            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} onDelete={ddelete} />
+            <WordModal word={selectedWord} setSelectedWord={setSelectedWord} onUpdate={update} onDelete={ddelete} onCatalogChange={setTags} />
 
         </div>
     )

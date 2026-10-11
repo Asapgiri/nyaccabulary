@@ -11,6 +11,7 @@ type Filter struct {
     Limit       int
     Mastered    bool
     Status      []string
+    Tags        []string
     Sort        dbase.Sort
     LastUpdated time.Time
 }
