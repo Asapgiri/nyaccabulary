@@ -50,6 +50,7 @@ func setup_routes() {
     http.HandleFunc("GET /kanji/pdf/{filter}",          pages.KanjisPdf)
 
     // api pages
+    http.HandleFunc("GET    /api/config",              api.PublicConfig)
     http.HandleFunc("GET    /api/search",               api.WordSearch)
     http.HandleFunc("GET    /api/kanjisearch",          api.KanjiSearch)
 

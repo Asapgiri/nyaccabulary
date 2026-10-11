@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { raw_kanji_update } from "./update";
 import TagEditor from "./TagEditor";
+import MemeGifEditor from "./MemeGifEditor";
+import InlineFieldEditor from "./InlineFieldEditor";
 import type { Tag } from "../db/tags";
 
 export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete, onCatalogChange = (_tags: Tag[]) => {} }) {
@@ -30,6 +32,19 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
 
     async function saveTags(tags: string[]) {
         await raw_kanji_update(kanji, 'update', { tags }, onUpdate, setSelectedKanji, null)
+    }
+
+    async function saveMemeGif(memeGif: string) {
+        await raw_kanji_update(kanji, 'update', { memeGif }, onUpdate, setSelectedKanji, null)
+    }
+
+    async function saveKanjiField(field: "kanji", value: string) {
+        await raw_kanji_update(kanji, "update", { [field]: value }, onUpdate, setSelectedKanji, null);
+    }
+
+    async function saveKanjiListField(field: "on" | "kun" | "meaning", value: string) {
+        const values = value.split(/\r?\n/).map(item => item.trim()).filter(Boolean);
+        await raw_kanji_update(kanji, "update", { [field]: values }, onUpdate, setSelectedKanji, null);
     }
 
     async function kanji_delete() {
@@ -67,15 +82,15 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                     </div>
 
                     <div className="modal-body">
-                        <div className="kanji-hero">{kanji.Kanji}</div>
-                        <div className="kanji-readings">{`On: ${kanji.On ? kanji.On.join(", ") : "-"} | Kun: ${kanji.Kun ? kanji.Kun.join(", ") : "-"}`}</div>
-
-                        <hr/>
-
-                        <p><strong>Meaning:</strong> <span className="modal-meaning">{kanji.Meaning ? kanji.Meaning.join(", ") : "-"}</span></p>
                         <TagEditor key={kanji.Id} value={kanji.Tags ?? []} onSave={saveTags} onCatalogChange={onCatalogChange} />
-                        <hr/>
-
+                        <InlineFieldEditor className="kanji-modal-meaning-edit" label="Meaning" value={(kanji.Meaning ?? []).join("\n")} onSave={value => saveKanjiListField("meaning", value)} multiline listDisplay />
+                        <div className="kanji-modal-core">
+                            <InlineFieldEditor className="kanji-modal-kanji-edit" label="Kanji" value={kanji.Kanji} onSave={value => saveKanjiField("kanji", value)} />
+                            <div className="kanji-modal-reading-editors">
+                                <InlineFieldEditor label="On readings" value={(kanji.On ?? []).join("\n")} onSave={value => saveKanjiListField("on", value)} multiline emptyText="Not set" listDisplay />
+                                <InlineFieldEditor label="Kun readings" value={(kanji.Kun ?? []).join("\n")} onSave={value => saveKanjiListField("kun", value)} multiline emptyText="Not set" listDisplay />
+                            </div>
+                        </div>
                         <p>
                         <strong>Words:</strong>
                         <span className="modal-words">
@@ -88,6 +103,7 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                         ))}
                         </span>
                         </p>
+                        <MemeGifEditor key={`${kanji.Id}-meme-gif`} value={kanji.MemeGif} onSave={saveMemeGif} label={kanji.Kanji} searchQuery={kanji.Kanji} />
                         <hr/>
 
                         <h6>Readings &amp; Meanings</h6>

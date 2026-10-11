@@ -1,143 +1,165 @@
 package api
 
 import (
+	"net/url"
 	"nyaccabulary/server/config"
 	"nyaccabulary/server/logic"
+	"strings"
 	"time"
 )
 
+func validateMemeGif(raw string) (string, bool) {
+	value := strings.TrimSpace(raw)
+	if value == "" {
+		return "", true
+	}
+	if len(value) > 2048 {
+		return "", false
+	}
+	parsed, err := url.ParseRequestURI(value)
+	return value, err == nil && parsed.Host != "" && (parsed.Scheme == "https" || parsed.Scheme == "http")
+}
+
 type RegisterRequest struct {
-    Username    string `json:"username"`
-    Email       string `json:"email"`
-    Phone       string `json:"phone"`
-    Name        string `json:"name"`
-    PasswordA   string `json:"passworda"`
-    PasswordB   string `json:"passwordb"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Name      string `json:"name"`
+	PasswordA string `json:"passworda"`
+	PasswordB string `json:"passwordb"`
 }
 
 type LoginRequest struct {
-    Username    string `json:"username"`
-    Password    string `json:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type Response struct {
-    Status  string
-    Errors  any
+	Status string
+	Errors any
 }
 
 type RegisterResponse struct {
-    Status  string
-    Error   string
-    User    logic.User
+	Status string
+	Error  string
+	User   logic.User
 }
 
 type Page struct {
-    Current     int
-    Count       int
-    Limit       int
+	Current int
+	Count   int
+	Limit   int
 }
 
 type Stats struct {
-    Mastered    int
-    Learning    int
-    Count       int
-    Order       string
+	Mastered int
+	Learning int
+	Count    int
+	Order    string
 }
 
 type PagedResponse struct {
-    Page    Page
-    Stats   Stats
-    Data    any
+	Page  Page
+	Stats Stats
+	Data  any
 }
 
 type SyncResponse struct {
-    WordStats   Stats
-    KanjiStats  Stats
-    Words       []Word
-    Kanjis      []Kanji
-    Tags        []Tag
+	WordStats  Stats
+	KanjiStats Stats
+	Words      []Word
+	Kanjis     []Kanji
+	Tags       []Tag
 }
 
 type WordAddRequest struct {
-    Kanji   string `json:"kanji"`
-    Kana    string `json:"kana"`
-    Meaning string `json:"meaning"`
-    Tags    []string `json:"tags"`
+	Kanji   string   `json:"kanji"`
+	Kana    string   `json:"kana"`
+	Meaning string   `json:"meaning"`
+	Tags    []string `json:"tags"`
+	MemeGif *string  `json:"memeGif"`
 }
 
 type TagsUpdateRequest struct {
-    Tags []string `json:"tags"`
+	Tags    []string  `json:"tags"`
+	MemeGif *string   `json:"memeGif"`
+	Kanji   *string   `json:"kanji"`
+	On      *[]string `json:"on"`
+	Kun     *[]string `json:"kun"`
+	Meaning *[]string `json:"meaning"`
 }
 
 type WordBulkAddRequest struct {
-    Tag     string `json:"tag"`
-    Words   string `json:"words"`
+	Tag   string `json:"tag"`
+	Words string `json:"words"`
 }
 
 type TagAddRequest struct {
-    Name    string `json:"name"`
-    Color   string `json:"color"`
+	Name  string `json:"name"`
+	Color string `json:"color"`
 }
 
 type User struct {
-    Id              string
-    RegDate         time.Time
-    EditDate        time.Time
-    Username        string
-    Name            string
-    Email           string
-    Phone           string
-    EmailVisible    bool
-    PhoneVisible    bool
-    Roles           []string
+	Id           string
+	RegDate      time.Time
+	EditDate     time.Time
+	Username     string
+	Name         string
+	Email        string
+	Phone        string
+	EmailVisible bool
+	PhoneVisible bool
+	Roles        []string
 }
 
 type WKanji struct {
-    Id              string
-    Kanji           string
-    Status          string
+	Id     string
+	Kanji  string
+	Status string
 }
 
 type Word struct {
-    Id              string
-    Date            time.Time
-    LastUpdated     time.Time
-    // User            User
-    Kanji           string
-    Kana            string
-    Meaning         string
-    Knows           int
-    DontKnows       int
-    Status          string
-    LastShown       time.Time
-    DictForm        config.Entry
-    Kanjis          []WKanji
-    Tags            []string
+	Id          string
+	Date        time.Time
+	LastUpdated time.Time
+	// User            User
+	Kanji     string
+	Kana      string
+	Meaning   string
+	Knows     int
+	DontKnows int
+	Status    string
+	LastShown time.Time
+	DictForm  config.Entry
+	Kanjis    []WKanji
+	Tags      []string
+	MemeGif   string
 }
 
 type Kanji struct {
-    Id              string
-    Date            time.Time
-    LastUpdated     time.Time
-    // User            User
-    Kanji           string
-    On              []string
-    Kun             []string
-    Meaning         []string
-    Knows           int
-    DontKnows       int
-    LastShown       time.Time
-    Status          string
-    DictForm        config.Character
+	Id          string
+	Date        time.Time
+	LastUpdated time.Time
+	// User            User
+	Kanji     string
+	On        []string
+	Kun       []string
+	Meaning   []string
+	Knows     int
+	DontKnows int
+	LastShown time.Time
+	Status    string
+	DictForm  config.Character
 
-    Words           []logic.KWord
-    Tags            []string
+	Words   []logic.KWord
+	Tags    []string
+	MemeGif string
 }
 
 type Tag struct {
-    Id              string
-    Date            time.Time
-    LastUpdated     time.Time
-    Name            string
-    Color           string
+	Id          string
+	Date        time.Time
+	LastUpdated time.Time
+	Name        string
+	Color       string
 }

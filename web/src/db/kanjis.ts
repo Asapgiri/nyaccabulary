@@ -21,6 +21,7 @@ export interface Kanji {
     DictForm:        any
     Words:           string[]
     Tags:            string[]
+    MemeGif:         string
 }
 
 async function post(id: string, action: string, body?: unknown): Promise<Kanji> {

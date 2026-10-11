@@ -8,24 +8,24 @@ import (
 )
 
 type Sort struct {
-    Field   string
-    Order   int64
+	Field string
+	Order int64
 }
 
 type Filter struct {
-    Page        int64
-    Limit       int64
-    Sort        Sort
-    Status      []string
-    Tags        []string
-    LastUpdated time.Time
+	Page        int64
+	Limit       int64
+	Sort        Sort
+	Status      []string
+	Tags        []string
+	LastUpdated time.Time
 }
 
 type Meta struct {
-    Mastered    int64
-    Learning    int64
-    Count       int64
-    PageCount   int64
+	Mastered  int64
+	Learning  int64
+	Count     int64
+	PageCount int64
 }
 
 // type PagedResponse struct {
@@ -39,59 +39,61 @@ type Meta struct {
 // }
 
 type User struct {
-    Id              primitive.ObjectID `bson:"_id"`
-    RegDate         time.Time
-    EditDate        time.Time
-    Username        string             `bson:"username"`
-    PasswordHash    string
-    Name            string
-    Email           string             `bson:"email"`
-    EmailVerified   bool
-    Phone           string
-    EmailVisible    bool
-    PhoneVisible    bool
-    Roles           []string
+	Id            primitive.ObjectID `bson:"_id"`
+	RegDate       time.Time
+	EditDate      time.Time
+	Username      string `bson:"username"`
+	PasswordHash  string
+	Name          string
+	Email         string `bson:"email"`
+	EmailVerified bool
+	Phone         string
+	EmailVisible  bool
+	PhoneVisible  bool
+	Roles         []string
 }
 
 type Word struct {
-    Id              primitive.ObjectID `bson:"_id"`
-    Date            time.Time
-    LastUpdated     time.Time
-    User            primitive.ObjectID
-    Kanji           string
-    Kana            string
-    Meaning         string
-    Knows           int
-    DontKnows       int
-    LastShown       time.Time
-    Status          string
-    DictForm        config.Entry
-    Kanjis          []primitive.ObjectID
-    Tags            []string
+	Id          primitive.ObjectID `bson:"_id"`
+	Date        time.Time
+	LastUpdated time.Time
+	User        primitive.ObjectID
+	Kanji       string
+	Kana        string
+	Meaning     string
+	Knows       int
+	DontKnows   int
+	LastShown   time.Time
+	Status      string
+	DictForm    config.Entry
+	Kanjis      []primitive.ObjectID
+	Tags        []string
+	MemeGif     string
 }
 
 type Kanji struct {
-    Id              primitive.ObjectID `bson:"_id"`
-    Date            time.Time
-    LastUpdated     time.Time
-    User            primitive.ObjectID
-    Kanji           string
-    On              []string
-    Kun             []string
-    Meaning         []string
-    Knows           int
-    DontKnows       int
-    LastShown       time.Time
-    Status          string
-    DictForm        config.Character
-    Tags            []string
+	Id          primitive.ObjectID `bson:"_id"`
+	Date        time.Time
+	LastUpdated time.Time
+	User        primitive.ObjectID
+	Kanji       string
+	On          []string
+	Kun         []string
+	Meaning     []string
+	Knows       int
+	DontKnows   int
+	LastShown   time.Time
+	Status      string
+	DictForm    config.Character
+	Tags        []string
+	MemeGif     string
 }
 
 type Tag struct {
-    Id              primitive.ObjectID `bson:"_id"`
-    Date            time.Time
-    LastUpdated     time.Time
-    User            primitive.ObjectID
-    Name            string
-    Color           string
+	Id          primitive.ObjectID `bson:"_id"`
+	Date        time.Time
+	LastUpdated time.Time
+	User        primitive.ObjectID
+	Name        string
+	Color       string
 }

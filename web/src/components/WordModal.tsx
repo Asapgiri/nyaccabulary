@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { raw_word_update } from "./update";
 import TagEditor from "./TagEditor";
+import MemeGifEditor from "./MemeGifEditor";
+import InlineFieldEditor from "./InlineFieldEditor";
 import type { Tag } from "../db/tags";
 
 export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, onCatalogChange = (_tags: Tag[]) => {} }) {
@@ -17,11 +19,19 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, o
     }
 
     async function update(t_body) {
-        raw_word_update(word, 'update', t_body, onUpdate, setSelectedWord)
+        await raw_word_update(word, 'update', t_body, onUpdate, setSelectedWord)
+    }
+
+    async function saveWordField(field: "kanji" | "kana" | "meaning", value: string) {
+        await update({ [field]: value });
     }
 
     async function saveTags(tags: string[]) {
         await raw_word_update(word, 'update', { tags }, onUpdate, setSelectedWord, null)
+    }
+
+    async function saveMemeGif(memeGif: string) {
+        await raw_word_update(word, 'update', { memeGif }, onUpdate, setSelectedWord, null)
     }
 
     async function word_mark() {
@@ -49,8 +59,8 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, o
                     <div className="modal-header study-modal-header">
 
                         <div className="study-title">
-                            <div className="study-kanji">{word.Kanji}</div>
-                            <div className="study-kana">{word.Kana}</div>
+                            <InlineFieldEditor className="word-modal-kanji-edit" label="Word" value={word.Kanji} onSave={value => saveWordField("kanji", value)} />
+                            <InlineFieldEditor className="word-modal-kana-edit" label="Hiragana / reading" value={word.Kana} onSave={value => saveWordField("kana", value)} />
                         </div>
 
                         <div className="study-actions">
@@ -66,10 +76,30 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, o
                     </div>
 
                     <div className="modal-body">
-                        <p><strong>Meaning:</strong> <span className="modal-meaning">{word.Meaning}</span></p>
                         <TagEditor key={word.Id} value={word.Tags ?? []} onSave={saveTags} onCatalogChange={onCatalogChange} />
-                        <hr/>
-
+                        <InlineFieldEditor className="word-modal-meaning-edit" label="Meaning" value={word.Meaning} onSave={value => saveWordField("meaning", value)} multiline />
+                        <div className="word-modal-dictionary-fields">
+                            <section>
+                                <h6>Kanji</h6>
+                                <ul className="modal-kanji">
+                                    {word.DictForm?.KEle?.map((kele, index) => (
+                                        <li key={index}>
+                                            {word.Kanji == kele.KEB ? <mark>{kele.KEB}</mark> : <><span>{kele.KEB}</span><button className="icon-btn" onClick={() => update({kanji: kele.KEB})}>set</button></>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </section>
+                            <section>
+                                <h6>Readings</h6>
+                                <ul className="modal-readings">
+                                    {word.DictForm?.REle?.map((rele, index) => (
+                                        <li key={index}>
+                                            {word.Kana == rele.REB ? <mark>{rele.REB}</mark> : <><span>{rele.REB}</span><button className="icon-btn" onClick={() => update({kana: rele.REB})}>set</button></>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </section>
+                        </div>
                         <p>
                             <strong>Kanjis:</strong>
                             <span className="modal-kanjis">
@@ -83,40 +113,8 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, o
                                 )})}
                             </span>
                         </p>
+                        <MemeGifEditor key={`${word.Id}-meme-gif`} value={word.MemeGif} onSave={saveMemeGif} label={word.Kanji} searchQuery={`${word.Kanji} ${word.Kana}`} />
                         <hr/>
-
-                        <h6>Kanji</h6>
-                        <ul className="modal-kanji">
-                            {word.DictForm?.KEle?.map((kele, index) => (
-                                <li key={index}>
-                                    {word.Kanji == kele.KEB ? (
-                                        <mark>{kele.KEB} </mark>
-                                    ) : (
-                                        <>
-                                        <span>{kele.KEB} </span>
-                                        <button className="icon-btn" onClick={() => update({kanji: kele.KEB})}>set</button>
-                                        </>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-
-                        <h6>Readings</h6>
-                        <ul className="modal-readings">
-                            {word.DictForm?.REle?.map((rele, index) => (
-                                <li key={index}>
-                                    {word.Kana == rele.REB ? (
-                                        <mark>{rele.REB} </mark>
-                                    ) : (
-                                        <>
-                                        <span>{rele.REB} </span>
-                                        <button className="icon-btn" onClick={() => update({kana: rele.REB})}>set</button>
-                                        </>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-
                         <h6>Senses</h6>
                         <div className="modal-senses">
                             {word.DictForm?.Sense?.map((sense, senseIndex) => (

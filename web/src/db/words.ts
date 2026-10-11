@@ -20,6 +20,7 @@ export interface Word {
     DictForm:   any
     Kanjis:     string[]
     Tags:       string[]
+    MemeGif:    string
 }
 
 async function post(id: string, action: string, body?: unknown): Promise<Word> {

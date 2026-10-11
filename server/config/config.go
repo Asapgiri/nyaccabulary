@@ -43,12 +43,17 @@ type EmailConfig struct {
     Password    string
 }
 
+type GiphyConfig struct {
+	ApiKey string
+}
+
 type ConfigT struct {
     Http        HttpConfig
     Dbase       DbConfig
     User        UserConfig
     Site        session.Config
     Email       EmailConfig
+	Giphy       GiphyConfig
     JMdict      JMdict          `json:"-"`
     KanjiDict   Kanjidic2       `json:"-"`
 }
@@ -82,6 +87,7 @@ var Config = ConfigT{
         Email: "ex@ample.com",
         Password: "[password]",
     },
+	Giphy: GiphyConfig{},
     JMdict: JMdict{},
 }
 

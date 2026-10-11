@@ -7,84 +7,86 @@ import (
 )
 
 type Filter struct {
-    Page        int
-    Limit       int
-    Mastered    bool
-    Status      []string
-    Tags        []string
-    Sort        dbase.Sort
-    LastUpdated time.Time
+	Page        int
+	Limit       int
+	Mastered    bool
+	Status      []string
+	Tags        []string
+	Sort        dbase.Sort
+	LastUpdated time.Time
 }
 
 type User struct {
-    _db             dbase.User
-    Id              string
-    RegDate         time.Time
-    EditDate        time.Time
-    Username        string
-    Name            string
-    Email           string
-    Phone           string
-    EmailVisible    bool
-    PhoneVisible    bool
-    Roles           []string
+	_db          dbase.User
+	Id           string
+	RegDate      time.Time
+	EditDate     time.Time
+	Username     string
+	Name         string
+	Email        string
+	Phone        string
+	EmailVisible bool
+	PhoneVisible bool
+	Roles        []string
 }
 
 type Word struct {
-    _db             dbase.Word
-    Id              string
-    Date            time.Time
-    LastUpdated     time.Time
-    User            User
-    Kanji           string
-    Kana            string
-    Meaning         string
-    Knows           int
-    DontKnows       int
-    Status          string
-    LastShown       time.Time
-    DictForm        config.Entry
-    Kanjis          []Kanji
-    Tags            []string
+	_db         dbase.Word
+	Id          string
+	Date        time.Time
+	LastUpdated time.Time
+	User        User
+	Kanji       string
+	Kana        string
+	Meaning     string
+	Knows       int
+	DontKnows   int
+	Status      string
+	LastShown   time.Time
+	DictForm    config.Entry
+	Kanjis      []Kanji
+	Tags        []string
+	MemeGif     string
 }
 
 type KWord struct {
-    Id              string
-    Word            string
-    Status          string
+	Id     string
+	Word   string
+	Status string
 }
 
 type Kanji struct {
-    _db             dbase.Kanji
-    Id              string
-    Date            time.Time
-    LastUpdated     time.Time
-    User            User
-    Kanji           string
-    On              []string
-    Kun             []string
-    Meaning         []string
-    Knows           int
-    DontKnows       int
-    LastShown       time.Time
-    Status          string
-    DictForm        config.Character
+	_db         dbase.Kanji
+	Id          string
+	Date        time.Time
+	LastUpdated time.Time
+	User        User
+	Kanji       string
+	On          []string
+	Kun         []string
+	Meaning     []string
+	Knows       int
+	DontKnows   int
+	LastShown   time.Time
+	Status      string
+	DictForm    config.Character
 
-    Words           []KWord
+	Words []KWord
 
-    OnStr     string
-    KunStr    string
-    MeaningStr string
+	OnStr      string
+	KunStr     string
+	MeaningStr string
 
-    Tags            []string
+	Tags    []string
+	MemeGif string
 }
 
 type Tag struct {
-    _db             dbase.Tag
-    Id              string
-    Date            time.Time
-    LastUpdated     time.Time
-    User            User
-    Name            string
-    Color           string
+	_db         dbase.Tag
+	Id          string
+	Date        time.Time
+	LastUpdated time.Time
+	User        User
+	Name        string
+	Color       string
 }

@@ -98,6 +98,43 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .modal-body .kanji-hero { margin: 4px 0 8px; color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(5rem, 18vw, 9rem); font-weight: 850; line-height: 1; text-align: center; }
 .modal-body .kanji-readings { margin-bottom: 18px; color: #68645c; text-align: center; }
 .modal-body .modal-readings > div { margin-bottom: 12px; padding: 12px; border: 1px solid #d2cec3; background: #f8f6f0; }
+.meme-gif-editor { display: grid; gap: 9px; margin: 14px 0; padding: 12px; border: 1px solid var(--ink); background: #efede5; box-shadow: 2px 2px 0 #d3d0c6; }
+.meme-gif-editor-head, .meme-gif-editor-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.meme-gif-editor-head { justify-content: space-between; }
+.meme-gif-editor h6 { margin: 0; color: var(--ink); font-size: .72rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+.meme-gif-editor small { color: #706c64; }
+.meme-gif-editor-controls .form-control { flex: 1 1 240px; min-width: 0; }
+.meme-gif-preview { display: grid; min-height: 48px; place-items: center; padding: 8px; border: 1px dashed #c4c0b6; background: var(--paper-light); }
+.meme-gif-preview img { display: block; max-width: 100%; max-height: 280px; object-fit: contain; }
+.meme-gif-preview iframe { display: block; width: min(100%, 480px); aspect-ratio: 4 / 3; border: 0; background: #e9e5d9; }
+.giphy-attribution { color: #605c54; font-size: .64rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+.giphy-attribution:hover { color: var(--violet); text-decoration: underline; }
+.inline-field-display { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; min-width: 0; }
+.inline-field-display > span { white-space: pre-line; overflow-wrap: anywhere; }
+.inline-field-display .btn { flex: 0 0 auto; }
+.inline-field-value-list { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.inline-field-value-item { display: inline-flex; align-items: center; min-height: 30px; padding: 4px 9px; border: 1px solid #c4c0b6; border-left: 3px solid var(--coral); background: #f2f0e9; color: var(--ink); font-weight: 650; overflow-wrap: anywhere; }
+.inline-field-editor { display: grid; gap: 7px; min-width: 0; }
+.inline-field-editor .form-label { margin: 0; color: #68645c; font-size: .67rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+.inline-field-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.word-modal-kanji-edit > span { color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 800; line-height: 1; }
+.word-modal-kana-edit { margin-top: 6px; color: #706c64; font-size: 1rem; }
+.word-modal-meaning-edit { align-items: flex-start; margin: 8px 0 16px; padding: 12px; border: 1px solid #c9c5bb; border-left: 4px solid var(--coral); background: #f8f6f0; box-shadow: 2px 2px 0 #d3d0c6; }
+.word-modal-meaning-edit > span { font-size: 1.05rem; font-weight: 650; line-height: 1.5; }
+.word-modal-dictionary-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 12px 0 18px; }
+.word-modal-dictionary-fields h6 { margin-bottom: 7px; }
+.word-modal-dictionary-fields ul { margin-bottom: 0; }
+.kanji-modal-core { margin: 8px 0 18px; padding: 12px; border: 1px solid #c9c5bb; background: #f8f6f0; }
+.kanji-modal-core .kanji-modal-kanji-edit { margin: 2px 0 12px; }
+.kanji-modal-meaning-edit .inline-field-value-list { align-items: stretch; }
+.kanji-modal-meaning-edit .inline-field-value-item { min-height: 38px; padding: 7px 11px; }
+.kanji-modal-reading-editors .inline-field-value-list { display: grid; align-content: start; }
+.kanji-modal-kanji-edit { justify-content: center; margin: 2px 0 8px; }
+.kanji-modal-kanji-edit > span { color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(5rem, 18vw, 9rem); font-weight: 850; line-height: 1; }
+.kanji-modal-reading-editors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.kanji-modal-meaning-edit { margin: 10px 0 14px; }
+@media (max-width: 575.98px) { .kanji-modal-reading-editors { grid-template-columns: 1fr; } }
+@media (max-width: 575.98px) { .word-modal-dictionary-fields { grid-template-columns: 1fr; } }
 .study-modal-header .study-title { min-width: 0; }
 .study-modal-header .study-actions { flex-wrap: wrap; justify-content: flex-end; }
 .study-modal-header .icon-btn { white-space: nowrap; }
