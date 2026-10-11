@@ -343,9 +343,6 @@ func BulkAdd(user logic.User, s string, tag string, progress func(int, int)) Bul
         return info
     }
 
-    ww := logic.Word{}
-    known_words := ww.List(user, logic.Filter{Mastered: true})
-
     lines := strings.Split(s, "\n")
 
     for i, l := range(lines) {
@@ -353,15 +350,28 @@ func BulkAdd(user logic.User, s string, tag string, progress func(int, int)) Bul
         if "" != line {
             bulkline := parseBulkLine(line)
 
-            // Check if word is already in users dictionary...
-            exists := false
-            for _, kw := range(known_words) {
-                if kw.Kanji == bulkline.Kanji {
-                    exists = true
+            // A duplicate with a selected tag should gain that tag.
+            existing := logic.Word{}
+            if nil == existing.FindByKanji(user, bulkline.Kanji) {
+                if "" != tag {
+                    hasTag := false
+                    for _, existingTag := range existing.Tags {
+                        if existingTag == tag {
+                            hasTag = true
+                            break
+                        }
+                    }
+                    if !hasTag {
+                        existing.Tags = append(existing.Tags, tag)
+                        if nil != existing.Update() {
+                            info.Failed = append(info.Failed, bulkline.Kanji)
+                        }
+                    }
                 }
-            }
-            if exists {
                 info.Exists = append(info.Exists, bulkline.Kanji)
+                if nil != progress {
+                    progress(i, len(lines))
+                }
                 continue
             }
 
@@ -392,9 +402,6 @@ func BulkAdd(user logic.User, s string, tag string, progress func(int, int)) Bul
             bulkline.Date = time.Now()
             bulkline.User = user
             bulkline.Add()
-            if ok || "" != bulkline.Meaning {
-                known_words = append(known_words, bulkline)
-            }
         }
         if nil != progress {
             progress(i, len(lines))

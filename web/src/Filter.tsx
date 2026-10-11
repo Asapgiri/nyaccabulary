@@ -89,7 +89,7 @@ export function FilterApply(filter, words) {
     return result;
 }
 
-export function Filter({ filter, setFilter, compact = false, extraField = null }) {
+export function Filter({ filter, setFilter, compact = false, extraField = null, tagAction = null }) {
     const [tags, setTags] = useState<Tag[]>([]);
 
     useEffect(() => {
@@ -257,6 +257,7 @@ export function Filter({ filter, setFilter, compact = false, extraField = null }
                             <span>{tag.Name}</span>
                         </label>
                     ))}
+                    {tagAction}
                     {(filter.tags ?? []).length > 0 && (
                         <button className="btn btn-sm btn-link tag-filter-clear" onClick={() => setFilter(f => update({ ...f, tags: [] }))}>Clear</button>
                     )}

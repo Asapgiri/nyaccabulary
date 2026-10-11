@@ -21,13 +21,14 @@ export default function WordRow({ word, setSelectedWord, onUpdate, onDelete, fil
     }
 
     const total = word.DontKnows + word.Knows
+    const tagBorderColor = (word.Tags ?? []).map(id => tags.find(tag => tag.Id === id)?.Color).find(Boolean);
 
     return (
         <div className={`searchable row planner-row ${word.Status.toLowerCase()}`} style={{ fontSize: `${filter.wordSize}px` }}>
             <button className={`col-3 col-md-3 col-sm-3 word-chip ${word.Status.toLowerCase()}`}
                     data-bs-toggle="modal"
                     data-bs-target={`#word-modal`}
-                    style={{ fontSize: `${filter.wordSize}px` }}
+                    style={{ fontSize: `${filter.wordSize}px`, ...(tagBorderColor ? { borderColor: tagBorderColor } : {}) }}
                     onClick={() => {setSelectedWord(word); if ("NEW" == word.Status) remove_new();}}>
                 {word.Kanji}
             </button>

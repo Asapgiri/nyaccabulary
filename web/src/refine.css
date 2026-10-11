@@ -72,6 +72,32 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .detail-content-section .badge { margin: 4px 4px 4px 0; border: 1px solid #bdb9af; background: #ece9e1 !important; color: var(--ink) !important; }
 .modal-content { box-shadow: 8px 8px 0 #191b2266; }
 .modal-body .card { border-radius: 0 !important; box-shadow: 2px 2px 0 #d2cec3 !important; }
+.study-modal-header { gap: 16px; padding: 18px 20px; }
+.study-modal-header .study-kanji { color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 800; line-height: 1; }
+.study-modal-header .study-kana { margin-top: 6px; color: #706c64; }
+.study-modal-header .study-actions { align-items: flex-start; gap: 6px; }
+.study-modal-header .icon-btn { display: inline-flex; min-height: 34px; align-items: center; justify-content: center; padding: 5px 9px; border: 1px solid #aaa69c; background: var(--paper-light); color: var(--ink); font-size: .74rem; font-weight: 750; text-decoration: none; }
+.study-modal-header .icon-btn:hover { border-color: var(--ink); background: var(--lime); }
+.study-modal-header .btn-delete:hover { border-color: #a64136; background: #f7d9d3; }
+.study-modal-header .btn-close { margin: 4px 0 0 3px; }
+.modal-body { padding: clamp(16px, 3vw, 24px); }
+.modal-body > h6 { margin: 22px 0 9px; padding-bottom: 7px; border-bottom: 2px solid var(--ink); color: #68645c; font-size: .68rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+.modal-body > hr { margin: 18px 0; border-top: 1px solid #c7c3b9; opacity: 1; }
+.modal-body .modal-meaning { font-size: 1.05rem; font-weight: 650; line-height: 1.5; }
+.modal-body .modal-kanjis, .modal-body .modal-words { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: 6px; }
+.modal-body .kanji-btn { min-width: 34px; min-height: 34px; align-items: center; justify-content: center; padding: 4px 8px !important; border: 1px solid #aaa69c; background: #efede5; color: var(--ink); font-size: 1rem; text-decoration: none; }
+.modal-body .kanji-btn:hover { border-color: var(--ink); background: var(--lime); }
+.modal-body .modal-kanji, .modal-body .modal-readings ul { display: grid; gap: 6px; padding: 0; list-style: none; }
+.modal-body .modal-kanji li, .modal-body .modal-readings li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 7px 9px; border-left: 3px solid var(--coral); background: #f2f0e9; }
+.modal-body mark { padding: 2px 5px; background: var(--lime); color: var(--ink); }
+.modal-body .modal-senses .card { border: 1px solid #c9c5bb; background: #f8f6f0; }
+.modal-body .modal-senses .card-body { padding: 13px; }
+.modal-body .badge { margin: 2px 4px 2px 0; padding: 4px 6px; border: 1px solid #c4c0b6; border-radius: 0; background: #e9e6dd !important; color: var(--ink) !important; font-size: .68rem; font-weight: 700; }
+.modal-body .modal-senses ul { margin-top: 6px; padding-left: 20px; }
+.modal-body .modal-senses li { margin: 4px 0; line-height: 1.5; }
+.modal-body .kanji-hero { margin: 4px 0 8px; color: var(--ink); font-family: "Montserrat", sans-serif; font-size: clamp(5rem, 18vw, 9rem); font-weight: 850; line-height: 1; text-align: center; }
+.modal-body .kanji-readings { margin-bottom: 18px; color: #68645c; text-align: center; }
+.modal-body .modal-readings > div { margin-bottom: 12px; padding: 12px; border: 1px solid #d2cec3; background: #f8f6f0; }
 .study-modal-header .study-title { min-width: 0; }
 .study-modal-header .study-actions { flex-wrap: wrap; justify-content: flex-end; }
 .study-modal-header .icon-btn { white-space: nowrap; }
