@@ -85,11 +85,32 @@ export default function WordBulkAdd() {
 
                         <p className="management-eyebrow">VOCABULARY TOOLS</p>
                         <h1 className="h3 mb-3">Bulk add words</h1>
-                        <p className="text-muted mb-4">
-                        Enter one or more words. You can paste multiple words, one per line.<br/>
-                        kanjis[(,|、)furigana][(,|、)meaning][(+|＋)]<br/>
-                        kanjis[,meaning][＋]<br/>
-                        </p>
+                        <section className="bulk-format-guide mb-4" aria-labelledby="bulk-format-title">
+                            <div className="bulk-format-heading">
+                                <span className="bulk-format-icon" aria-hidden="true">↓</span>
+                                <div>
+                                    <h2 id="bulk-format-title">Paste your vocabulary</h2>
+                                    <p>Enter one word per line, or paste text from a Shirabe Jisho CSV export.</p>
+                                </div>
+                            </div>
+
+                            <div className="bulk-format-fields" aria-label="Line format fields">
+                                <span className="bulk-field bulk-field-word">Word / kanji</span>
+                                <span className="bulk-format-separator">,</span>
+                                <span className="bulk-field bulk-field-reading">Reading <small>optional</small></span>
+                                <span className="bulk-format-separator">,</span>
+                                <span className="bulk-field bulk-field-meaning">Meaning <small>optional</small></span>
+                                <span className="bulk-format-separator">+</span>
+                                <span className="bulk-field bulk-field-known">Known <small>optional</small></span>
+                            </div>
+
+                            <p className="bulk-format-note">Commas can be Japanese commas (、) too. Add <code>+</code> at the end to mark a word as known; leave it off for a new word.</p>
+                            <div className="bulk-format-examples">
+                                <div><code>猫,ねこ,cat</code><span>word + reading + meaning</span></div>
+                                <div><code>猫,cat＋</code><span>word + meaning, marked known</span></div>
+                                <div><code>学校</code><span>word only; details can be looked up</span></div>
+                            </div>
+                        </section>
 
                         {progress && (
                         <div className="progress">

@@ -17,6 +17,7 @@ import WordShow from "./WordShow.tsx"
 import UserProfile from "./user/UserProfile.tsx"
 import SettingsPage from "./user/SettingsPage.tsx"
 import AdminUsersPage from "./user/AdminUsersPage.tsx"
+import HowItWorks from "./HowItWorks.tsx"
 
 import { sync } from "./db/sync.ts"
 
@@ -45,6 +46,7 @@ function App() {
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/admin" element={<AdminUsersPage />} />
                     <Route path="/admin/users" element={<AdminUsersPage />} />
+                    <Route path="/how-it-works" element={<HowItWorks />} />
                 </Routes>
             </main>
             <Footer />

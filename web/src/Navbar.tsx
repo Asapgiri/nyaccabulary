@@ -105,6 +105,10 @@ export default function Navbar() {
                             <span aria-hidden="true">✳</span> Random draw
                         </Link>
 
+                        <Link to="/how-it-works" className={"btn btn-sm " + (currentPath === "/how-it-works" ? "btn-light" : "btn-outline-light")}>
+                            Guide
+                        </Link>
+
                         <div className="dropdown ms-auto d-md-none">
 
                         {user ? (

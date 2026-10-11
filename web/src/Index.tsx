@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import WordRow from "./components/WordRow"
 import WordModal from "./components/WordModal";
 import "./index.css"
@@ -9,23 +10,33 @@ import { apiFetch } from "./api";
 import { TagDB } from "./db/tags";
 import type { Tag } from "./db/tags";
 import TagSelect from "./components/TagSelect";
+import { Link } from "react-router-dom";
+import "./how-it-works.css";
 
 export default function Index() {
     const [words, setWords] = useState<Word[]>([]);
+    const [loaded, setLoaded] = useState(false);
     const [selectedWord, setSelectedWord] = useState<Word | null>(null);
     const [stats, setStats] = useState<Stats | null>(null);
     const [tags, setTags] = useState<Tag[]>([]);
     const [filter, setFilter] = useState<TFilter>(raw_filter);
-    const [addKanji, setAddKanji] = useState<string>("")
-    const [addKana, setAddKana] = useState<string>("")
-    const [addMeaning, setAddMeaning] = useState<string>("")
     const [addTagId, setAddTagId] = useState<string | undefined>()
+    const [addError, setAddError] = useState("")
 
-    async function new_word() {
+    async function new_word(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const values = new FormData(form);
+        const kanji = String(values.get("kanji") ?? "").trim();
+        if (!kanji) {
+            setAddError("Enter a word before adding it.");
+            return;
+        }
+        setAddError("");
         const sbody = {
-            kanji: addKanji,
-            kana: addKana,
-            meaning: addMeaning,
+            kanji,
+            kana: String(values.get("kana") ?? ""),
+            meaning: String(values.get("meaning") ?? ""),
             tags: addTagId ? [addTagId] : [],
         }
 
@@ -38,13 +49,15 @@ export default function Index() {
         })
 
         const data = await response.json()
+        if (!response.ok || data.Status === "ERROR") {
+            setAddError(data.Errors || "Could not add this word.");
+            return;
+        }
         console.log(data)
         setWords(words => [data, ...words])
         await WordDB.put(data)
 
-        setAddKanji("")
-        setAddKana("")
-        setAddMeaning("")
+        form.reset()
         setAddTagId(undefined)
     }
 
@@ -57,6 +70,7 @@ export default function Index() {
         setStats(stats);
         setWords(words);
         setTags(tags);
+        setLoaded(true);
     }
 
     async function update(updated) {
@@ -83,25 +97,31 @@ export default function Index() {
 
             <Filter filter={filter} setFilter={setFilter} />
 
-            <div className="add-form">
+            <form className="add-form" onSubmit={event => void new_word(event)}>
                 <div className="row g-2">
                     <div className="col-md-2">
-                        <input value={addKanji} onChange={e => setAddKanji(e.target.value)} id="form[kanji]" name="form[kanji]" className="form-control clean-input" placeholder="Word (with kanjis)" lang="ja"/>
+                        <input id="form[kanji]" name="kanji" className="form-control clean-input" placeholder="Word (with kanjis)" lang="ja" required aria-label="Word (required)" />
                     </div>
                     <div className="col-md-2">
-                        <input value={addKana} onChange={e => setAddKana(e.target.value)} id="form[kana]" name="form[kana]" className="form-control clean-input" placeholder="Kana" lang="ja"/>
+                        <input id="form[kana]" name="kana" className="form-control clean-input" placeholder="Kana" lang="ja"/>
                     </div>
                     <div className="col-md-4">
-                        <input value={addMeaning} onChange={e => setAddMeaning(e.target.value)} id="form[meaning]" name="form[meaning]" className="form-control clean-input" placeholder="Meaning"/>
+                        <input id="form[meaning]" name="meaning" className="form-control clean-input" placeholder="Meaning"/>
                     </div>
                     <div className="col-md-2">
                         <TagSelect value={addTagId} onChange={setAddTagId} onTagsChange={setTags} />
                     </div>
                     <div className="col-md-2">
-                        <button className="btn btn-dark w-100" onClick={new_word}>Add</button>
+                        <button className="btn btn-dark w-100" type="submit">Add</button>
                     </div>
                 </div>
-            </div>
+            </form>
+            {addError && <div className="alert alert-danger mt-2" role="alert">{addError}</div>}
+
+            {loaded && words.length === 0 && <section className="home-welcome-guide">
+                <div><h2>New here? Start with the field guide.</h2><p>Learn how to add words, organize tags, and track your study progress.</p></div>
+                <Link to="/how-it-works" className="icon-btn">How it works</Link>
+            </section>}
 
             <div className="row planner-header">
                 <div className="col-3 col-md-3 col-sm-3">WORD</div>

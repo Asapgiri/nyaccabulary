@@ -72,6 +72,11 @@ func WordAdd(w http.ResponseWriter, r *http.Request) {
 	if "" == entseq {
 		var word_req WordAddRequest
 		json.NewDecoder(r.Body).Decode(&word_req)
+		word_req.Kanji = strings.TrimSpace(word_req.Kanji)
+		if word_req.Kanji == "" {
+			write_json(w, Response{Status: "ERROR", Errors: "A word is required"})
+			return
+		}
 		if !ownsTags(word_req.Tags, session.Auth.Id) {
 			AccessViolation(w, r)
 			return

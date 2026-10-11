@@ -91,6 +91,7 @@ export function FilterApply(filter, words) {
 
 export function Filter({ filter, setFilter, compact = false, extraField = null, tagAction = null }) {
     const [tags, setTags] = useState<Tag[]>([]);
+    const [showWordSize, setShowWordSize] = useState(false);
 
     useEffect(() => {
         init_db();
@@ -268,8 +269,21 @@ export function Filter({ filter, setFilter, compact = false, extraField = null, 
                 <>
                     <input id="wordSearch" className="form-control form-control-sm" placeholder="Search..." value={filter.search ? filter.search : ""} onInput={e => search(e.target.value)}/>
 
-                    <div className="d-flex flex-wrap align-items-center gap-2 p-2 border">
-                        <input style={{width: '100%'}} className="form-range mx-2" id="wordSize" type="range" min="12" max="56" step="1" value={filter.wordSize ?? 16} onChange={e => updateWordSize(e.target.value)} />
+                    <div className="word-size-control">
+                        <button
+                            type="button"
+                            className="btn btn-outline-secondary btn-mini word-size-toggle"
+                            aria-expanded={showWordSize}
+                            aria-controls="wordSizePanel"
+                            onClick={() => setShowWordSize(visible => !visible)}
+                        >
+                            Text size <span>{filter.wordSize ?? 16}px</span><span aria-hidden="true">{showWordSize ? "−" : "+"}</span>
+                        </button>
+                        {showWordSize && (
+                            <div className="word-size-panel" id="wordSizePanel">
+                                <input className="form-range" id="wordSize" aria-label="Word text size" type="range" min="12" max="56" step="1" value={filter.wordSize ?? 16} onChange={e => updateWordSize(Number(e.target.value))} />
+                            </div>
+                        )}
                     </div>
                 </>
             )}
