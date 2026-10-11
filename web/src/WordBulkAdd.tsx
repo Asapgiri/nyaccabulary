@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { apiFetch } from "./api";
 import TagSelect from "./components/TagSelect";
+import { sync } from "./db/sync";
 
 export default function WordBulkAdd() {
     const [bulkwords, setBulkwords] = useState<string>("");
@@ -48,6 +49,7 @@ export default function WordBulkAdd() {
 
         setNotices(JSON.parse(buffer))
         setProgress(null)
+        await sync()
     }
 
     return (

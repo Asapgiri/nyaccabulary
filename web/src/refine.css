@@ -79,7 +79,9 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .study-modal-header .icon-btn { display: inline-flex; min-height: 34px; align-items: center; justify-content: center; padding: 5px 9px; border: 1px solid #aaa69c; background: var(--paper-light); color: var(--ink); font-size: .74rem; font-weight: 750; text-decoration: none; }
 .study-modal-header .icon-btn:hover { border-color: var(--ink); background: var(--lime); }
 .study-modal-header .btn-delete:hover { border-color: #a64136; background: #f7d9d3; }
-.study-modal-header .btn-close { margin: 4px 0 0 3px; }
+.study-modal-footer { position: sticky; bottom: 0; z-index: 2; padding: 10px 16px; border-top: 1px solid #c7c3b9; background: #efede5; }
+.study-modal-footer .modal-close-action { display: block; width: 100%; min-height: 42px; border: 0; background: transparent; color: var(--ink); font-weight: 800; }
+.study-modal-footer .modal-close-action:hover { background: #e4e1d8; }
 .modal-body { padding: clamp(16px, 3vw, 24px); }
 .modal-body > h6 { margin: 22px 0 9px; padding-bottom: 7px; border-bottom: 2px solid var(--ink); color: #68645c; font-size: .68rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
 .modal-body > hr { margin: 18px 0; border-top: 1px solid #c7c3b9; opacity: 1; }

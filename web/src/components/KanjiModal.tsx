@@ -76,8 +76,7 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                             {kanji.Status != "MASTERED" && kanji.Status != "LEARNING"
                                                       && (<button type="button" className="icon-btn btn-mark" onClick={kanji_mark}>Mark</button>)}
                             <button type="button" className="icon-btn btn-delete" onClick={kanji_delete} data-bs-dismiss="modal">Delete</button>
-                            <Link to={`/kanji/${kanji.Id}`} onClick={() => document.getElementsByClassName('btn-close')[0].click()} className="icon-btn">Open kanji</Link>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                            <Link to={`/kanji/${kanji.Id}`} onClick={() => document.querySelector<HTMLButtonElement>("#word-modal .modal-close-action")?.click()} className="icon-btn">Open kanji</Link>
                         </div>
 
                     </div>
@@ -98,7 +97,7 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                         <span className="modal-words">
                         {kanji.Words.map((word, index) => (
                             <Link key={index} to={`/word/${word.Id}`}
-                                onClick={() => document.getElementsByClassName('btn-close')[0].click()}
+                                onClick={() => document.querySelector<HTMLButtonElement>("#word-modal .modal-close-action")?.click()}
                                 className="icon-btn me-2 mb-2 p-1 kanji-btn">
                                 {word.Word}
                             </Link>
@@ -135,6 +134,9 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                             ))}
                         </div>
 
+                    </div>
+                    <div className="modal-footer study-modal-footer">
+                        <button type="button" className="icon-btn modal-close-action" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
