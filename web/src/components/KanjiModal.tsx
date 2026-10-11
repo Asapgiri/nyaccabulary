@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { raw_kanji_update } from "./update";
 import TagEditor from "./TagEditor";
@@ -7,6 +8,8 @@ import KanjiWriting from "./KanjiWriting";
 import type { Tag } from "../db/tags";
 
 export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete, onCatalogChange = (_tags: Tag[]) => {} }) {
+    const [strokeOrderKanjiId, setStrokeOrderKanjiId] = useState<string | null>(null);
+    const [strokeOrderOpenedKanjiIds, setStrokeOrderOpenedKanjiIds] = useState<string[]>([]);
 
     if (!kanji) {
         return (
@@ -90,7 +93,25 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                                 <InlineFieldEditor label="On readings" value={(kanji.On ?? []).join("\n")} onSave={value => saveKanjiListField("on", value)} multiline emptyText="Not set" listDisplay />
                                 <InlineFieldEditor label="Kun readings" value={(kanji.Kun ?? []).join("\n")} onSave={value => saveKanjiListField("kun", value)} multiline emptyText="Not set" listDisplay />
                             </div>
-                            <KanjiWriting character={kanji.Kanji} />
+                            <div className="kanji-modal-stroke-order">
+                                <button
+                                    type="button"
+                                    className="icon-btn"
+                                    aria-expanded={strokeOrderKanjiId === kanji.Id}
+                                    aria-controls={`kanji-stroke-order-${kanji.Id}`}
+                                    onClick={() => {
+                                        setStrokeOrderKanjiId(current => current === kanji.Id ? null : kanji.Id);
+                                        setStrokeOrderOpenedKanjiIds(current => current.includes(kanji.Id) ? current : [...current, kanji.Id]);
+                                    }}
+                                >
+                                    {strokeOrderKanjiId === kanji.Id ? "Hide stroke order" : "Show stroke order"}
+                                </button>
+                                {strokeOrderOpenedKanjiIds.includes(kanji.Id) && (
+                                    <div id={`kanji-stroke-order-${kanji.Id}`} hidden={strokeOrderKanjiId !== kanji.Id}>
+                                        <KanjiWriting character={kanji.Kanji} />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         <p>
                         <strong>Words:</strong>

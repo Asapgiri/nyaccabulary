@@ -113,8 +113,9 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .modal-body .modal-kanjis, .modal-body .modal-words { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: 6px; }
 .modal-body .kanji-btn { min-width: 34px; min-height: 34px; align-items: center; justify-content: center; padding: 4px 8px !important; border: 1px solid #aaa69c; background: #efede5; color: var(--ink); font-size: 1rem; text-decoration: none; }
 .modal-body .kanji-btn:hover { border-color: var(--ink); background: var(--lime); }
-.modal-body .modal-kanji, .modal-body .modal-readings ul { display: grid; gap: 6px; padding: 0; list-style: none; }
+.modal-body .modal-kanji, .modal-body .modal-readings { display: grid; gap: 6px; padding: 0; list-style: none; }
 .modal-body .modal-kanji li, .modal-body .modal-readings li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 7px 9px; border-left: 3px solid var(--coral); background: #f2f0e9; }
+.modal-body .modal-readings ul { margin: 6px 0 0; padding: 0; list-style: none; }
 .modal-body mark { padding: 2px 5px; background: var(--lime); color: var(--ink); }
 .modal-body .modal-senses .card { border: 1px solid #c9c5bb; background: #f8f6f0; }
 .modal-body .modal-senses .card-body { padding: 13px; }
@@ -171,8 +172,9 @@ body .table thead th { border-bottom: 2px solid var(--ink); color: #6c6961; font
 .kanji-writing-credit:hover { text-decoration: underline; }
 @keyframes kanji-stroke-write { from { stroke-dashoffset: 1; visibility: visible; } to { stroke-dashoffset: 0; visibility: visible; } }
 .kanji-modal-reading-editors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.kanji-modal-stroke-order { display: grid; gap: 4px; margin-top: 10px; }
+.kanji-modal-stroke-order > button { justify-self: end; }
 .kanji-modal-meaning-edit { margin: 10px 0 14px; }
-@media (max-width: 575.98px) { .kanji-modal-reading-editors { grid-template-columns: 1fr; } }
 @media (max-width: 575.98px) { .word-modal-dictionary-fields { grid-template-columns: 1fr; } }
 .study-modal-header .study-title { min-width: 0; }
 .study-modal-header .study-actions { flex-wrap: wrap; justify-content: flex-end; }
