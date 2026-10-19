@@ -316,7 +316,7 @@ func parseBulkLine(line string) logic.Word {
         ret.Status = logic.MASTERY.NEW
     }
 
-    reader := csv.NewReader(strings.NewReader(line))
+    reader := csv.NewReader(strings.NewReader(strings.ReplaceAll(line, "、", ",")))
     parts, _ := reader.Read()
 
     if len(parts) >= 3 {
