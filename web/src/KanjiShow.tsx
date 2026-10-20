@@ -4,6 +4,7 @@ import { KanjiDB } from "./db/kanjis";
 import { raw_kanji_update } from "./components/update";
 import TagEditor from "./components/TagEditor";
 import KanjiWriting from "./components/KanjiWriting";
+import MemeGifDisplay from "./components/MemeGifDisplay";
 
 export default function KanjiShow() {
     const { id } = useParams<{ id: string }>();
@@ -163,17 +164,28 @@ export default function KanjiShow() {
                         {kanji.DictForm.Misc?.Freq > 0 && <span className="badge bg-secondary ms-2">F{kanji.DictForm.Misc.Freq}</span>}
                     </div>
                 </div>
-                <div className="kanji-hero">{kanji.Kanji}</div>
-                <div className="kanji-readings">
-                On: {kanji.On?.join(", ") || "-"}
-                {" | "}
-                Kun: {kanji.Kun?.join(", ") || "-"}
+                <div className="kanji-detail-primary">
+                    <div>
+                        <div className="kanji-hero">{kanji.Kanji}</div>
+                        <div className="kanji-readings">
+                            On: {kanji.On?.join(", ") || "-"}
+                            {" | "}
+                            Kun: {kanji.Kun?.join(", ") || "-"}
+                        </div>
+                    </div>
+                    <MemeGifDisplay url={kanji.MemeGif} label={kanji.Kanji} />
                 </div>
-                <KanjiWriting character={kanji.Kanji} />
+                <details className="detail-data-disclosure kanji-drawing-disclosure">
+                    <summary>Show stroke order</summary>
+                    <KanjiWriting character={kanji.Kanji} />
+                </details>
             </section>
 
-            <TagEditor key={kanji.Id} value={kanji.Tags ?? []} onSave={saveTags} />
+            <TagEditor key={kanji.Id} value={kanji.Tags ?? []} onSave={saveTags} enableRecentTagQuickAdd />
 
+            <details className="detail-data-disclosure">
+                <summary>Reference data <span>(readings and meanings)</span></summary>
+            <div className="detail-data-content">
             <section className="detail-content-section">
                 <h6>Meaning</h6>
 
@@ -241,6 +253,9 @@ export default function KanjiShow() {
                     )}
                 </div>
             </section>
+
+            </div>
+            </details>
 
         </div>
     );

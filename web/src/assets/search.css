@@ -33,6 +33,15 @@
     animation: bounce 1s infinite ease-in-out;
 }
 
+/* Bootstrap's shadow-sm utility adds !important, so override it on result cards here. */
+.dictionary-results .dictionary-result-card,
+.dictionary-results .dictionary-result-card.shadow-sm,
+.dictionary-results .dictionary-result-card:hover,
+.dictionary-results .dictionary-result-card.shadow-sm:hover {
+    box-shadow: none !important;
+    transform: none !important;
+}
+
 @keyframes bounce {
     0%,100% {
         transform: translateY(0) rotate(-8deg);

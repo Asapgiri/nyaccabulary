@@ -94,7 +94,7 @@ export default function Word() {
                 <div className="study-controls">
                     <div className="study-actions">
                         <button type="button" className="btn btn-outline-primary btn-mini" id="copy-btn" onClick={() => copy(filteredWords, true)}>Copy</button>
-                        <Link to="/word/random" className="btn btn-warning btn-mini random-word-link"><span aria-hidden="true">✳</span> Random draw</Link>
+                        <Link to="/word/random" className="btn btn-warning btn-mini random-word-link">Random draw</Link>
                         <Link to="/word/bulkadd" className="btn btn-outline-secondary btn-mini">Bulk</Link>
                         <button className="btn btn-outline-success btn-mini" onClick={() => pdf(filter)}>PDF</button>
                         <button className="btn btn-outline-success btn-mini" onClick={() => cards(filter)}>Cards</button>

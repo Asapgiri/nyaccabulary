@@ -63,6 +63,10 @@
 .tag-editor-chip > span:last-child { color: #706c64; font-size: .9rem; }
 .tag-editor-empty { color: #77736a; font-size: .72rem; }
 .tag-editor-dropdown { position: relative; }
+.tag-editor-actions { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.tag-editor-quick-add { display: inline-flex; align-items: center; gap: 5px; max-width: 180px; padding: 3px 7px; border: 1px solid #bcb8ad; background: #fffdf7; color: var(--ink, #24231f); cursor: pointer; font-size: .68rem; font-weight: 700; }
+.tag-editor-quick-add > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tag-editor-quick-add:hover { border-color: #7057d9; background: #f1efff; }
 .tag-editor-dropdown > summary { padding: 3px 7px; border: 1px solid var(--ink, #24231f); border-radius: 0; background: #fffdf7; color: var(--ink, #24231f); cursor: pointer; font-size: .7rem; font-weight: 750; list-style: none; }
 .tag-editor-dropdown > summary::-webkit-details-marker { display: none; }
 .tag-editor-dropdown[open] > summary { background: var(--lime, #d5eb65); }

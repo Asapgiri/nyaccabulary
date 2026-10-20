@@ -66,6 +66,7 @@ export default function KanjiModal({ kanji, setSelectedKanji, onUpdate, onDelete
                         <div className="study-title">
                             <div className="study-kanji">{kanji.Kanji}</div>
                             <div className="study-kana">{`On: ${kanji.On ? kanji.On.join(", ") : "-"} | Kun: ${kanji.Kun ? kanji.Kun.join(", ") : "-"}`}</div>
+                            <div className="modal-header-meaning">{kanji.Meaning?.join(", ") || "No meaning yet"}</div>
                             <div className="study-grade">
                                 {kanji.DictForm.Misc?.JLPT > 0      && (<span className="badge bg-success">N{kanji.DictForm.Misc.JLPT}</span>)}
                                 {kanji.DictForm.Misc?.Grade != ""   && (<span className="badge bg-info ms-2">G{kanji.DictForm.Misc.Grade}</span>)}

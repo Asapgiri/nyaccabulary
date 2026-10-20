@@ -5,6 +5,7 @@ import { useSearchParams, Link } from "react-router-dom";
 
 import { useAuth } from "./AuthContext"
 import { useState } from "react";
+import { useEffect } from "react";
 
 export default function Navbar() {
     const [searchParams] = useSearchParams();
@@ -12,6 +13,13 @@ export default function Navbar() {
     const currentPath = useLocation().pathname
     const [searchType, setSearchType] = useState(currentPath === "/kanjisearch" ? "kanji" : "words");
     const [exactMatch, setExactMatch] = useState(searchParams.has("exactmatch"));
+    const [darkMode, setDarkMode] = useState(() => localStorage.getItem("nyaa-theme") === "dark");
+
+    useEffect(() => {
+        document.documentElement.dataset.theme = darkMode ? "dark" : "light";
+        localStorage.setItem("nyaa-theme", darkMode ? "dark" : "light");
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", darkMode ? "#000000" : "#f4f2ec");
+    }, [darkMode]);
 
     const query = searchParams.get("query")
     const jlpt = searchParams.get("jlpt")
@@ -30,11 +38,12 @@ export default function Navbar() {
                     <form action={searchType === "kanji" ? "/kanjisearch" : "/search"} method="GET" className="flex-grow-1">
                         <div className="input-group">
 
-                        <select className="form-select flex-grow-0" style={{ width: "110px" }}
-                            value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-                            <option value="words">Words</option>
-                            <option value="kanji">Kanji</option>
-                        </select>
+                        <button type="button" className="search-type-button"
+                            aria-label={`Search type: ${searchType}. Switch to ${searchType === "words" ? "kanji" : "words"}`}
+                            title={`Switch to ${searchType === "words" ? "Kanji" : "Words"} search`}
+                            onClick={() => setSearchType(type => type === "words" ? "kanji" : "words")}>
+                            {searchType === "words" ? "Words" : "Kanji"}
+                        </button>
 
                         {searchType === "words" ? (
                         <>
@@ -88,36 +97,38 @@ export default function Navbar() {
 
                     <div className="d-flex flex-wrap align-items-center py-2 gap-1">
 
-                        <Link to="/" className={"btn btn-sm " + (currentPath === "/" ? "btn-light" : "btn-outline-light")}>
+                        <Link to="/" className={"btn btn-sm " + (currentPath === "/" ? "btn-light nav-current" : "btn-outline-light")}>
                             Home
                         </Link>
 
-                        <Link to="/word" className={"btn btn-sm " + (currentPath === "/word" ? "btn-light" : "btn-outline-light")}>
+                        <Link to="/word" className={"btn btn-sm nav-study-link " + (currentPath === "/word" ? "btn-light nav-current" : "btn-outline-light")}>
                             Word
                         </Link>
 
                         <Link to="/kanji"
-                           className={"btn btn-sm " + (currentPath === "/kanji" ? "btn-light" : "btn-outline-light")}>
+                           className={"btn btn-sm nav-study-link " + (currentPath === "/kanji" ? "btn-light nav-current" : "btn-outline-light")}>
                             Kanji
                         </Link>
 
                         <Link to="/word/random" className={"btn btn-sm nav-random " + (currentPath === "/word/random" ? "btn-warning" : "btn-outline-light")}>
-                            <span aria-hidden="true">✳</span> Random draw
+                            Random
                         </Link>
 
-                        <Link to="/how-it-works" className={"btn btn-sm " + (currentPath === "/how-it-works" ? "btn-light" : "btn-outline-light")}>
+                        <Link to="/how-it-works" className={"btn btn-sm " + (currentPath === "/how-it-works" ? "btn-light nav-current" : "btn-outline-light")}>
                             Guide
                         </Link>
 
-                        <div className="dropdown ms-auto d-md-none">
+                        <button className="btn btn-sm btn-outline-light theme-toggle ms-auto" type="button"
+                            aria-pressed={darkMode} onClick={() => setDarkMode((enabled) => !enabled)}>
+                            <span aria-hidden="true">{darkMode ? "☀" : "☾"}</span>
+                            <span className="theme-toggle-label">{darkMode ? "Light" : "Dark"}</span>
+                        </button>
 
                         {user ? (
                             <UserMenu mobile />
                         ) : (
                             <LoginButton mobile />
                         )}
-
-                        </div>
 
                     </div>
 

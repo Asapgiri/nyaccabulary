@@ -49,6 +49,10 @@ export const TagAPI = {
         if (!response.ok) throw new Error(await response.text());
         const tag: Tag = await response.json();
         await TagDB.put(tag);
+        if (typeof window !== "undefined") {
+            try { window.localStorage.setItem("nyaccabulary:last-created-tag", tag.Id); } catch { /* The in-app event still updates open editors. */ }
+            window.dispatchEvent(new CustomEvent<Tag>("nyaccabulary:tag-created", { detail: tag }));
+        }
         publishTags(await TagDB.getAll());
         return tag;
     },

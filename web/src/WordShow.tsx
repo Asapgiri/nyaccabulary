@@ -4,6 +4,7 @@ import { WordDB } from "./db/words";
 import { copy, Filter, FilterApply, pdf, cards, raw_filter } from "./Filter";
 import { raw_word_update } from "./components/update";
 import TagEditor from "./components/TagEditor";
+import MemeGifDisplay from "./components/MemeGifDisplay";
 
 export default function WordShow() {
     const { id } = useParams<{ id: string }>();
@@ -12,6 +13,7 @@ export default function WordShow() {
     const [filter, setFilter] = useState<TFilter>(raw_filter);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState("");
+    const [showRandomMeaning, setShowRandomMeaning] = useState(false);
     const navigate = useNavigate();
     const randomMode = id === "random";
 
@@ -46,6 +48,7 @@ export default function WordShow() {
             return;
         }
         setLoadError("");
+        setShowRandomMeaning(false);
         const choices = words.length > 1 ? words.filter(candidate => candidate.Id !== word?.Id) : words;
         setWord(choices[Math.floor(Math.random() * choices.length)]);
     }
@@ -120,7 +123,7 @@ export default function WordShow() {
                         )}
                 </div>
 
-                <div className="study-actions">
+                {!randomMode && <div className="study-actions">
                     {word.Status === "MASTERED" ? (
                         <button className="icon-btn btn-mastered" onClick={word_unmark}>
                             Unmaster
@@ -140,26 +143,52 @@ export default function WordShow() {
                     <button className="icon-btn btn-delete" onClick={word_delete}>
                         Delete
                     </button>
-                </div>
+                </div>}
             </div>
 
             <section className={`word-detail-hero ${randomMode ? "random-word-stage" : ""}`}>
                 <div className="word-detail-hero-meta"><span>{randomMode ? "YOUR RANDOM WORD" : "WORD CARD"}</span><span className={`status-marker ${word.Status.toLowerCase()}`}>{word.Status || "UNMARKED"}</span></div>
-                <div className="study-title word-show-title">
-                    <div className="study-kanji">{word.Kanji}</div>
-                    <div className="study-kana">{word.Kana}</div>
+                <div className="word-detail-primary">
+                    <div className="study-title word-show-title">
+                        <div className="study-kanji">{word.Kanji}</div>
+                        <div className="study-kana">{word.Kana}</div>
+                    </div>
+                    <MemeGifDisplay url={word.MemeGif} label={word.Kanji} />
                 </div>
-                <div className="word-detail-meaning"><span>MEANING</span><p>{word.Meaning}</p></div>
-                {randomMode && <div className="random-stage-actions"><button className="btn btn-dark random-next" onClick={word_random}><span className="random-next-icon">↻</span><span><small>DRAW ANOTHER</small><strong>Next random word</strong></span><span className="random-next-arrow">→</span></button><Link to="/word" className="random-browse">Browse all words <span>↗</span></Link></div>}
+                {(!randomMode || showRandomMeaning) && <div className="word-detail-meaning"><span>MEANING</span><p>{word.Meaning}</p></div>}
+                {randomMode && <div className="random-stage-actions">
+                    <button type="button" className="btn btn-outline-secondary random-meaning-toggle"
+                        aria-expanded={showRandomMeaning} onClick={() => setShowRandomMeaning(visible => !visible)}>
+                        {showRandomMeaning ? "Hide meaning" : "Show meaning"}
+                    </button>
+                    <div className="random-status-actions" aria-label="Update word status">
+                        <button type="button" className="icon-btn btn-master" onClick={word_master} disabled={word.Status === "MASTERED"}>
+                            {word.Status === "MASTERED" ? "Mastered" : "Master"}
+                        </button>
+                        <button type="button" className={word.Status === "LEARNING" ? "icon-btn btn-unmaster" : "icon-btn btn-mark"}
+                            onClick={word.Status === "LEARNING" ? word_unmark : word_mark}>
+                            {word.Status === "LEARNING" ? "Unlearn" : "Learn"}
+                        </button>
+                    </div>
+                    <button type="button" className="btn btn-dark random-next" onClick={word_random} aria-label="Draw another random word">
+                        <span className="random-next-icon" aria-hidden="true">↻</span>
+                        <span><small>DRAW ANOTHER</small><strong>Next random word</strong></span>
+                        <span className="random-next-arrow" aria-hidden="true">→</span>
+                    </button>
+                    <Link to="/word" className="random-browse">Browse all words <span>↗</span></Link>
+                </div>}
             </section>
 
             {loadError && <div className="alert alert-warning mt-3" role="status">{loadError}</div>}
 
-            <TagEditor key={word.Id} value={word.Tags ?? []} onSave={saveTags} />
+            <TagEditor key={word.Id} value={word.Tags ?? []} onSave={saveTags} enableRecentTagQuickAdd />
 
             <hr />
 
-            <section className="detail-content-section">
+            <details className="detail-data-disclosure">
+                <summary>Dictionary data <span>(kanji, readings, senses)</span></summary>
+            <div className="detail-data-content">
+            <section className="detail-content-section word-kanji-listing">
                 <h6>Kanjis</h6>
 
                 {word.Kanjis?.map((kanji, index) => (
@@ -173,12 +202,11 @@ export default function WordShow() {
                 ))}
             </section>
 
-            <hr />
-
+            <div className="word-dictionary-pair">
             <section className="detail-content-section">
                 <h6>Kanji</h6>
 
-                <ul className="modal-kanji">
+                <ul className="modal-kanji word-kanji-select-list">
                     {word.DictForm?.KEle?.map((kele, index) => (
                         <li key={index}>
                             {word.Kanji === kele.KEB ? (
@@ -222,10 +250,12 @@ export default function WordShow() {
                     ))}
                 </ul>
             </section>
+            </div>
 
             <section className="detail-content-section">
                 <h6>Senses</h6>
 
+                <div className="modal-senses">
                 {word.DictForm?.Sense?.map((sense, index) => (
                     <div key={index} className="card mb-2">
                         <div className="card-body">
@@ -286,7 +316,11 @@ export default function WordShow() {
                         </div>
                     </div>
                 ))}
+                </div>
             </section>
+
+            </div>
+            </details>
 
         </div>
     );

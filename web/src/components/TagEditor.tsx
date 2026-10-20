@@ -7,9 +7,10 @@ interface TagEditorProps {
     value?: string[];
     onSave: (tagIds: string[]) => Promise<void> | void;
     onCatalogChange?: (tags: Tag[]) => void;
+    enableRecentTagQuickAdd?: boolean;
 }
 
-export default function TagEditor({ value, onSave, onCatalogChange }: TagEditorProps) {
+export default function TagEditor({ value, onSave, onCatalogChange, enableRecentTagQuickAdd = false }: TagEditorProps) {
     const initialValue = Array.isArray(value) ? value : [];
     const [tags, setTags] = useState<Tag[]>([]);
     const [selected, setSelected] = useState<string[]>(initialValue);
@@ -18,11 +19,18 @@ export default function TagEditor({ value, onSave, onCatalogChange }: TagEditorP
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const [lastCreatedTagId, setLastCreatedTagId] = useState(() => enableRecentTagQuickAdd ? window.localStorage.getItem("nyaccabulary:last-created-tag") : null);
+    const dropdownRef = useRef<HTMLDetailsElement>(null);
     const saveQueue = useRef<Promise<void>>(Promise.resolve());
     const saveVersion = useRef(0);
 
     const valueKey = initialValue.join("|");
     useEffect(() => setSelected(initialValue), [valueKey]);
+    const lastCreatedTag = enableRecentTagQuickAdd
+        ? (tags.find(tag => tag.Id === lastCreatedTagId)
+            ?? tags.reduce<Tag | undefined>((latest, tag) => !latest || Date.parse(tag.Date) > Date.parse(latest.Date) ? tag : latest, undefined))
+        : undefined;
+    const quickAddTag = lastCreatedTag && !selected.includes(lastCreatedTag.Id) ? lastCreatedTag : undefined;
 
     useEffect(() => {
         let active = true;
@@ -37,9 +45,24 @@ export default function TagEditor({ value, onSave, onCatalogChange }: TagEditorP
             setLoading(false);
         };
         const onTagsChanged = (event: Event) => { void refresh(event); };
+        const onTagCreated = (event: Event) => {
+            const tag = (event as CustomEvent<Tag>).detail;
+            if (enableRecentTagQuickAdd) setLastCreatedTagId(tag.Id);
+        };
         window.addEventListener("nyaccabulary:tags", onTagsChanged);
+        window.addEventListener("nyaccabulary:tag-created", onTagCreated);
         void refresh();
-        return () => { active = false; window.removeEventListener("nyaccabulary:tags", onTagsChanged); };
+        return () => { active = false; window.removeEventListener("nyaccabulary:tags", onTagsChanged); window.removeEventListener("nyaccabulary:tag-created", onTagCreated); };
+    }, [enableRecentTagQuickAdd]);
+
+    useEffect(() => {
+        function closeOnOutsideClick(event: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                dropdownRef.current.removeAttribute("open");
+            }
+        }
+        document.addEventListener("mousedown", closeOnOutsideClick);
+        return () => document.removeEventListener("mousedown", closeOnOutsideClick);
     }, []);
 
     function selectTags(next: string[], catalog: Tag[] = tags) {
@@ -90,7 +113,12 @@ export default function TagEditor({ value, onSave, onCatalogChange }: TagEditorP
                 })}
                 {selected.length === 0 && <span className="tag-editor-empty">No tags</span>}
             </div>
-            <details className="tag-editor-dropdown">
+            <div className="tag-editor-actions">
+            {quickAddTag && <button type="button" className="tag-editor-quick-add" onClick={() => selectTags([...selected, quickAddTag.Id])}>
+                <span className="tag-color-dot" style={{ backgroundColor: quickAddTag.Color }} />
+                <span>{quickAddTag.Name}</span><span aria-hidden="true">+</span>
+            </button>}
+            <details className="tag-editor-dropdown" ref={dropdownRef}>
                 <summary aria-label="Add or manage tags" aria-disabled={loading}>{loading ? "…" : "+ Tag"}</summary>
                 {!loading && <div className="tag-editor-menu">
                     <div className="tag-editor-list">
@@ -109,6 +137,7 @@ export default function TagEditor({ value, onSave, onCatalogChange }: TagEditorP
                     </div>
                 </div>}
             </details>
+            </div>
             {saving && <small role="status" className="tag-editor-status">Saving…</small>}
             {error && <div className="small text-danger mt-2" role="alert">{error}</div>}
         </section>

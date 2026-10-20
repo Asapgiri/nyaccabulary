@@ -61,6 +61,7 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, o
                         <div className="study-title">
                             <InlineFieldEditor className="word-modal-kanji-edit" label="Word" value={word.Kanji} onSave={value => saveWordField("kanji", value)} />
                             <InlineFieldEditor className="word-modal-kana-edit" label="Hiragana / reading" value={word.Kana} onSave={value => saveWordField("kana", value)} />
+                            <div className="modal-header-meaning">{word.Meaning || "No meaning yet"}</div>
                         </div>
 
                         <div className="study-actions">
@@ -75,7 +76,7 @@ export default function WordModal({ word, setSelectedWord, onUpdate, onDelete, o
                     </div>
 
                     <div className="modal-body">
-                        <TagEditor key={word.Id} value={word.Tags ?? []} onSave={saveTags} onCatalogChange={onCatalogChange} />
+                        <TagEditor key={word.Id} value={word.Tags ?? []} onSave={saveTags} onCatalogChange={onCatalogChange} enableRecentTagQuickAdd />
                         <InlineFieldEditor className="word-modal-meaning-edit" label="Meaning" value={word.Meaning} onSave={value => saveWordField("meaning", value)} multiline />
                         <div className="word-modal-dictionary-fields">
                             <section>

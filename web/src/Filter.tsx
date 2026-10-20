@@ -270,6 +270,10 @@ export function Filter({ filter, setFilter, compact = false, extraField = null, 
                     <input id="wordSearch" className="form-control form-control-sm" placeholder="Search..." value={filter.search ? filter.search : ""} onInput={e => search(e.target.value)}/>
 
                     <div className="word-size-control">
+                        <button type="button" className="btn btn-outline-secondary btn-mini word-size-adjust"
+                            aria-label="Decrease word text size" title="Decrease text size"
+                            disabled={(filter.wordSize ?? 16) <= 12}
+                            onClick={() => updateWordSize(Math.max(12, (filter.wordSize ?? 16) - 1))}>−</button>
                         <button
                             type="button"
                             className="btn btn-outline-secondary btn-mini word-size-toggle"
@@ -277,8 +281,16 @@ export function Filter({ filter, setFilter, compact = false, extraField = null, 
                             aria-controls="wordSizePanel"
                             onClick={() => setShowWordSize(visible => !visible)}
                         >
-                            Text size <span>{filter.wordSize ?? 16}px</span><span aria-hidden="true">{showWordSize ? "−" : "+"}</span>
+                            Text size <span>{filter.wordSize ?? 16}px</span><span aria-hidden="true">{showWordSize ? "⌄" : "⌃"}</span>
                         </button>
+                        <button type="button" className="btn btn-outline-secondary btn-mini word-size-adjust"
+                            aria-label="Increase word text size" title="Increase text size"
+                            disabled={(filter.wordSize ?? 16) >= 56}
+                            onClick={() => updateWordSize(Math.min(56, (filter.wordSize ?? 16) + 1))}>+</button>
+                        <button type="button" className="btn btn-outline-secondary btn-mini word-size-reset"
+                            aria-label="Reset word text size" title="Reset text size to 16 px"
+                            disabled={(filter.wordSize ?? 16) === 16}
+                            onClick={() => updateWordSize(16)}>Reset</button>
                         {showWordSize && (
                             <div className="word-size-panel" id="wordSizePanel">
                                 <input className="form-range" id="wordSize" aria-label="Word text size" type="range" min="12" max="56" step="1" value={filter.wordSize ?? 16} onChange={e => updateWordSize(Number(e.target.value))} />

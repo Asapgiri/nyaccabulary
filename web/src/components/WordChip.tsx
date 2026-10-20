@@ -15,8 +15,8 @@ export default function WordChip({ word, setSelectedWord, onUpdate, onDelete = (
     }
 
     return (
-        <span className={`searchable chip ${selected ? "is-selected" : ""}`}>
-            <button className={`word-chip ${word.Status.toLowerCase()}`}
+        <span className={`searchable chip ${wordIsKanji ? "kanji-chip-container" : ""} ${selected ? "is-selected" : ""}`}>
+            <button className={`word-chip ${word.Status.toLowerCase()} ${wordIsKanji ? "kanji-chip" : ""}`}
                     data-bs-toggle={selectable ? undefined : "modal"}
                     data-bs-target={selectable ? undefined : "#word-modal"}
                     aria-pressed={selectable ? selected : undefined}

@@ -65,10 +65,10 @@ export default function TagSelect({ value, onChange, onTagsChange = () => {} }: 
     }
 
     return (
-        <div className="dropdown" ref={ref}>
+        <div className="dropdown tag-select" ref={ref}>
             <button
                 type="button"
-                className="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                className="btn btn-outline-secondary dropdown-toggle w-100 text-start tag-select-trigger"
                 onClick={() => setOpen(!open)}
             >
                 {selectedTag ? (
@@ -91,7 +91,7 @@ export default function TagSelect({ value, onChange, onTagsChange = () => {} }: 
 
             {open && (
                 <div
-                    className="dropdown-menu show w-100 p-1"
+                    className="dropdown-menu show w-100 p-1 tag-select-menu"
                     style={{ maxHeight: "300px", overflowY: "auto" }}
                 >
                     <button

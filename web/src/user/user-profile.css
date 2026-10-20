@@ -15,17 +15,33 @@
 .profile-progress .profile-meter-learning { background: #e99a3d; }
 .profile-progress-counts { text-align: right; }
 .profile-progress-counts strong { color: #282633; }
+.profile-progress-counts .profile-count-mastered { color: #7057d9; }
+.profile-progress-counts .profile-count-learning { color: #bb6a16; }
 .profile-progress-counts i { margin: 0 3px; color: #aaa6b3; font-style: normal; }
 .profile-progress small { display: block; margin-top: 5px; color: #6b6878; text-align: right; }
 .activity-card, .ranking-card { margin-top: 16px; }
-.activity-card h2, .ranking-card h2 { margin: 0 0 12px; font-size: 1.1rem; }
-.activity-scroll { overflow-x: auto; padding-bottom: 4px; }
-.activity-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 12px); grid-auto-columns: 12px; gap: 3px; width: max-content; min-width: 100%; }
-.activity-cell { display: block; width: 12px; height: 12px; border: 1px solid #e0dfe5; background: #f4f3f6; }
+.activity-card h2, .ranking-card h2 { margin: 0; font-size: 1.1rem; }
+.activity-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 10px; margin-bottom: 12px; }
+.activity-heading > small { color: #777; }
+.activity-period-mobile { display: none; }
+.activity-axis-key { color: #777; font-size: .68rem; }
+.activity-scroll { max-width: 100%; overflow-x: auto; padding: 2px 1px 7px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+.activity-axis { --activity-cell-size: 12px; --activity-gap: 3px; display: flex; align-items: start; gap: 8px; width: max-content; min-width: 100%; }
+.activity-weekdays { display: grid; flex: 0 0 auto; grid-template-rows: repeat(7, var(--activity-cell-size)); gap: var(--activity-gap); padding-top: 18px; color: #777; font-size: .65rem; line-height: var(--activity-cell-size); }
+.activity-timeline { width: max-content; }
+.activity-months, .activity-grid { display: flex; gap: var(--activity-gap); width: max-content; }
+.activity-months { height: 18px; color: #777; font-size: .65rem; line-height: 1; }
+.activity-month { position: relative; flex: 0 0 var(--activity-cell-size); width: var(--activity-cell-size); }
+.activity-month > span { position: absolute; left: 0; white-space: nowrap; }
+.activity-week { display: grid; flex: 0 0 var(--activity-cell-size); grid-template-rows: repeat(7, var(--activity-cell-size)); gap: var(--activity-gap); }
+.activity-cell { display: block; width: var(--activity-cell-size, 12px); height: var(--activity-cell-size, 12px); border: 1px solid #e0dfe5; background: #f4f3f6; }
 .activity-cell.level-1 { border-color: #d2c8f4; background: #e5defa; }
 .activity-cell.level-2 { border-color: #b9a9ed; background: #cbbdf5; }
 .activity-cell.level-3 { border-color: #927bdc; background: #a38de8; }
 .activity-cell.level-4 { border-color: #6148c3; background: #7057d9; }
+:root[data-theme="dark"] .activity-heading > small,
+:root[data-theme="dark"] .activity-weekdays,
+:root[data-theme="dark"] .activity-months { color: #aaa7b0; }
 .activity-legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 9px; color: #777; font-size: .75rem; }
 .activity-legend span:first-child { margin-right: 4px; }
 .activity-legend span:last-child { margin-left: 4px; }
@@ -40,4 +56,20 @@
     .profile-rank { padding: 6px; }
     .profile-progress-grid { grid-template-columns: 1fr; }
     .profile-progress, .activity-card, .ranking-card { padding: 12px; }
+    .activity-heading { align-items: flex-start; margin-bottom: 8px; }
+    .activity-heading > small { width: auto; font-size: .7rem; }
+    .activity-period-desktop { display: none; }
+    .activity-period-mobile { display: inline; }
+    .activity-axis-key { width: 100%; font-size: .65rem; }
+    .activity-axis { --activity-cell-size: 12px; --activity-gap: 3px; gap: 8px; width: 100%; min-width: 0; }
+    .activity-weekdays { font-size: .65rem; }
+    .activity-timeline { flex: 1 1 auto; width: auto; min-width: 0; }
+    .activity-months { display: grid; grid-template-columns: repeat(26, minmax(8px, 1fr)); height: 18px; gap: 3px; width: 100%; font-size: .65rem; }
+    .activity-grid { display: grid; grid-template-columns: repeat(26, minmax(8px, 1fr)); gap: 3px; width: 100%; min-width: 283px; }
+    .activity-week { display: grid; grid-template-rows: repeat(7, minmax(0, 1fr)); gap: 2px; min-width: 0; width: auto; }
+    .activity-grid .activity-cell { width: 100%; height: auto; aspect-ratio: 1; }
+    .activity-weekdays { padding-top: 18px; }
+    .activity-month.activity-week-earlier,
+    .activity-week.activity-week-earlier { display: none; }
+    .activity-legend { margin-top: 7px; }
 }
