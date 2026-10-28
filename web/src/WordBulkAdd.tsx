@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { apiFetch } from "./api";
 import TagSelect from "./components/TagSelect";
 import { sync } from "./db/sync";
@@ -8,6 +8,19 @@ export default function WordBulkAdd() {
     const [progress, setProgress] = useState<{percent: number; max: number} | null>(null);
     const [notices, setNotices] = useState<{Added: string[], Exists: string[], Failed: string[]} | null>(null);
     const [tagId, setTagId] = useState<string | undefined>();
+    const [fileError, setFileError] = useState("");
+    const fileInput = useRef<HTMLInputElement>(null);
+
+    async function readFile(file?: File) {
+        if (!file) return;
+
+        try {
+            setBulkwords(await file.text());
+            setFileError("");
+        } catch {
+            setFileError("Could not read that file. Please try a .txt or .csv file.");
+        }
+    }
 
     async function add() {
         const response = await apiFetch("/api/word/bulk", {
@@ -122,14 +135,43 @@ export default function WordBulkAdd() {
 
                         <div className="mb-4">
                             <div className="mb-4">
-                                <label className="form-label fw-semibold">
-                                    Tag
-                                </label>
+                                <div className="d-flex flex-wrap align-items-end gap-3">
+                                    <div className="flex-grow-1" style={{ flexBasis: "0", minWidth: "220px" }}>
+                                        <label className="form-label fw-semibold">
+                                            Tag
+                                        </label>
 
-                                <TagSelect
-                                    value={tagId}
-                                    onChange={setTagId}
-                                />
+                                        <TagSelect
+                                            value={tagId}
+                                            onChange={setTagId}
+                                        />
+                                    </div>
+                                    <div className="flex-grow-1" style={{ flexBasis: "0", minWidth: "220px" }}>
+                                        <label className="form-label fw-semibold" htmlFor="bulk-file-picker">File</label>
+                                        <input
+                                            ref={fileInput}
+                                            id="bulk-file-picker"
+                                            type="file"
+                                            accept=".txt,.csv,text/plain,text/csv"
+                                            className="visually-hidden"
+                                            aria-label="Choose a text or CSV file"
+                                            onChange={(event) => {
+                                                void readFile(event.target.files?.[0]);
+                                                // Let the same file be selected again later.
+                                                event.currentTarget.value = "";
+                                            }}
+                                        />
+                                        <div className="d-flex gap-2">
+                                            <button type="button" className="btn btn-outline-secondary tag-select-trigger flex-fill text-start" onClick={() => fileInput.current?.click()}>
+                                                <span className="text-muted">Choose file</span>
+                                            </button>
+                                            <button type="button" className="btn btn-outline-secondary tag-select-trigger flex-fill text-start" onClick={() => setBulkwords("")}>
+                                                <span className="text-muted">Clear text</span>
+                                            </button>
+                                        </div>
+                                        {fileError && <div className="small text-danger mt-1" role="alert">{fileError}</div>}
+                                    </div>
+                                </div>
                             </div>
 
                             <label htmlFor="words" className="form-label fw-semibold">
